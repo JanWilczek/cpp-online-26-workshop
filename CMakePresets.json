@@ -1,0 +1,97 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "binaryDir": "build",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "binaryDir": "release-build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "vs2022",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "vs2022-build"
+    },
+    {
+      "name": "vs",
+      "generator": "Visual Studio 18 2026",
+      "binaryDir": "vs-build"
+    },
+    {
+      "name": "xcode",
+      "generator": "Xcode",
+      "binaryDir": "xcode-build"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "vs2022",
+      "configurePreset": "vs2022"
+    },
+    {
+      "name": "vs",
+      "configurePreset": "vs"
+    },
+    {
+      "name": "xcode",
+      "configurePreset": "xcode"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default",
+      "output": { "outputOnFailure": true },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "configurePreset": "release"
+    },
+    {
+      "name": "vs2022",
+      "inherits": "default",
+      "configurePreset": "vs2022",
+      "configuration": "Debug"
+    },
+    {
+      "name": "vs",
+      "inherits": "default",
+      "configurePreset": "vs",
+      "configuration": "Debug"
+    },
+    {
+      "name": "xcode",
+      "inherits": "default",
+      "configurePreset": "xcode",
+      "configuration": "Debug"
+    }
+  ]
+}

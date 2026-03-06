@@ -1,16 +1,33 @@
 namespace audio_plugin {
-PluginProcessor::PluginProcessor()
+namespace {
+/** @brief This is taken straight from JUCE's WebViewPluginDemo.h */
+template <typename Param, typename Group, typename... Ts>
+Param& addToLayout(Group& layout, Ts&&... ts) {
+  auto param = std::make_unique<Param>(std::forward<Ts>(ts)...);
+  auto& ref = *param;
+  layout.add(std::move(param));
+  return ref;
+}
+}  // namespace
+
+namespace id {
+static const juce::ParameterID LFO_FREQUENCY_HZ{"lfoFrequencyHz", 1};
+}
+
+PluginProcessor::PluginProcessor(
+    juce::AudioProcessorValueTreeState::ParameterLayout parameterLayout)
     : AudioProcessor(
           BusesProperties()
-#if !JUCE_IS_MIDI_EFFECT
-#if !JUCE_IS_SYNTH
+#if !JucePlugin_IsMidiEffect
+#if !JucePlugin_IsSynth
               .withInput("Input", juce::AudioChannelSet::stereo(), true)
 #endif
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      ) {
+              ),
+      parameters_{parameterLayout},
+      apvts_{*this, nullptr, "FLANGERPARAMS", std::move(parameterLayout)} {
 }
-
 const juce::String PluginProcessor::getName() const {
   return JUCE_PLUGIN_NAME;
 }
@@ -152,10 +169,20 @@ void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
   // call.
   juce::ignoreUnused(data, sizeInBytes);
 }
+
+PluginProcessor::Parameters::Parameters(
+    juce::AudioProcessorValueTreeState::ParameterLayout& layout)
+    : lfoFrequency{addToLayout<juce::AudioParameterFloat>(
+          layout,
+          id::LFO_FREQUENCY_HZ,
+          "LFO frequency",
+          juce::NormalisableRange<float>{0.01f, 10.f, 0.01f},
+          Flanger<SampleType>::Parameters{}.lfoFrequency.value(),
+          juce::AudioParameterFloatAttributes{}.withLabel("Hz"))} {}
 }  // namespace audio_plugin
 
 // This creates new instances of the plugin.
 // This function definition must be in the global namespace.
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
-  return new audio_plugin::PluginProcessor();
+  return new audio_plugin::PluginProcessor({});
 }

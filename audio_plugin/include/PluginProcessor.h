@@ -3,7 +3,10 @@
 namespace audio_plugin {
 class PluginProcessor : public juce::AudioProcessor {
 public:
-  PluginProcessor();
+  using SampleType = float;
+
+  explicit PluginProcessor(
+      juce::AudioProcessorValueTreeState::ParameterLayout parameterLayout);
 
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
@@ -33,7 +36,18 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override;
 
 private:
-  wolfsound::FractionalDelayLine<float> delayLine_;
+  using ParameterLayout = juce::AudioProcessorValueTreeState::ParameterLayout;
+
+  struct Parameters {
+    explicit Parameters(ParameterLayout&);
+    juce::AudioParameterFloat& lfoFrequency;  // NOLINT
+  };
+
+  Parameters parameters_;
+  juce::AudioProcessorValueTreeState apvts_;
+  juce::dsp::ProcessorDuplicator<Flanger<SampleType>,
+                                 Flanger<SampleType>::Parameters>
+      flanger_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };

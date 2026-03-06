@@ -59,8 +59,6 @@ cpmaddpackage(
   8.0.12
   GITHUB_REPOSITORY
   juce-framework/JUCE
-  SOURCE_DIR
-  ${LIB_DIR}/juce
 )
 
 # Adds googletest.
@@ -71,8 +69,6 @@ cpmaddpackage(
   google/googletest
   VERSION
   1.17.0
-  SOURCE_DIR
-  ${LIB_DIR}/googletest
   OPTIONS
   "INSTALL_GTEST OFF"
   "gtest_force_shared_crt ON"

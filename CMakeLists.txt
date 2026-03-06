@@ -117,7 +117,7 @@ juce_add_plugin(
   VERSION
   0.0.0 # 0.0.0 forces AU host to always rescan the plugin. Change this before releasing
   COPY_PLUGIN_AFTER_BUILD
-  FALSE # Changing this to TRUE will enable automatic copying of the built plugin formats
+  TRUE # Changing this to TRUE will enable automatic copying of the built plugin formats
         # to correct directories on your system. The directories must exist, though
 )
 

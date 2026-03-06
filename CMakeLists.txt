@@ -61,6 +61,15 @@ cpmaddpackage(
   juce-framework/JUCE
 )
 
+cpmaddpackage(
+  NAME
+  WOLFSOUND_DSP_UTILS
+  GITHUB_REPOSITORY
+  JanWilczek/wolfsound-dsp-utils
+  VERSION
+  0.5.0
+)
+
 # Adds googletest.
 cpmaddpackage(
   NAME
@@ -102,6 +111,8 @@ juce_add_plugin(
   Standalone
   VST3
   PRODUCT_NAME
+  CppOnline2026WorkshopFlanger
+  PLUGIN_NAME
   "C++ Online 2026 Workshop Flanger" # change this
   VERSION
   0.0.0 # 0.0.0 forces AU host to always rescan the plugin. Change this before releasing
@@ -140,6 +151,8 @@ target_compile_definitions(
 
 # Enables strict C++ warnings and treats warnings as errors.
 target_compile_options(audio_plugin INTERFACE "${PROJECT_WARNINGS_CXX}")
+
+target_link_libraries(audio_plugin INTERFACE wolfsound::wolfsound_dsp_utils)
 
 # We need to link the plugin targets with the module containing our code.
 target_link_libraries(

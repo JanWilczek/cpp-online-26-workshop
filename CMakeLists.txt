@@ -92,6 +92,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set_directory_properties(PROPERTIES JUCE_VST3_COPY_DIR "$ENV{LOCALAPPDATA}/Programs/Common/VST3")
 endif()
 
+add_subdirectory(music_player)
+
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(
   AudioPlugin

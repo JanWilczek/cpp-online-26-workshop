@@ -9,7 +9,6 @@
 #include <ranges>
 #include <numbers>
 #include <cmath>
-#include <functional>
 
 class MusicPlayer {
 public:
@@ -67,7 +66,7 @@ private:
   }
 
   PaStream* stream{nullptr};
-  PaError error;
+  PaError error = paNoError;
   float phase = 0.f;
 };
 

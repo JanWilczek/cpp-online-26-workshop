@@ -6,6 +6,10 @@
 #include <expected>
 #include <iostream>
 #include <memory>
+#include <ranges>
+#include <numbers>
+#include <cmath>
+#include <functional>
 
 class MusicPlayer {
 public:
@@ -28,7 +32,43 @@ public:
   MusicPlayer&& operator=(MusicPlayer&&) = delete;
 
 private:
-  MusicPlayer() = default;
+  static constexpr auto sampleRate = 44100.;
+
+  MusicPlayer() {
+    error = Pa_OpenDefaultStream(
+        &stream, 0, 2, paFloat32, sampleRate, paFramesPerBufferUnspecified,
+        [](const void* input, void* output, unsigned long frameCount,
+           const PaStreamCallbackTimeInfo* timeInfo,
+           PaStreamCallbackFlags statusFlags, void* userData) {
+          auto* thisPtr = static_cast<MusicPlayer*>(userData);
+          return thisPtr->audioCallback(input, output, frameCount, timeInfo,
+                                        statusFlags);
+        },
+        this);
+  }
+
+  int audioCallback(const void* /* input */,
+                    void* output,
+                    unsigned long frameCount,
+                    const PaStreamCallbackTimeInfo* /* timeInfo */,
+                    PaStreamCallbackFlags /* statusFlags */) {
+    auto* out = static_cast<float*>(output);  // interleaved samples
+
+    for ([[maybe_unused]] const auto i : std::views::iota(0u, frameCount)) {
+      constexpr auto amplitude = 0.25f;
+      *out++ = amplitude * std::sin(phase);
+      *out++ = *(out - 1);
+
+      phase += 2 * std::numbers::pi_v<float> * 220.f /
+               static_cast<float>(sampleRate);
+    }
+
+    return paContinue;
+  }
+
+  PaStream* stream{nullptr};
+  PaError error;
+  float phase = 0.f;
 };
 
 int main() {

@@ -11,8 +11,14 @@ cpmaddpackage(
   TRUE
 )
 
+set_target_properties(portaudio_static PROPERTIES COMPILE_WARNING_AS_ERROR OFF)
+if(MSVC)
+  target_compile_options(portaudio_static PRIVATE /w)
+else()
+  target_compile_options(portaudio_static PRIVATE -w)
+endif()
+
 add_executable(music_player source/main.cpp)
 
 target_link_libraries(music_player PRIVATE portaudio_static)
 target_compile_options(music_player PRIVATE "${PROJECT_WARNINGS_CXX}")
-

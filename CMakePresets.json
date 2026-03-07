@@ -12,7 +12,8 @@
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
-        "CPM_SOURCE_CACHE": "~/.cache/CPM"
+        "CPM_SOURCE_CACHE": "~/.cache/CPM",
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
     {

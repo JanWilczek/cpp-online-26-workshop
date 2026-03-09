@@ -3,9 +3,7 @@
 #include <portaudio.h>
 #pragma GCC diagnostic pop
 
-#include <expected>
 #include <iostream>
-#include <memory>
 #include <ranges>
 #include <numbers>
 #include <cmath>
@@ -41,44 +39,52 @@ public:
 private:
   std::optional<PaError> _error;
 };
+
+class Stream {
+public:
+  template <typename... Ts>
+  explicit Stream(Ts&&... args)
+      : _error{Pa_OpenDefaultStream(&_stream, std::forward<Ts>(args)...)} {}
+
+  ~Stream() {
+    if (_error == paNoError) {
+      Pa_CloseStream(_stream);
+    }
+  }
+
+  // copy & move constructors & assignment operators
+
+private:
+  PaStream* _stream{nullptr};
+  PaError _error{paNoError};
+};
 }  // namespace pa_ex
 
 class MusicPlayer {
 public:
-  static std::expected<std::unique_ptr<MusicPlayer>, PaError> create() {
-    const auto error = Pa_Initialize();
-
-    if (error != paNoError) {
-      return std::unexpected{error};
-    }
-
-    return std::unique_ptr<MusicPlayer>(new MusicPlayer);
-  }
-
-  ~MusicPlayer() { Pa_Terminate(); }
-
-  MusicPlayer(const MusicPlayer&) = delete;
-  const MusicPlayer& operator=(const MusicPlayer&) = delete;
-  MusicPlayer(MusicPlayer&&) = delete;
-  MusicPlayer&& operator=(MusicPlayer&&) = delete;
-
   // TODO: add play() and stop() that call Pa_StartStream and Pa_StopStream
   // respectively
+
+  MusicPlayer()
+      : _stream{0,
+                2,
+                paFloat32,
+                sampleRate,
+                static_cast<unsigned long>(paFramesPerBufferUnspecified),
+                [](const void* input,
+                   void* output,
+                   unsigned long frameCount,
+                   const PaStreamCallbackTimeInfo* timeInfo,
+                   PaStreamCallbackFlags statusFlags,
+                   void* userData) {
+                  auto* thisPtr = static_cast<MusicPlayer*>(userData);
+                  return thisPtr->audioCallback(input, output, frameCount,
+                                                timeInfo, statusFlags);
+                },
+                this} {}
+
 private:
   static constexpr auto sampleRate = 44100.;
-
-  MusicPlayer() {
-    error = Pa_OpenDefaultStream(
-        &stream, 0, 2, paFloat32, sampleRate, paFramesPerBufferUnspecified,
-        [](const void* input, void* output, unsigned long frameCount,
-           const PaStreamCallbackTimeInfo* timeInfo,
-           PaStreamCallbackFlags statusFlags, void* userData) {
-          auto* thisPtr = static_cast<MusicPlayer*>(userData);
-          return thisPtr->audioCallback(input, output, frameCount, timeInfo,
-                                        statusFlags);
-        },
-        this);
-  }
 
   int audioCallback(const void* /* input */,
                     void* output,
@@ -99,20 +105,13 @@ private:
     return paContinue;
   }
 
-  PaStream* stream{nullptr};
-  PaError error = paNoError;
+  pa_ex::Initializer _initializer;
+  pa_ex::Stream _stream;
   float phase = 0.f;
 };
 
 int main() {
   std::cout << "PortAudio version:" << Pa_GetVersionInfo()->versionText;
-  auto maybeMusicPlayer = MusicPlayer::create();
 
-  if (!maybeMusicPlayer) {
-    std::cout << "PortAudio error: "
-              << Pa_GetErrorText(maybeMusicPlayer.error());
-    return maybeMusicPlayer.error();
-  }
-
-  [[maybe_unused]] auto musicPlayer = std::move(maybeMusicPlayer.value());
+  MusicPlayer player;
 }

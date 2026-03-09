@@ -4,7 +4,7 @@
 #include <portaudio.h>
 #pragma GCC diagnostic pop
 
-#include <iostream>
+#include <print>
 #include <ranges>
 #include <numbers>
 #include <cmath>
@@ -139,7 +139,7 @@ private:
 };
 
 int main() {
-  std::cout << "PortAudio version:" << Pa_GetVersionInfo()->versionText;
+  std::println("PortAudio version: {}", Pa_GetVersionInfo()->versionText);
 
   MusicPlayer player;
   player.start();

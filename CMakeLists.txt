@@ -14,7 +14,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0141
 # Sets the minimum deployment target
 # macOS 10.11 is the minimum required by JUCE
 set(CMAKE_OSX_DEPLOYMENT_TARGET
-    "10.11"
+    "13.3"
     CACHE STRING "" FORCE
 )
 # Builds a binary that works on Apple Silicon (arm64) and Intel-based Macs
@@ -120,7 +120,7 @@ juce_add_plugin(
   0.0.0 # 0.0.0 forces AU host to always rescan the plugin. Change this before releasing
   COPY_PLUGIN_AFTER_BUILD
   TRUE # Changing this to TRUE will enable automatic copying of the built plugin formats
-        # to correct directories on your system. The directories must exist, though
+  # to correct directories on your system. The directories must exist, though
 )
 
 # These definitions are recommended by JUCE

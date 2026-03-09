@@ -8,6 +8,7 @@
 #include <ranges>
 #include <numbers>
 #include <cmath>
+#include <span>
 
 namespace pa_ex {
 class Initializer {
@@ -79,8 +80,8 @@ private:
 class MusicPlayer {
 public:
   MusicPlayer()
-      : _stream{0,
-                2,
+      : _stream{inputChannelCount,
+                outputChannelCount,
                 paFloat32,
                 sampleRate,
                 static_cast<unsigned long>(paFramesPerBufferUnspecified),
@@ -100,6 +101,8 @@ public:
   void stop() { _stream.stop(); }
 
 private:
+  static constexpr auto inputChannelCount = 0;
+  static constexpr auto outputChannelCount = 2;
   static constexpr auto sampleRate = 44100.;
 
   int audioCallback(const void* /* input */,
@@ -107,12 +110,19 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    auto* out = static_cast<float*>(output);  // interleaved samples
+    const auto sampleCount =
+        static_cast<size_t>(frameCount * outputChannelCount);
+    auto buffer = std::span<float>{static_cast<float*>(output),
+                                   sampleCount};  // interleaved samples
 
     for ([[maybe_unused]] const auto i : std::views::iota(0u, frameCount)) {
       constexpr auto amplitude = 0.25f;
-      *out++ = amplitude * std::sin(_phase);
-      *out++ = *(out - 1);
+      const auto outputSample = amplitude * std::sin(_phase);
+
+      for (const auto channel :
+           std::views::iota(0u, static_cast<size_t>(outputChannelCount))) {
+        buffer[(outputChannelCount * i) + channel] = outputSample;
+      }
 
       _phase += 2 * std::numbers::pi_v<float> * 220.f /
                 static_cast<float>(sampleRate);

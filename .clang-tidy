@@ -55,6 +55,8 @@ CheckOptions:
     value: camelBack
   - key: readability-identifier-naming.PrivateMemberSuffix
     value: ''
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: '_'
   - key: readability-identifier-naming.ProtectedMemberSuffix
     value: ''
 

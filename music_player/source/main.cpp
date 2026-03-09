@@ -66,6 +66,10 @@ public:
     return *this;
   }
 
+  void start() { Pa_StartStream(_stream); }
+
+  void stop() { Pa_StopStream(_stream); }
+
 private:
   PaStream* _stream{nullptr};
   PaError _error{paNoError};
@@ -74,9 +78,6 @@ private:
 
 class MusicPlayer {
 public:
-  // TODO: add play() and stop() that call Pa_StartStream and Pa_StopStream
-  // respectively
-
   MusicPlayer()
       : _stream{0,
                 2,
@@ -94,6 +95,9 @@ public:
                                                 timeInfo, statusFlags);
                 },
                 this} {}
+
+  void start() { _stream.start(); }
+  void stop() { _stream.stop(); }
 
 private:
   static constexpr auto sampleRate = 44100.;
@@ -126,4 +130,9 @@ int main() {
   std::cout << "PortAudio version:" << Pa_GetVersionInfo()->versionText;
 
   MusicPlayer player;
+  player.start();
+
+  Pa_Sleep(3L * 1000L);
+
+  player.stop();
 }

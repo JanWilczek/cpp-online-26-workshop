@@ -103,6 +103,8 @@ public:
 private:
   static constexpr auto inputChannelCount = 0;
   static constexpr auto outputChannelCount = 2;
+  static constexpr auto outputChannelCountUnsigned =
+      static_cast<size_t>(outputChannelCount);
   static constexpr auto sampleRate = 44100.;
 
   int audioCallback(const void* /* input */,
@@ -110,8 +112,7 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    const auto sampleCount =
-        static_cast<size_t>(frameCount * outputChannelCount);
+    const auto sampleCount = frameCount * outputChannelCountUnsigned;
     auto buffer = std::span<float>{static_cast<float*>(output),
                                    sampleCount};  // interleaved samples
 
@@ -120,11 +121,12 @@ private:
       const auto outputSample = amplitude * std::sin(_phase);
 
       for (const auto channel :
-           std::views::iota(0u, static_cast<size_t>(outputChannelCount))) {
-        buffer[(outputChannelCount * i) + channel] = outputSample;
+           std::views::iota(0u, outputChannelCountUnsigned)) {
+        buffer[(outputChannelCountUnsigned * i) + channel] = outputSample;
       }
 
-      _phase += 2 * std::numbers::pi_v<float> * 220.f /
+      constexpr auto frequency = 220.f;
+      _phase += 2 * std::numbers::pi_v<float> * frequency /
                 static_cast<float>(sampleRate);
     }
 

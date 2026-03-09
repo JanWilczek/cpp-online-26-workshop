@@ -106,11 +106,11 @@ private:
 
     for ([[maybe_unused]] const auto i : std::views::iota(0u, frameCount)) {
       constexpr auto amplitude = 0.25f;
-      *out++ = amplitude * std::sin(phase);
+      *out++ = amplitude * std::sin(_phase);
       *out++ = *(out - 1);
 
-      phase += 2 * std::numbers::pi_v<float> * 220.f /
-               static_cast<float>(sampleRate);
+      _phase += 2 * std::numbers::pi_v<float> * 220.f /
+                static_cast<float>(sampleRate);
     }
 
     return paContinue;
@@ -118,7 +118,7 @@ private:
 
   pa_ex::Initializer _initializer;
   pa_ex::Stream _stream;
-  float phase = 0.f;
+  float _phase = 0.f;
 };
 
 int main() {

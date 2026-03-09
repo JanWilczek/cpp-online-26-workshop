@@ -10,6 +10,39 @@
 #include <numbers>
 #include <cmath>
 
+namespace pa_ex {
+class Initializer {
+public:
+  Initializer() : _error{Pa_Initialize()} {}
+
+  ~Initializer() {
+    if (_error && *_error == paNoError) {
+      Pa_Terminate();
+    }
+  }
+
+  Initializer(const Initializer&) : Initializer() {}
+
+  Initializer& operator=(const Initializer& other) {
+    if (this != &other) {
+      *this = Initializer{};
+    }
+    return *this;
+  }
+
+  Initializer(Initializer&& other) noexcept
+      : _error{std::exchange(other._error, std::nullopt)} {}
+
+  Initializer& operator=(Initializer&& other) noexcept {
+    std::swap(_error, other._error);
+    return *this;
+  }
+
+private:
+  std::optional<PaError> _error;
+};
+}  // namespace pa_ex
+
 class MusicPlayer {
 public:
   static std::expected<std::unique_ptr<MusicPlayer>, PaError> create() {

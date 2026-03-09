@@ -16,7 +16,6 @@ public:
     const auto error = Pa_Initialize();
 
     if (error != paNoError) {
-      Pa_Terminate();
       return std::unexpected{error};
     }
 
@@ -30,6 +29,8 @@ public:
   MusicPlayer(MusicPlayer&&) = delete;
   MusicPlayer&& operator=(MusicPlayer&&) = delete;
 
+  // TODO: add play() and stop() that call Pa_StartStream and Pa_StopStream
+  // respectively
 private:
   static constexpr auto sampleRate = 44100.;
 

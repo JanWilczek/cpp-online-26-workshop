@@ -57,7 +57,8 @@ public:
   Stream& operator=(const Stream& other) = delete;
 
   Stream(Stream&& other) noexcept
-      : _stream{std::exchange(other._stream, nullptr)}, _error{other._error} {}
+      : _stream{std::exchange(other._stream, nullptr)},
+        _error{std::exchange(other._error, paNoError)} {}
 
   Stream& operator=(Stream&& other) noexcept {
     std::swap(_stream, other._stream);

@@ -1,3 +1,4 @@
+#include <utility>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <portaudio.h>
@@ -47,12 +48,22 @@ public:
       : _error{Pa_OpenDefaultStream(&_stream, std::forward<Ts>(args)...)} {}
 
   ~Stream() {
-    if (_error == paNoError) {
+    if (_stream != nullptr && _error == paNoError) {
       Pa_CloseStream(_stream);
     }
   }
 
-  // copy & move constructors & assignment operators
+  Stream(const Stream& other) = delete;
+  Stream& operator=(const Stream& other) = delete;
+
+  Stream(Stream&& other) noexcept
+      : _stream{std::exchange(other._stream, nullptr)}, _error{other._error} {}
+
+  Stream& operator=(Stream&& other) noexcept {
+    std::swap(_stream, other._stream);
+    std::swap(_error, other._error);
+    return *this;
+  }
 
 private:
   PaStream* _stream{nullptr};

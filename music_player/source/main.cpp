@@ -123,7 +123,7 @@ private:
 
 class FilePlayer : public AudioProcessor {
 public:
-  explicit FilePlayer(std::filesystem::path filepath) {
+  explicit FilePlayer(const std::filesystem::path& filepath) {
     _file.load(filepath.string());
   }
 

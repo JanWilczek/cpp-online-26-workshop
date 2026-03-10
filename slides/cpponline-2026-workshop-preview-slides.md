@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: default
-class: invert
+# class: invert
 ---
 
 ![bg](img/PreviewTitleCard.png)
@@ -9,6 +9,8 @@ class: invert
 ---
 
 <!-- paginate: true -->
+<!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com)" --->
+
 # Assumptions
 
 1. You know basic C++ and you are able to write at least a small C++-oriented program
@@ -38,8 +40,52 @@ class: invert
 
 ---
 
-1. How does sound enter and exit the computer?
+# What is sound anyway?
 
+![Acoustic wave in the air](img/acoustc_wave.png)
+
+---
+
+# How does sound enter the computer?
+
+![](img/wave_to_voltage.png)
+
+---
+
+# How does sound enter the computer?
+
+![](img/voltage_to_ram.png)
+
+---
+
+# Samples
+
+![](img/SampledVoltage.png)
+
+---
+
+# Sampling period & sampling rate
+
+![](img/SamplingPeriod.png)
+
+---
+
+# How does sound exit the computer?
+
+![](img/ram_to_voltage.png)
+
+---
+
+# How does sound exit the computer?
+
+![](img/voltage_to_wave.png)
+
+---
+
+# ADC/DAC
+
+![](img/AudioInterface1.png)
+![](img/AudioInterface2.png)
 
 ---
 

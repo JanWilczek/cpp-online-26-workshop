@@ -8,6 +8,8 @@
 #include <numbers>
 #include <cmath>
 #include <mdspan>
+#include <filesystem>
+#include <AudioFile.h>
 
 namespace pa_ex {
 class Initializer {
@@ -85,7 +87,7 @@ public:
   AudioProcessor(AudioProcessor&&) = delete;
   AudioProcessor& operator=(AudioProcessor&&) = delete;
 
-  virtual void prepareToPlay(double sampleRate) = 0;
+  virtual void prepareToPlay([[maybe_unused]] double sampleRate) {}
 
   using AudioBuffer =
       std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
@@ -117,6 +119,32 @@ public:
 private:
   float _phase = 0.f;
   float _sampleRate = 0.f;
+};
+
+class FilePlayer : public AudioProcessor {
+public:
+  explicit FilePlayer(std::filesystem::path filepath) {
+    _file.load(filepath.string());
+  }
+
+  void processBlock(AudioBuffer buffer) override {
+    const auto channelCount =
+        std::min(buffer.extent(0), _file.getNumChannels());
+
+    for (const auto frame : std::views::iota(0, buffer.extent(1))) {
+      if (_playhead < static_cast<size_t>(_file.getNumSamplesPerChannel())) {
+        for (const auto channel : std::views::iota(0, channelCount)) {
+          buffer[channel, frame] =
+              _file.samples[static_cast<size_t>(channel)][_playhead];
+        }
+        _playhead++;
+      }
+    }
+  }
+
+private:
+  AudioFile<float> _file;
+  size_t _playhead = 0u;
 };
 
 class MusicPlayer {
@@ -164,7 +192,8 @@ private:
 
   pa_ex::Initializer _initializer;
   pa_ex::Stream _stream;
-  SineGenerator _processor;
+  // SineGenerator _processor;
+  FilePlayer _processor{"/Users/jawi/Music/TestSignals/Guitar_5th.wav"};
 };
 
 int main() {

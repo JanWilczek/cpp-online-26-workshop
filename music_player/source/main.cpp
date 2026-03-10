@@ -87,7 +87,8 @@ public:
 
   virtual void prepareToPlay(double sampleRate) = 0;
 
-  using AudioBuffer = std::mdspan<float, std::dextents<int, 2>>;
+  using AudioBuffer =
+      std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
   virtual void processBlock(AudioBuffer) = 0;
 };
 
@@ -155,8 +156,8 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    auto buffer = AudioProcessor::AudioBuffer{
-        static_cast<float*>(output), outputChannelCount, frameCount};
+    auto buffer = AudioProcessor::AudioBuffer{static_cast<float*>(output),
+                                              outputChannelCount, frameCount};
 
     _processor.processBlock(buffer);
 

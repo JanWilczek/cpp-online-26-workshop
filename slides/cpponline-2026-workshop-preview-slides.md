@@ -2,9 +2,7 @@
 marp: true
 ---
 
-# Hello, World!
-
-some text
+![bg](img/PreviewTitleCard.png)
 
 ---
 

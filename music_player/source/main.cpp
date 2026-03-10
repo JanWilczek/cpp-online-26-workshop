@@ -1,4 +1,3 @@
-#include <utility>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <portaudio.h>
@@ -8,7 +7,7 @@
 #include <ranges>
 #include <numbers>
 #include <cmath>
-#include <span>
+#include <mdspan>
 
 namespace pa_ex {
 class Initializer {
@@ -77,6 +76,48 @@ private:
 };
 }  // namespace pa_ex
 
+class AudioProcessor {
+public:
+  AudioProcessor() = default;
+  virtual ~AudioProcessor() = default;
+  AudioProcessor(const AudioProcessor&) = delete;
+  AudioProcessor& operator=(const AudioProcessor&) = delete;
+  AudioProcessor(AudioProcessor&&) = delete;
+  AudioProcessor& operator=(AudioProcessor&&) = delete;
+
+  virtual void prepareToPlay(double sampleRate) = 0;
+
+  using AudioBuffer = std::mdspan<float, std::dextents<int, 2>>;
+  virtual void processBlock(AudioBuffer) = 0;
+};
+
+class SineGenerator : public AudioProcessor {
+public:
+  SineGenerator() = default;
+
+  void prepareToPlay(double sampleRate) override {
+    _sampleRate = static_cast<float>(sampleRate);
+  }
+
+  void processBlock(AudioBuffer buffer) override {
+    for (const auto frame : std::views::iota(0, buffer.extent(1))) {
+      constexpr auto amplitude = 0.25f;
+      const auto outputSample = amplitude * std::sin(_phase);
+
+      for (const auto channel : std::views::iota(0, buffer.extent(0))) {
+        buffer[channel, frame] = outputSample;
+      }
+
+      constexpr auto frequency = 220.f;
+      _phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
+    }
+  }
+
+private:
+  float _phase = 0.f;
+  float _sampleRate = 0.f;
+};
+
 class MusicPlayer {
 public:
   MusicPlayer()
@@ -95,7 +136,9 @@ public:
                   return thisPtr->audioCallback(input, output, frameCount,
                                                 timeInfo, statusFlags);
                 },
-                this} {}
+                this} {
+    _processor.prepareToPlay(sampleRate);
+  }
 
   void start() { _stream.start(); }
   void stop() { _stream.stop(); }
@@ -112,30 +155,17 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    const auto sampleCount = frameCount * outputChannelCountUnsigned;
-    auto buffer = std::span<float>{static_cast<float*>(output),
-                                   sampleCount};  // interleaved samples
+    auto buffer = AudioProcessor::AudioBuffer{
+        static_cast<float*>(output), outputChannelCount, frameCount};
 
-    for ([[maybe_unused]] const auto i : std::views::iota(0u, frameCount)) {
-      constexpr auto amplitude = 0.25f;
-      const auto outputSample = amplitude * std::sin(_phase);
-
-      for (const auto channel :
-           std::views::iota(0u, outputChannelCountUnsigned)) {
-        buffer[(outputChannelCountUnsigned * i) + channel] = outputSample;
-      }
-
-      constexpr auto frequency = 220.f;
-      _phase += 2 * std::numbers::pi_v<float> * frequency /
-                static_cast<float>(sampleRate);
-    }
+    _processor.processBlock(buffer);
 
     return paContinue;
   }
 
   pa_ex::Initializer _initializer;
   pa_ex::Stream _stream;
-  float _phase = 0.f;
+  SineGenerator _processor;
 };
 
 int main() {

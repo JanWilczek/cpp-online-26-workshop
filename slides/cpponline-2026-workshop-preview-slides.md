@@ -89,71 +89,327 @@ theme: default
 
 ---
 
-4. Ok, we know how sound gets in and gets out; how to play back sound using C++?
+# How to play back sound using C++?
 
 ---
 
-    1. Nothing in the C++ standard
+# How to play back sound using C++?
+
+## No `std::audio`!
 
 ---
 
-    2. We need to use OS-specific APIs (give examples but don’t go into too much detail here)
+# How to play back sound using C++?
+
+## No `std::audio`!
+
+We need to use OS-specific APIs, for example,
+
+* CoreAudio on macOS
+* DirectSound on Windows
+* ALSA on Linux
 
 ---
 
-    3. Isn’t there a cross-platform library that can do it for us?
+# Isn’t there a cross-platform library that can do it for us?
 
 ---
 
-    4. PortAudio, JUCE, others
+# Isn’t there a cross-platform library that can do it for us?
+
+* PortAudio
+* JUCE
+* other
 
 ---
 
-5. How does playing back a sound look in PortAudio?
+# How to play back sound using PortAudio?
+
+```cpp
+#include <portaudio.h>
+
+const auto error = Pa_Initialize();
+```
 
 ---
 
-    1. Show the code
+# How to play back sound using PortAudio?
+
+```cpp
+const auto error = Pa_Initialize();
+//...
+if (error == paNoError) {
+  Pa_Terminate();
+}
+```
 
 ---
 
-    2. Channels
+# How to play back sound using PortAudio?
+
+```cpp
+class Initializer {
+public:
+  Initializer() : _error{Pa_Initialize()} {}
+
+  ~Initializer() {
+    if (_error == paNoError) {
+      Pa_Terminate();
+    }
+  }
+
+private:
+  PaError _error;
+};
+```
 
 ---
 
-    3. Sample format
+# How to play back sound using PortAudio?
+
+```cpp
+constexpr auto sampleRate = 44100.;
+PaStream* stream;
+const auto error = Pa_OpenDefaultStream(
+                &stream, 0, 2, paFloat32, sampleRate,
+                static_cast<unsigned long>(paFramesPerBufferUnspecified),
+                [](const void* input,
+                   void* output,
+                   unsigned long frameCount,
+                   const PaStreamCallbackTimeInfo* timeInfo,
+                   PaStreamCallbackFlags statusFlags,
+                   void* userData) {
+                  return paContinue;
+                },
+                nullptr);
+```
 
 ---
 
-    4. Frames per buffer
+# How to play back sound using PortAudio?
+
+```cpp
+PaError Pa_OpenDefaultStream( PaStream** stream,
+                              int numInputChannels,
+                              int numOutputChannels,
+                              PaSampleFormat sampleFormat,
+                              double sampleRate,
+                              unsigned long framesPerBuffer,
+                              PaStreamCallback *streamCallback,
+                              void *userData );
+```
 
 ---
 
-        1. Samples vs frames
+# Channels
+
+![](img/Stereo.png)
 
 ---
 
-    5. Audio callback
+# Sample format
+
+* `float` or `double` in the [-1, 1] range (`paFloat32`)
+* `int`-like (not used in apps or plugins)
 
 ---
 
-        1. Generate a sine
+# Frames per buffer
+
+![](img/Frame.png)
 
 ---
 
-        2. Samples are interleaved
+# Samples vs frames
+
+* Buffer size = frame count  = samples per channel
+* 480 stereo frames in a buffer -> 960 samples
 
 ---
 
-        3. Sine formula
+# Audio callback
+
+```cpp
+typedef int PaStreamCallback(
+    const void *input,
+    void *output,
+    unsigned long frameCount,
+    const PaStreamCallbackTimeInfo* timeInfo,
+    PaStreamCallbackFlags statusFlags,
+    void *userData );
+```
+
+* Actual audio processing
+* Called ~100 times per second (depending on the sample rate and the buffer size)
+* Called on a real-time, high-priority thread
+* Must complete within a deadline (soft real-time constraint)
 
 ---
 
-        4. Don’t test using headphones!
+# Let's generate a sine
 
 ---
 
-6. Summary (zoom-out) of what we needed to provide to start audio playback
+# Sine formula
+
+$$s(t) = A\sin(2\pi f t),$$
+
+where
+* $t$ is time in seconds
+* $s(t)$ is the output signal (a function of time)
+* $f$ is the frequency in Hz
+* $A$ is the unitless amplitude
+* $\pi = 3.14159\dots$
+
+---
+
+# Sine formula
+
+$$s[n] = A\sin(2\pi f n / f_s),$$
+
+where
+* $n$ is the unitless sample index
+* $s[n]$ is the discrete output signal
+* $f$ is the frequency in Hz
+* $f_s$ is the sample rate
+* $A$ is the unitless amplitude
+* $\pi = 3.14159\dots$
+
+---
+
+# Sine formula
+
+$$s[n] = A\sin(2\pi f n / f_s),$$
+
+```cpp
+constexpr auto amplitude = 0.25f;
+const auto outputSample = amplitude * std::sin(_phase);
+
+// output the sample...
+
+constexpr auto frequency = 220.f;
+_phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
+```
+
+---
+
+# What is `output`?
+
+```cpp
+typedef int PaStreamCallback(
+    const void *input,
+    void *output,
+    unsigned long frameCount,
+    const PaStreamCallbackTimeInfo* timeInfo,
+    PaStreamCallbackFlags statusFlags,
+    void *userData );
+```
+
+TODO: Add line highlighting and highlight the line with output
+
+---
+
+# Audio buffer
+
+![](img/Buffer.png)
+
+---
+
+# Audio buffer
+
+![](img/AudioBuffer.png)
+
+---
+
+# Interleaved vs non-interleaved samples
+
+## Non-interleaved
+
+![](img/AudioBuffer.png)
+
+## Interleaved
+
+![](img/AudioBufferInterleaved.png)
+
+---
+
+# Accessing interleaved samples as non-interleaved
+
+![](img/AudioBufferInterleaved.png)
+
+```cpp
+using AudioBuffer =
+    std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
+
+auto buffer = AudioBuffer{static_cast<float*>(output), 2, 480};
+```
+
+![](img/AudioBuffer.png)
+
+---
+
+# Output the sine sample to all channels
+
+```cpp
+for (const auto frame : std::views::iota(0, buffer.extent(1))) {
+  constexpr auto amplitude = 0.25f;
+  const auto outputSample = amplitude * std::sin(_phase);
+
+  for (const auto channel : std::views::iota(0, buffer.extent(0))) {
+    buffer[channel, frame] = outputSample;
+  }
+
+  constexpr auto frequency = 220.f;
+  _phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
+}
+```
+
+---
+
+# Don’t test using headphones!
+
+---
+
+# Cleanup
+
+```cpp
+Pa_StopStream(stream);
+Pa_CloseStream(stream);
+```
+
+---
+
+```cpp
+class Stream {
+public:
+  template <typename... Ts>
+  explicit Stream(Ts&&... args)
+      : _error{Pa_OpenDefaultStream(&_stream, std::forward<Ts>(args)...)} {}
+
+  ~Stream() {
+    if (_stream != nullptr && _error == paNoError) {
+      Pa_CloseStream(_stream);
+    }
+  }
+
+  // deleted copy constructor & assignment operator
+  // move constructor & assignment operator
+
+  void start() { Pa_StartStream(_stream); }
+
+  void stop() { Pa_StopStream(_stream); }
+
+private:
+  PaStream* _stream{nullptr};
+  PaError _error{paNoError};
+};
+```
+
+---
+
+# Summary (zoom-out) of what we needed to provide to start audio playback
+
+
 
 ---
 

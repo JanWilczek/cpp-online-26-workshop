@@ -147,8 +147,6 @@ public:
 private:
   static constexpr auto inputChannelCount = 0;
   static constexpr auto outputChannelCount = 2;
-  static constexpr auto outputChannelCountUnsigned =
-      static_cast<size_t>(outputChannelCount);
   static constexpr auto sampleRate = 44100.;
 
   int audioCallback(const void* /* input */,

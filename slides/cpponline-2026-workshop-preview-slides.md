@@ -12,6 +12,10 @@ theme: default
 <!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com) | [cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)" --->
 
 <style>
+h1 {
+  color: #EF7600;
+}
+
 .inline-images {
     display: flex;
     height: 80%; /* control location on y-axis */

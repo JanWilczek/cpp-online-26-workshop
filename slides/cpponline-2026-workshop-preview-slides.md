@@ -660,15 +660,37 @@ for (auto& processor : processors) {
 
 ---
 
-1. How to add effects to a DAW? → plugins
+# DAW plugins
+
+![](img/Many%20plugin%20hosts%20with%20many%20plugins.png)
 
 ---
 
-8. Plugin formats
+# DAW plugins
+
+![](img/PluginAPI.png)
 
 ---
 
-9. Plugin format API abstraction → plugin frameworks
+# Popular plugin APIs
+
+* Audio Unit (AU) by Apple for macOS and iOS
+* Virtual Studio Technology (VST) by Steinberg
+* Avid Audio eXtensions (AAX) by Avid
+* LV2
+* CLever Audio Plug-in (CLAP)
+
+---
+
+# Many plugin formats = development nightmare
+
+![](img/Plugins%20in%20formats.png)
+
+---
+
+# Plugin format API abstraction → plugin frameworks
+
+![](img/JUCE%20is%20the%20magical%20tool.png)
 
 ---
 

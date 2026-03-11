@@ -11,6 +11,23 @@ theme: default
 <!-- paginate: true -->
 <!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com) | [cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)" --->
 
+<style>
+.inline-images {
+    display: flex;
+    height: 80%; /* control location on y-axis */
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+img[alt~="align-right"] {
+    float: right;
+}
+
+img[alt~="align-left"] {
+    float: left;
+}
+</style>
+
 # Jumpstart to C++ in Audio Workshop Preview
 ## About me
 
@@ -127,6 +144,7 @@ We need to use OS-specific APIs, for example,
 # Isn’t there a cross-platform library that can do it for us?
 
 * PortAudio
+* FFmpeg
 * JUCE
 * other
 
@@ -166,7 +184,7 @@ public:
       Pa_Terminate();
     }
   }
-
+  // copy & move assignments & operators
 private:
   PaError _error;
 };
@@ -199,8 +217,8 @@ const auto error = Pa_OpenDefaultStream(
 
 ```cpp
 PaError Pa_OpenDefaultStream( PaStream** stream,
-                              int numInputChannels,
-                              int numOutputChannels,
+                              int numInputChannels, // <--
+                              int numOutputChannels, // <--
                               PaSampleFormat sampleFormat,
                               double sampleRate,
                               unsigned long framesPerBuffer,
@@ -212,7 +230,7 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 # Channels
 
-![](img/Stereo.png)
+![w:900](img/Stereo.png)
 
 ---
 
@@ -231,7 +249,7 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
                               int numOutputChannels,
                               PaSampleFormat sampleFormat,
                               double sampleRate,
-                              unsigned long framesPerBuffer,
+                              unsigned long framesPerBuffer, // <--
                               PaStreamCallback *streamCallback,
                               void *userData );
 ```
@@ -240,14 +258,14 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 # Frames per buffer
 
-![](img/Frame.png)
+![w:800](img/Frame.png)
 
 ---
 
 # Samples vs frames
 
 * Buffer size = frame count  = samples per channel
-* 480 stereo frames in a buffer -> 960 samples
+* 480 stereo frames in a buffer → 960 samples
 
 ---
 
@@ -260,7 +278,7 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
                               PaSampleFormat sampleFormat,
                               double sampleRate,
                               unsigned long framesPerBuffer,
-                              PaStreamCallback *streamCallback,
+                              PaStreamCallback *streamCallback,  // <--
                               void *userData );
 ```
 
@@ -337,20 +355,18 @@ _phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
 ```cpp
 typedef int PaStreamCallback(
     const void *input,
-    void *output,
+    void *output, // <--
     unsigned long frameCount,
     const PaStreamCallbackTimeInfo* timeInfo,
     PaStreamCallbackFlags statusFlags,
     void *userData );
 ```
 
-TODO: Add line highlighting and highlight the line with output
-
 ---
 
 # Audio buffer
 
-![](img/Buffer.png)
+![w:900](img/Buffer.png)
 
 ---
 
@@ -470,7 +486,8 @@ private:
 
 ---
 
-# Ok, we know how to play back a sound. How to play back an audio file?
+# Ok, we know how to play back a sound.
+# How to play back an audio file?
 
 ---
 
@@ -508,7 +525,7 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 * Audio callback must complete within a time limit (**real-time programming**)
   * otherwise we get a glitch
-* File I/O is a system call ➡️ unbounded execution time
+* File I/O is a system call → unbounded execution time
 * Similarly, we cannot
   * allocate/deallocate
   * do network calls
@@ -525,7 +542,7 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # How to apply an effect to the played-back audio?
 
-## ➡️ digital audio signal processing
+## → digital audio signal processing
 
 ---
 
@@ -537,33 +554,38 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # An audio effect: Flanger
 
-![](img/WorkshopFlangerAnnotated.png)
-
-Legend:
+![w:600 align-right](img/WorkshopFlangerAnnotated.png)
 
 * $x[n]$ is the input signal
 * $y[n]$ is the output signal
-* $x_h[n]$ is a helper signal (used for convenience)
+* $x_h[n]$ is a helper signal
 * $D$ is the length of the delay line
-* $\text{feedforward}$, $\text{feedback}$, and $\text{blend}$ are coefficients (all equal to 0.7 for a flanger)
+* $\text{feedforward}$, $\text{feedback}$, and $\text{blend}$ are coefficients (all equal to 0.7)
 * $s_\text{LFO,unipolar}[n]$ is the unipolar LFO signal (a sine in the [0, 1] range)
 * $m$ is the modulated delay value
 * $x_h[n-D/2]$ denotes the helper signal delayed by $D/2$ samples
-
-> [!NOTE]
-> $m$ depends on $n$ but I write $m$ instead of $m[n]$ for simplicity. If you want, you can make the dependence explicit 😉
 
 ---
 
 # Low-frequency oscillator (LFO)
 
+<div class="inline-images">
+
+<div>
+
 ## Bipolar
 
-![](img/BipolarLFO.png)
+![w:500](img/BipolarLFO.png)
+
+</div>
+
+<div>
 
 ## Unipolar
 
-![](img/UnipolarLFO.png)
+![w:500](img/UnipolarLFO.png)
+
+</div>
 
 ---
 
@@ -587,15 +609,16 @@ $$m=s_\text{LFO,unipolar}[n]D$$
 
 ```cpp
 class Flanger {
+  float feedforward_ = 0.7f, feedback_ = 0.7f, blend_ = 0.7f, maxDelay_ = 0.f, middleDelay_ = 0.f;
+  FractionalDelayLine delayLine_;
+  juce::dsp::Oscillator<float> lfo_{[](auto phase) { return std::sin(phase); }, 128u};
 public:
   void prepare(double sampleRate) {
     constexpr auto MAX_DELAY_SECONDS = 0.002;
-    maxDelay_ =
-        static_cast<float>(std::ceil(sampleRate * MAX_DELAY_SECONDS));
+    maxDelay_ = std::ceil(sampleRate * MAX_DELAY_SECONDS);
     middleDelay_ = maxDelay_ / 2.f;
     lfo_.prepare(sampleRate);
   }
-
   float processSample(float sample) {
     const auto& x = sample;
     const auto xh = x + feedback_ * delayLine_.popSample(middleDelay_);
@@ -603,23 +626,10 @@ public:
     const auto lfoUnipolarValue = (lfo_.processSample(0) + 1) / 2;
     const auto currentDelay = lfoUnipolarValue * maxDelay_;
 
-    const auto y =
-        blend_ * xh + feedforward_ * delayLine_.popSample(currentDelay);
-
+    const auto y = blend_ * xh + feedforward_ * delayLine_.popSample(currentDelay);
     delayLine_.pushSample(xh);
-
     return y;
   }
-
-private:
-  float feedforward_ = 0.7f;
-  float feedback_ = 0.7f;
-  float blend_ = 0.7f;
-  FractionalDelayLine delayLine_;
-  juce::dsp::Oscillator<float> lfo_{
-      [](auto phase) { return std::sin(phase); }, 128u};
-  float maxDelay_{};
-  float middleDelay_{};
 };
 ```
 
@@ -684,13 +694,13 @@ for (auto& processor : processors) {
 
 # Digital audio workstation (DAW)
 
-![](img/AbletonLive.png)
+![w:850](img/AbletonLive.png)
 
 ---
 
 # DAW plugins
 
-![](img/Many%20plugin%20hosts%20with%20many%20plugins.png)
+![h:500](img/Many%20plugin%20hosts%20with%20many%20plugins.png)
 
 ---
 
@@ -702,29 +712,29 @@ for (auto& processor : processors) {
 
 # Popular plugin APIs
 
-* Audio Unit (AU) by Apple for macOS and iOS
-* Virtual Studio Technology (VST) by Steinberg
+* Audio Unit v3 (AUv3) by Apple for macOS and iOS
+* Virtual Studio Technology 3 (VST3) by Steinberg
 * Avid Audio eXtensions (AAX) by Avid
-* LV2
+* LV2 for Linux
 * CLever Audio Plug-in (CLAP)
 
 ---
 
 # Many plugin formats = development nightmare
 
-![](img/Plugins%20in%20formats.png)
+![w:650](img/Plugins%20in%20formats.png)
 
 ---
 
 # Plugin format API abstraction → plugin frameworks
 
-![](img/JUCE%20is%20the%20magical%20tool.png)
+![w:900](img/JUCE%20is%20the%20magical%20tool.png)
 
 ---
 
 # JUCE C++ framework
 
-![](img/JUCE-logo-vert.svg)
+![align-right](img/JUCE-logo-vert.svg)
 
 * Cross-platform application development framework (think Qt)
 * Easy audio plugin & plugin host development
@@ -757,13 +767,13 @@ for (auto& processor : processors) {
 
 # Workshop outline
 
-Introduction: Compiling workshop code
-Part 1 - Digital sound essentials: Minimal introduction to digital audio concepts
-Part 2 - Playing back sound
-Part 3 - Modifying the played back sound
-Break
-Part 4 - Building an audio app/plugin with a user interface using the JUCE C++ framework
-Part 5 - Summary & where to go from here
+* Introduction: Compiling workshop code
+* Part 1 - Digital sound essentials: Minimal introduction to digital audio concepts
+* Part 2 - Playing back sound
+* Part 3 - Modifying the played back sound
+* Break
+* Part 4 - Building an audio app/plugin with a user interface using the JUCE C++ framework
+* Part 5 - Summary & where to go from here
 
 ---
 

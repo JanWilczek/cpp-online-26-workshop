@@ -468,6 +468,12 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 ---
 
+# Audio file playback
+
+<audio src="../data/Guitar_5th.wav" controls/>
+
+---
+
 # Why not read the file in the audio callback?
 
 * Audio callback must complete within a time limit (**real-time programming**)
@@ -547,7 +553,7 @@ $$m=s_\text{LFO,unipolar}[n]D$$
 
 ---
 
-# Flanger class
+# `Flanger` class
 
 ```cpp
 class Flanger {
@@ -671,11 +677,9 @@ for (auto& processor : processors) {
 
 ---
 
-1.  Now we have recorded a guitar and we want to apply a flanger effect onto it; how to go about it? → DSP research, block diagrams, and difference equations
+# Workshop flanger plugin
 
----
-
-13. Show the completed plugin GUI and how it sounds
+![](img/FlangerUI.png)
 
 ---
 
@@ -695,13 +699,13 @@ for (auto& processor : processors) {
 
 # Workshop outline
 
-1. Introduction: Compiling workshop code
-1. Part 1 - Digital sound essentials: Minimal introduction to digital audio concepts
-1. Part 2 - Playing back sound
-1. Part 3 - Modifying the played back sound
-1. Break
-1. Part 4 - Building an audio app/plugin with a user interface using the JUCE C++ framework
-1. Part 5 - Summary & where to go from here
+Introduction: Compiling workshop code
+Part 1 - Digital sound essentials: Minimal introduction to digital audio concepts
+Part 2 - Playing back sound
+Part 3 - Modifying the played back sound
+Break
+Part 4 - Building an audio app/plugin with a user interface using the JUCE C++ framework
+Part 5 - Summary & where to go from here
 
 ---
 
@@ -710,8 +714,8 @@ for (auto& processor : processors) {
 * Basic C++ knowledge
 * Understanding of basic CMake commands
 * CMake, git, C++ compiler and build system installed (Xcode on macOS, Visual Studio on Windows, gcc & make on Linux) - most recent versions preferred, so please update if you can
-* Reaper DAW installed (https://reaper.fm); it has a long-lasting trial version (other DAWs can cause troubles when learning)
-* Linux users: please, install the necessary Linux packages according to the JUCE documentation (https://github.com/juce-framework/JUCE/blob/master/docs/Linux Dependencies.md)
+* [Reaper DAW installed](https://reaper.fm) (trial version); recommended for beginners
+* Linux users: please, install the necessary Linux packages [according to the JUCE documentation](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md)
 
 ---
 
@@ -725,8 +729,6 @@ Tuesday 28th April 07:00 - 14:00 UTC
 ---
 
 # Summary
-
-
 
 Tuesday 14th April 13:00 - 20:00 UTC
 Tuesday 28th April 07:00 - 14:00 UTC

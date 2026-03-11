@@ -11,7 +11,8 @@ theme: default
 <!-- paginate: true -->
 <!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com) | [cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)" --->
 
-# About me
+# Jumpstart to C++ in Audio Workshop Preview
+## About me
 
 * Jan Wilczek [Yan Vil-check]
 * Audio programming consultant & coach
@@ -24,9 +25,9 @@ theme: default
 
 # Assumptions
 
-1. You know basic C++ and you are able to write at least a small C++-oriented program
-1. You know what CMake is and how to invoke it (no need to know how to exactly write CMakeLists.txt files)
-1. You are interested in music, e.g., you play a musical instrument, you like listening to music, or you perform electronic music
+1) You know basic C++ and you are able to write at least a small object-oriented program
+1) You know what CMake is and how to invoke it (no need to know how to exactly write CMakeLists.txt files)
+1) You are interested in music, e.g., you play a musical instrument, you like listening to music, or you perform electronic music
 
 
 ---
@@ -35,10 +36,11 @@ theme: default
 
 1. Streaming/videoconferencing just like we are now
 2. Video games
-3. Tools for musicians and music producers
-4. Embedded applications in microphones, speakers, and smartphones
-5. automatic speech recognition
-6. text-to-speech
+3. Tools for musicians, music producers, and sound engineers (concert halls, cinema, immersive audio)
+4. Audio playback systems
+5. Embedded applications in microphones, speakers, and smartphones
+6. Automatic speech recognition
+7. Text-to-speech
 
 ---
 
@@ -71,13 +73,13 @@ theme: default
 
 # Samples
 
-![](img/SampledVoltage.png)
+![w:900](img/SampledVoltage.png)
 
 ---
 
 # Sampling period & sampling rate
 
-![](img/SamplingPeriod.png)
+![w:700](img/SamplingPeriod.png)
 
 ---
 
@@ -95,8 +97,8 @@ theme: default
 
 # ADC/DAC
 
-![](img/AudioInterface1.png)
-![](img/AudioInterface2.png)
+<img width="400px" src="img/AudioInterface1.png"/>
+<img width="400px" src="img/AudioInterface2.jpg"/>
 
 ---
 
@@ -119,10 +121,6 @@ We need to use OS-specific APIs, for example,
 * CoreAudio on macOS
 * DirectSound on Windows
 * ALSA on Linux
-
----
-
-# Isn’t there a cross-platform library that can do it for us?
 
 ---
 
@@ -225,6 +223,21 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 ---
 
+# How to play back sound using PortAudio?
+
+```cpp
+PaError Pa_OpenDefaultStream( PaStream** stream,
+                              int numInputChannels,
+                              int numOutputChannels,
+                              PaSampleFormat sampleFormat,
+                              double sampleRate,
+                              unsigned long framesPerBuffer,
+                              PaStreamCallback *streamCallback,
+                              void *userData );
+```
+
+---
+
 # Frames per buffer
 
 ![](img/Frame.png)
@@ -235,6 +248,21 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 * Buffer size = frame count  = samples per channel
 * 480 stereo frames in a buffer -> 960 samples
+
+---
+
+# How to play back sound using PortAudio?
+
+```cpp
+PaError Pa_OpenDefaultStream( PaStream** stream,
+                              int numInputChannels,
+                              int numOutputChannels,
+                              PaSampleFormat sampleFormat,
+                              double sampleRate,
+                              unsigned long framesPerBuffer,
+                              PaStreamCallback *streamCallback,
+                              void *userData );
+```
 
 ---
 

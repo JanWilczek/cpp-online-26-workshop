@@ -11,6 +11,17 @@ theme: default
 <!-- paginate: true -->
 <!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com)" --->
 
+# About me
+
+* Jan Wilczek [Yan Vil-check]
+* Audio programming consultant & coach
+* Founder of TheWolfSound.com blog & YouTube channel
+* Online course creator
+  * DSP Pro on the basics of digital signal processing for audio programming
+  * Official JUCE C++ framework audio plugin development course
+
+---
+
 # Assumptions
 
 1. You know basic C++ and you are able to write at least a small C++-oriented program
@@ -407,97 +418,165 @@ private:
 
 ---
 
-# Summary (zoom-out) of what we needed to provide to start audio playback
+# Summary: Starting audio playback in C++
 
-
-
----
-
-    1. Connect to the audio device (if exists)
-
----
-
-    2. Register the audio callback
+1. Connect to the audio device (if exists)
+2. Register the audio callback
+3. Ask the audio device to start pulling samples at a set sample rate
+4. Consume/produce samples in the audio callback
+5. Stop playback
+6. Close the connection to the audio device
 
 ---
 
-    3. Start playing at a set sample rate
+# Why C++ for audio?
+
+* High-level zero-cost abstractions
+* Easy C and Objective-C interoperability
+* OS audio APIs are in C++ (Windows, Android) or C
+* **Powerful C or C++ libraries and frameworks related to audio**
+  * FFmpeg
+  * JUCE C++ framework
 
 ---
 
-    4. Stop playback
+# Ok, we know how to play back a sound. How to play back an audio file?
 
 ---
 
-    5. Close the connection to the audio device
+# Use the AudioFile library
+
+```cpp
+// somewhere
+std::filesystem::path filepath{"Guitar_5th.wav"};
+AudioFile<float> file;
+size_t playhead = 0u;
+file.load(filepath.string());
+// audio callback:
+const auto channelCount =
+    std::min(buffer.extent(0), file.getNumChannels());
+
+for (const auto frame : std::views::iota(0, buffer.extent(1))) {
+  if (_playhead < file.getNumSamplesPerChannel()) {
+    for (const auto channel : std::views::iota(0, channelCount)) {
+      buffer[channel, frame] = file.samples[channel][playhead];
+    }
+    playhead++;
+  }
+}
+```
 
 ---
 
-7. Ok, we know how to play back a sound. How to play back an audio file?
+# Why not read the file in the audio callback?
+
+* Audio callback must complete within a time limit (**real-time programming**)
+  * otherwise we get a glitch
+* File I/O is a system call ➡️ unbounded execution time
+* Similarly, we cannot
+  * allocate/deallocate
+  * do network calls
+  * take a lock on a mutex
+  * start threads, wait for threads
+  * call functions with unbounded execution time
+  * ...
 
 ---
 
-    1. Use the AudioFile library
+# We have a nice music player, but what if we want to apply an effect to it?
 
 ---
 
-8.  Now, we can create a command-line music player!
+# How to apply an effect to the played-back audio?
+
+## ➡️ digital audio signal processing
 
 ---
 
-9.  Why C++ for audio?
+# An audio effect: Flanger
+
+![](img/WorkshopFlanger.png)
 
 ---
 
-10. We have a nice music player, but what if we want to boost the bass?
+# An audio effect: Flanger
+
+![](img/WorkshopFlangerAnnotated.png)
+
+Legend:
+
+* $x[n]$ is the input signal
+* $y[n]$ is the output signal
+* $x_h[n]$ is a helper signal (used for convenience)
+* $D$ is the length of the delay line
+* $\text{feedforward}$, $\text{feedback}$, and $\text{blend}$ are coefficients (all equal to 0.7 for a flanger)
+* $s_\text{LFO,unipolar}[n]$ is the unipolar LFO signal (a sine in the [0, 1] range)
+* $m$ is the modulated delay value
+* $x_h[n-D/2]$ denotes the helper signal delayed by $D/2$ samples
+
+> [!NOTE]
+> $m$ depends on $n$ but I write $m$ instead of $m[n]$ for simplicity. If you want, you can make the dependence explicit 😉
 
 ---
 
-    1. An audio effect
+# Flanger difference equations
+
+3. Output sample
+
+$$y[n] = \text{blend } x_h[n] + \text{feedforward } x_h[n-m]$$
+
+2. Helper sample
+
+$$x_h[n] = x[n] + \text{feedback } x_h[n-D/2]$$
+
+1. Modulated-delay value
+
+$$m=s_\text{LFO,unipolar}[n]D$$
 
 ---
 
-    2. You need to know DSP
+1. The processing is applied in the audio callback and needs to maintain state between the calls
 
 ---
 
-    3. The processing is applied in the audio callback and needs to maintain state between the calls
+4. What if we want to have more effects? → audio processors
 
 ---
 
-    4. What if we want to have more effects? → audio processors
+5. What if we want to have more audio files playing back in parallel? → tracks
 
 ---
 
-    5. What if we want to have more audio files playing back in parallel? → tracks
+6. What if we want to record audio on those tracks? → DAW
 
 ---
 
-    6. What if we want to record audio on those tracks? → DAW
+7. How to add effects to a DAW? → plugins
 
 ---
 
-    7. How to add effects to a DAW? → plugins
+8. Plugin formats
 
 ---
 
-    8. Plugin formats
+9. Plugin format API abstraction → plugin frameworks
 
 ---
 
-    9. Plugin format API abstraction → plugin frameworks
+# JUCE C++ framework
+
+![](img/JUCE-logo-vert.svg)
+
+* Cross-platform application development framework (think Qt)
+* Easy audio plugin & plugin host development
+  * Automatic build to almost all plugin formats
+* Many audio-related features
+  * audio effects, synthesis, MIDI handling, audio device abstraction, audio file reading...
+* Official JUCE audio plugin development course (free): [wolfsoundacademy.com/juce](https://wolfsoundacademy.com/juce)
 
 ---
 
-    10. JUCE
-
----
-
-11. Realtime programming in the audio callback; a brief introduction (how audio programming differs from regular programming)
-
----
-
-12. Now we have recorded a guitar and we want to apply a flanger effect onto it; how to go about it? → DSP research, block diagrams, and difference equations
+1.  Now we have recorded a guitar and we want to apply a flanger effect onto it; how to go about it? → DSP research, block diagrams, and difference equations
 
 ---
 
@@ -509,7 +588,11 @@ private:
 
 ---
 
-15. Attend the workshop to learn more
+# What you can expect from the workshop
+
+---
+
+1.  Attend the workshop to learn more
 
 ---
 

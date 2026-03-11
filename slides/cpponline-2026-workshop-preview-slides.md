@@ -379,6 +379,8 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # Don’t test using headphones!
 
+<audio src="../data/sine220.0Hz5.0s.wav" controls/>
+
 ---
 
 # Cleanup
@@ -592,6 +594,12 @@ private:
   float middleDelay_{};
 };
 ```
+
+---
+
+# Flanger applied
+
+<audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls>
 
 ---
 

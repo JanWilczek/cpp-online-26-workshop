@@ -9,7 +9,7 @@ theme: default
 ---
 
 <!-- paginate: true -->
-<!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com)" --->
+<!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com) | [cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)" --->
 
 # About me
 
@@ -519,6 +519,18 @@ Legend:
 
 ---
 
+# Low-frequency oscillator (LFO)
+
+## Bipolar
+
+![](img/BipolarLFO.png)
+
+## Unipolar
+
+![](img/UnipolarLFO.png)
+
+---
+
 # Flanger difference equations
 
 3. Output sample
@@ -535,23 +547,106 @@ $$m=s_\text{LFO,unipolar}[n]D$$
 
 ---
 
-1. The processing is applied in the audio callback and needs to maintain state between the calls
+# Flanger class
+
+```cpp
+class Flanger {
+public:
+  void prepare(double sampleRate) {
+    constexpr auto MAX_DELAY_SECONDS = 0.002;
+    maxDelay_ =
+        static_cast<float>(std::ceil(sampleRate * MAX_DELAY_SECONDS));
+    middleDelay_ = maxDelay_ / 2.f;
+    lfo_.prepare(sampleRate);
+  }
+
+  float processSample(float sample) {
+    const auto& x = sample;
+    const auto xh = x + feedback_ * delayLine_.popSample(middleDelay_);
+
+    const auto lfoUnipolarValue = (lfo_.processSample(0) + 1) / 2;
+    const auto currentDelay = lfoUnipolarValue * maxDelay_;
+
+    const auto y =
+        blend_ * xh + feedforward_ * delayLine_.popSample(currentDelay);
+
+    delayLine_.pushSample(xh);
+
+    return y;
+  }
+
+private:
+  float feedforward_ = 0.7f;
+  float feedback_ = 0.7f;
+  float blend_ = 0.7f;
+  FractionalDelayLine delayLine_;
+  juce::dsp::Oscillator<float> lfo_{
+      [](auto phase) { return std::sin(phase); }, 128u};
+  float maxDelay_{};
+  float middleDelay_{};
+};
+```
 
 ---
 
-4. What if we want to have more effects? → audio processors
+# Audio processors
+
+```cpp
+class SineGenerator {
+public:
+  void prepare(double sampleRate);
+  void processBlock(AudioBuffer buffer);
+};
+class FilePlayer {
+public:
+  void prepare(double sampleRate);
+  void processBlock(AudioBuffer buffer);
+};
+class Flanger {
+public:
+  void prepare(double sampleRate);
+  void processBlock(AudioBuffer buffer);
+};
+```
 
 ---
 
-5. What if we want to have more audio files playing back in parallel? → tracks
+# `AudioProcessor`
+
+```cpp
+class AudioProcessor {
+public:
+  virtual ~AudioProcessor() = default;
+
+  virtual void prepareToPlay([[maybe_unused]] double sampleRate) {}
+
+  using AudioBuffer =
+      std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
+  virtual void processBlock(AudioBuffer) = 0;
+};
+```
 
 ---
 
-6. What if we want to record audio on those tracks? → DAW
+# Processing chain
+
+```cpp
+std::vector<std::unique_ptr<AudioProcessor>> processors;
+//...
+for (auto& processor : processors) {
+  processor->processBlock(buffer);
+}
+```
 
 ---
 
-7. How to add effects to a DAW? → plugins
+# Digital audio workstation (DAW)
+
+![](img/AbletonLive.png)
+
+---
+
+1. How to add effects to a DAW? → plugins
 
 ---
 
@@ -584,16 +679,61 @@ $$m=s_\text{LFO,unipolar}[n]D$$
 
 ---
 
-14. Why using AI to learn audio programming is a bad idea
+# What you will learn from the workshop
+
+* How to represent sound on a computer
+* How to play back sound in a cross-platform way
+* How to play back an audio file, for example, for your video game
+* How to apply an audio effect to your sound
+* How to create a cross-platform audio plugin (flanger) for a DAW
+* How modern audio apps work
+* What to avoid when processing audio
+* How audio programming differs from regular C++ programming
+* Where you can find more information for your personal projects or career transition
 
 ---
 
-# What you can expect from the workshop
+# Workshop outline
+
+1. Introduction: Compiling workshop code
+1. Part 1 - Digital sound essentials: Minimal introduction to digital audio concepts
+1. Part 2 - Playing back sound
+1. Part 3 - Modifying the played back sound
+1. Break
+1. Part 4 - Building an audio app/plugin with a user interface using the JUCE C++ framework
+1. Part 5 - Summary & where to go from here
 
 ---
 
-1.  Attend the workshop to learn more
+# Workshop prerequisites
+
+* Basic C++ knowledge
+* Understanding of basic CMake commands
+* CMake, git, C++ compiler and build system installed (Xcode on macOS, Visual Studio on Windows, gcc & make on Linux) - most recent versions preferred, so please update if you can
+* Reaper DAW installed (https://reaper.fm); it has a long-lasting trial version (other DAWs can cause troubles when learning)
+* Linux users: please, install the necessary Linux packages according to the JUCE documentation (https://github.com/juce-framework/JUCE/blob/master/docs/Linux Dependencies.md)
 
 ---
 
-16. Summary
+# Workshop timeslots
+
+Tuesday 14th April 13:00 - 20:00 UTC
+Tuesday 28th April 07:00 - 14:00 UTC
+
+[cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)
+
+---
+
+# Summary
+
+
+
+Tuesday 14th April 13:00 - 20:00 UTC
+Tuesday 28th April 07:00 - 14:00 UTC
+
+[cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)
+
+* Audio is processed in samples at a sample rate in the callback of the audio device
+* Audio callback code must be real-time-safe: complete within the deadline
+* C++ is the most popular language for real-time audio processing
+* Digital signal processing is the theory of audio-related algorithms

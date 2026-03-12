@@ -49,11 +49,11 @@ class Stream {
 public:
   template <typename... Ts>
   explicit Stream(Ts&&... args)
-      : _error{Pa_OpenDefaultStream(&_stream, std::forward<Ts>(args)...)} {}
+      : error_{Pa_OpenDefaultStream(&stream_, std::forward<Ts>(args)...)} {}
 
   ~Stream() {
-    if (_stream != nullptr && _error == paNoError) {
-      Pa_CloseStream(_stream);
+    if (stream_ != nullptr && error_ == paNoError) {
+      Pa_CloseStream(stream_);
     }
   }
 
@@ -61,22 +61,22 @@ public:
   Stream& operator=(const Stream& other) = delete;
 
   Stream(Stream&& other) noexcept
-      : _stream{std::exchange(other._stream, nullptr)},
-        _error{std::exchange(other._error, paNoError)} {}
+      : stream_{std::exchange(other.stream_, nullptr)},
+        error_{std::exchange(other.error_, paNoError)} {}
 
   Stream& operator=(Stream&& other) noexcept {
-    std::swap(_stream, other._stream);
-    std::swap(_error, other._error);
+    std::swap(stream_, other.stream_);
+    std::swap(error_, other.error_);
     return *this;
   }
 
-  void start() { Pa_StartStream(_stream); }
+  void start() { Pa_StartStream(stream_); }
 
-  void stop() { Pa_StopStream(_stream); }
+  void stop() { Pa_StopStream(stream_); }
 
 private:
-  PaStream* _stream{nullptr};
-  PaError _error{paNoError};
+  PaStream* stream_{nullptr};
+  PaError error_{paNoError};
 };
 }  // namespace pa_ex
 

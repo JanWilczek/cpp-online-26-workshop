@@ -149,7 +149,7 @@ private:
 
 class MusicPlayer {
 public:
-  MusicPlayer()
+  explicit MusicPlayer(std::vector<std::unique_ptr<AudioProcessor>> processors)
       : _stream{inputChannelCount,
                 outputChannelCount,
                 paFloat32,
@@ -165,8 +165,11 @@ public:
                   return thisPtr->audioCallback(input, output, frameCount,
                                                 timeInfo, statusFlags);
                 },
-                this} {
-    _processor.prepareToPlay(sampleRate);
+                this},
+        _processors{std::move(processors)} {
+    const auto ret = std::ranges::remove_if(
+        _processors, [](auto& p) { return p.get() == nullptr; });
+    _processors.erase(ret.begin(), ret.end());
   }
 
   void start() { _stream.start(); }
@@ -192,6 +195,7 @@ private:
 
   pa_ex::Initializer _initializer;
   pa_ex::Stream _stream;
+  std::vector<std::unique_ptr<AudioProcessor>> _processors;
   // SineGenerator _processor;
   FilePlayer _processor{"/Users/jawi/Music/TestSignals/Guitar_5th.wav"};
 };
@@ -199,7 +203,10 @@ private:
 int main() {
   std::println("PortAudio version: {}", Pa_GetVersionInfo()->versionText);
 
-  MusicPlayer player;
+  std::vector<std::unique_ptr<AudioProcessor>> processors;
+  processors.push_back(std::make_unique<FilePlayer>(
+      "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
+  MusicPlayer player{std::move(processors)};
   player.start();
 
   Pa_Sleep(3L * 1000L);

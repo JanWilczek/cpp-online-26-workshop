@@ -170,6 +170,9 @@ public:
     const auto ret = std::ranges::remove_if(
         _processors, [](auto& p) { return p.get() == nullptr; });
     _processors.erase(ret.begin(), ret.end());
+    for (auto& processor : _processors) {
+      processor->prepareToPlay(sampleRate);
+    }
   }
 
   void start() { _stream.start(); }
@@ -188,7 +191,9 @@ private:
     auto buffer = AudioProcessor::AudioBuffer{static_cast<float*>(output),
                                               outputChannelCount, frameCount};
 
-    _processor.processBlock(buffer);
+    for (auto& processor : _processors) {
+      processor->processBlock(buffer);
+    }
 
     return paContinue;
   }
@@ -196,8 +201,6 @@ private:
   pa_ex::Initializer _initializer;
   pa_ex::Stream _stream;
   std::vector<std::unique_ptr<AudioProcessor>> _processors;
-  // SineGenerator _processor;
-  FilePlayer _processor{"/Users/jawi/Music/TestSignals/Guitar_5th.wav"};
 };
 
 int main() {

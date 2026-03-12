@@ -1,3 +1,4 @@
+#include "wolfsound/dsp/wolfsound_FractionalDelayLine.hpp"
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <portaudio.h>
@@ -10,6 +11,7 @@
 #include <mdspan>
 #include <filesystem>
 #include <AudioFile.h>
+#include <wolfsound/common/wolfsound_Frequency.hpp>
 
 namespace pa_ex {
 class Initializer {
@@ -98,6 +100,8 @@ class SineGenerator : public AudioProcessor {
 public:
   SineGenerator() = default;
 
+  void setFrequency(wolfsound::Frequency f) { frequency_ = f; }
+
   void prepareToPlay(double sampleRate) override {
     _sampleRate = static_cast<float>(sampleRate);
   }
@@ -111,14 +115,24 @@ public:
         buffer[channel, frame] = outputSample;
       }
 
-      constexpr auto frequency = 220.f;
-      _phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
+      _phase += getPhaseIncrement();
+
+      if (twoPi < _phase) {
+        _phase -= twoPi;
+      }
     }
   }
 
 private:
+  static constexpr auto twoPi = 2.f * std::numbers::pi_v<float>;
+
+  [[nodiscard]] float getPhaseIncrement() const noexcept {
+    return twoPi * frequency_.value() / _sampleRate;
+  }
+
   float _phase = 0.f;
   float _sampleRate = 0.f;
+  wolfsound::Frequency frequency_{220.f};
 };
 
 class FilePlayer : public AudioProcessor {
@@ -145,6 +159,68 @@ public:
 private:
   AudioFile<float> _file;
   size_t _playhead = 0u;
+};
+
+class Flanger : public AudioProcessor {
+public:
+  struct Parameters {
+    wolfsound::Frequency lfoFrequency{0.1f};
+  };
+
+  explicit Flanger() { lfo_.setFrequency(parameters_.lfoFrequency); }
+
+  void prepareToPlay(double sampleRate) override {
+    constexpr auto maxDelaySeconds = 0.002;
+    maxDelay_ = static_cast<float>(std::ceil(sampleRate * maxDelaySeconds));
+    middleDelay_ = maxDelay_ / 2.f;
+    lfo_.prepareToPlay(sampleRate);
+
+    delayLine_.reset();
+  }
+
+  void setParameters(const Parameters& newParameters) {
+    lfo_.setFrequency(newParameters.lfoFrequency);
+  }
+
+  void process(AudioBuffer buffer) {
+    // Implementing mono first? Assert it!
+    [[maybe_unused]] const auto channelCount = buffer.extent(0);
+    [[maybe_unused]] constexpr auto supportedChannels = 1u;
+    WS_ASSERT(channelCount == supportedChannels, "flanger handles mono only");
+
+    // Process samples one by one, at least initially.
+    using namespace std::views;
+    constexpr auto channel = 0u;
+    for (const auto sample : iota(0, buffer.extent(1))) {
+      const auto processedSample = processSample(buffer[channel, sample]);
+      buffer[channel, sample] = processedSample;
+    }
+  }
+
+  float processSample(float sample) {
+    const auto& x = sample;
+    const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
+
+    const auto lfoUnipolarValue = (lfo_.processSample(0) + 1) / 2;
+    const auto currentDelay = lfoUnipolarValue * maxDelay_;
+
+    const auto y =
+        (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
+
+    delayLine_.pushSample(xh);
+
+    return y;
+  }
+
+private:
+  float feedforward_ = float(0.7);
+  float feedback_ = float(0.7);
+  float blend_ = float(0.7);
+  wolfsound::FractionalDelayLine<float> delayLine_;
+  SineGenerator lfo_;
+  float maxDelay_{};
+  float middleDelay_{};
+  Parameters parameters_;
 };
 
 class MusicPlayer {

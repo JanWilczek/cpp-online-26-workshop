@@ -29,6 +29,6 @@ endif()
 
 add_executable(music_player source/main.cpp)
 
-target_link_libraries(music_player PRIVATE portaudio_static)
+target_link_libraries(music_player PRIVATE portaudio_static wolfsound::wolfsound_dsp_utils)
 target_include_directories(music_player PRIVATE ${AUDIO_FILE_SOURCE_DIR})
 target_compile_options(music_player PRIVATE "${PROJECT_WARNINGS_CXX}")

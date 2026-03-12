@@ -16,10 +16,10 @@
 namespace pa_ex {
 class Initializer {
 public:
-  Initializer() : _error{Pa_Initialize()} {}
+  Initializer() : error_{Pa_Initialize()} {}
 
   ~Initializer() {
-    if (_error && *_error == paNoError) {
+    if (error_ && *error_ == paNoError) {
       Pa_Terminate();
     }
   }
@@ -34,15 +34,15 @@ public:
   }
 
   Initializer(Initializer&& other) noexcept
-      : _error{std::exchange(other._error, std::nullopt)} {}
+      : error_{std::exchange(other.error_, std::nullopt)} {}
 
   Initializer& operator=(Initializer&& other) noexcept {
-    std::swap(_error, other._error);
+    std::swap(error_, other.error_);
     return *this;
   }
 
 private:
-  std::optional<PaError> _error;
+  std::optional<PaError> error_;
 };
 
 class Stream {
@@ -104,22 +104,22 @@ public:
   void setFrequency(wolfsound::Frequency f) { frequency_ = f; }
 
   void prepareToPlay(double sampleRate, int) override {
-    _sampleRate = static_cast<float>(sampleRate);
+    sampleRate_ = static_cast<float>(sampleRate);
   }
 
   void processBlock(AudioBuffer buffer) override {
     for (const auto frame : std::views::iota(0, buffer.extent(1))) {
       constexpr auto amplitude = 0.25f;
-      const auto outputSample = amplitude * std::sin(_phase);
+      const auto outputSample = amplitude * std::sin(phase_);
 
       for (const auto channel : std::views::iota(0, buffer.extent(0))) {
         buffer[channel, frame] = outputSample;
       }
 
-      _phase += getPhaseIncrement();
+      phase_ += getPhaseIncrement();
 
-      if (twoPi < _phase) {
-        _phase -= twoPi;
+      if (twoPi < phase_) {
+        phase_ -= twoPi;
       }
     }
   }
@@ -128,38 +128,38 @@ private:
   static constexpr auto twoPi = 2.f * std::numbers::pi_v<float>;
 
   [[nodiscard]] float getPhaseIncrement() const noexcept {
-    return twoPi * frequency_.value() / _sampleRate;
+    return twoPi * frequency_.value() / sampleRate_;
   }
 
-  float _phase = 0.f;
-  float _sampleRate = 0.f;
+  float phase_ = 0.f;
+  float sampleRate_ = 0.f;
   wolfsound::Frequency frequency_{220.f};
 };
 
 class FilePlayer : public AudioProcessor {
 public:
   explicit FilePlayer(const std::filesystem::path& filepath) {
-    _file.load(filepath.string());
+    file_.load(filepath.string());
   }
 
   void processBlock(AudioBuffer buffer) override {
     const auto channelCount =
-        std::min(buffer.extent(0), _file.getNumChannels());
+        std::min(buffer.extent(0), file_.getNumChannels());
 
     for (const auto frame : std::views::iota(0, buffer.extent(1))) {
-      if (_playhead < static_cast<size_t>(_file.getNumSamplesPerChannel())) {
+      if (playhead_ < static_cast<size_t>(file_.getNumSamplesPerChannel())) {
         for (const auto channel : std::views::iota(0, channelCount)) {
           buffer[channel, frame] =
-              _file.samples[static_cast<size_t>(channel)][_playhead];
+              file_.samples[static_cast<size_t>(channel)][playhead_];
         }
-        _playhead++;
+        playhead_++;
       }
     }
   }
 
 private:
-  AudioFile<float> _file;
-  size_t _playhead = 0u;
+  AudioFile<float> file_;
+  size_t playhead_ = 0u;
 };
 
 class Flanger : public AudioProcessor {
@@ -239,7 +239,7 @@ private:
 class MusicPlayer {
 public:
   explicit MusicPlayer(std::vector<std::unique_ptr<AudioProcessor>> processors)
-      : _stream{inputChannelCount,
+      : stream_{inputChannelCount,
                 outputChannelCount,
                 paFloat32,
                 sampleRate,
@@ -255,11 +255,11 @@ public:
                                                 timeInfo, statusFlags);
                 },
                 this},
-        _processors{std::move(processors)} {
+        processors_{std::move(processors)} {
     const auto ret = std::ranges::remove_if(
-        _processors, [](auto& p) { return p.get() == nullptr; });
-    _processors.erase(ret.begin(), ret.end());
-    for (auto& processor : _processors) {
+        processors_, [](auto& p) { return p.get() == nullptr; });
+    processors_.erase(ret.begin(), ret.end());
+    for (auto& processor : processors_) {
       processor->prepareToPlay(
           sampleRate,
           static_cast<int>(
@@ -267,8 +267,8 @@ public:
     }
   }
 
-  void start() { _stream.start(); }
-  void stop() { _stream.stop(); }
+  void start() { stream_.start(); }
+  void stop() { stream_.stop(); }
 
 private:
   static constexpr auto inputChannelCount = 0;
@@ -283,16 +283,16 @@ private:
     auto buffer = AudioProcessor::AudioBuffer{static_cast<float*>(output),
                                               outputChannelCount, frameCount};
 
-    for (auto& processor : _processors) {
+    for (auto& processor : processors_) {
       processor->processBlock(buffer);
     }
 
     return paContinue;
   }
 
-  pa_ex::Initializer _initializer;
-  pa_ex::Stream _stream;
-  std::vector<std::unique_ptr<AudioProcessor>> _processors;
+  pa_ex::Initializer initializer_;
+  pa_ex::Stream stream_;
+  std::vector<std::unique_ptr<AudioProcessor>> processors_;
 };
 
 int main() {

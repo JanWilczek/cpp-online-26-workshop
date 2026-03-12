@@ -89,7 +89,8 @@ public:
   AudioProcessor(AudioProcessor&&) = delete;
   AudioProcessor& operator=(AudioProcessor&&) = delete;
 
-  virtual void prepareToPlay([[maybe_unused]] double sampleRate) {}
+  virtual void prepareToPlay([[maybe_unused]] double sampleRate,
+                             [[maybe_unused]] int maxFramesPerBuffer) {}
 
   using AudioBuffer =
       std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
@@ -102,7 +103,7 @@ public:
 
   void setFrequency(wolfsound::Frequency f) { frequency_ = f; }
 
-  void prepareToPlay(double sampleRate) override {
+  void prepareToPlay(double sampleRate, int) override {
     _sampleRate = static_cast<float>(sampleRate);
   }
 
@@ -169,11 +170,14 @@ public:
 
   explicit Flanger() { lfo_.setFrequency(parameters_.lfoFrequency); }
 
-  void prepareToPlay(double sampleRate) override {
+  void prepareToPlay(double sampleRate, int maxFramesPerBuffer) override {
     constexpr auto maxDelaySeconds = 0.002;
     maxDelay_ = static_cast<float>(std::ceil(sampleRate * maxDelaySeconds));
     middleDelay_ = maxDelay_ / 2.f;
-    lfo_.prepareToPlay(sampleRate);
+    lfo_.prepareToPlay(sampleRate, maxFramesPerBuffer);
+
+    lfoBuffer_.resize(static_cast<size_t>(maxFramesPerBuffer));
+    std::ranges::fill(lfoBuffer_, 0.f);
 
     delayLine_.reset();
   }
@@ -182,26 +186,34 @@ public:
     lfo_.setFrequency(newParameters.lfoFrequency);
   }
 
-  void process(AudioBuffer buffer) {
+  void processBlock(AudioBuffer buffer) override {
     // Implementing mono first? Assert it!
-    [[maybe_unused]] const auto channelCount = buffer.extent(0);
-    [[maybe_unused]] constexpr auto supportedChannels = 1u;
-    WS_ASSERT(channelCount == supportedChannels, "flanger handles mono only");
+    // [[maybe_unused]] const auto channelCount = buffer.extent(0);
+    // [[maybe_unused]] constexpr auto supportedChannels = 1u;
+    // WS_ASSERT(channelCount == supportedChannels, "flanger handles mono
+    // only");
+
+    // Generate the LFO
+    WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),
+              "the host is misbehaving");
+    lfo_.processBlock(
+        AudioBuffer{lfoBuffer_.data(), 1, std::ssize(lfoBuffer_)});
 
     // Process samples one by one, at least initially.
     using namespace std::views;
     constexpr auto channel = 0u;
     for (const auto sample : iota(0, buffer.extent(1))) {
-      const auto processedSample = processSample(buffer[channel, sample]);
+      const auto processedSample = processSample(
+          buffer[channel, sample], lfoBuffer_[static_cast<size_t>(sample)]);
       buffer[channel, sample] = processedSample;
     }
   }
 
-  float processSample(float sample) {
+  float processSample(float sample, float lfoSample) {
     const auto& x = sample;
     const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
 
-    const auto lfoUnipolarValue = (lfo_.processSample(0) + 1) / 2;
+    const auto lfoUnipolarValue = (lfoSample + 1) / 2;
     const auto currentDelay = lfoUnipolarValue * maxDelay_;
 
     const auto y =
@@ -218,6 +230,7 @@ private:
   float blend_ = float(0.7);
   wolfsound::FractionalDelayLine<float> delayLine_;
   SineGenerator lfo_;
+  std::vector<float> lfoBuffer_;
   float maxDelay_{};
   float middleDelay_{};
   Parameters parameters_;
@@ -247,7 +260,10 @@ public:
         _processors, [](auto& p) { return p.get() == nullptr; });
     _processors.erase(ret.begin(), ret.end());
     for (auto& processor : _processors) {
-      processor->prepareToPlay(sampleRate);
+      processor->prepareToPlay(
+          sampleRate,
+          static_cast<int>(
+              sampleRate) /* buffer sizes longer than 1 second are rare */);
     }
   }
 
@@ -286,6 +302,7 @@ int main() {
     std::vector<std::unique_ptr<AudioProcessor>> processors;
     processors.push_back(std::make_unique<FilePlayer>(
         "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
+    processors.push_back(std::make_unique<Flanger>());
     return processors;
   }()};
   player.start();

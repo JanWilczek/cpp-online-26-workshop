@@ -11,19 +11,13 @@ template <typename SampleType>
 class Flanger {
 public:
   struct Parameters {
-    using Ptr = std::shared_ptr<Parameters>;
-
     wolfsound::Frequency lfoFrequency{0.1f};
   };
 
-  Flanger() = default;
-  explicit Flanger(Parameters::Ptr parametersToUse)
-      : parameters_{parametersToUse} {}
-
   void prepare(const juce::dsp::ProcessSpec& spec) {
-    constexpr auto MAX_DELAY_SECONDS = 0.002;
+    constexpr auto maxDelaySeconds = 0.002;
     maxDelay_ =
-        static_cast<SampleType>(std::ceil(spec.sampleRate * MAX_DELAY_SECONDS));
+        static_cast<SampleType>(std::ceil(spec.sampleRate * maxDelaySeconds));
     middleDelay_ = maxDelay_ / SampleType(2);
     lfo_.prepare(spec);
 
@@ -47,12 +41,13 @@ public:
     const auto sampleCount = outputBlock.getNumSamples();
 
     // These sanity checks save you a headache later on in the development.
-    jassert(inputBlock.getNumChannels() == channelCount);
-    jassert(inputBlock.getNumSamples() == sampleCount);
+    WS_ASSERT(inputBlock.getNumChannels() == channelCount,
+              "input has differenct");
+    WS_ASSERT(inputBlock.getNumSamples() == sampleCount);
 
     // Implementing mono first? Assert it!
-    [[maybe_unused]] constexpr auto SUPPORTED_CHANNELS = 1u;
-    jassert(channelCount == SUPPORTED_CHANNELS);
+    [[maybe_unused]] constexpr auto supportedChannels = 1u;
+    WS_ASSERT(channelCount == supportedChannels);
 
     // Always check if the processor is not bypassed
     if (processContext.isBypassed) {
@@ -64,23 +59,23 @@ public:
 
     // Process samples one by one, at least initially.
     using namespace std::views;
-    constexpr auto CHANNEL = 0u;
+    constexpr auto channel = 0u;
     for (const auto sample : iota(0, static_cast<int>(sampleCount))) {
       const auto processedSample =
-          processSample(inputBlock.getSample(CHANNEL, sample));
-      outputBlock.setSample(CHANNEL, sample, processedSample);
+          processSample(inputBlock.getSample(channel, sample));
+      outputBlock.setSample(channel, sample, processedSample);
     }
   }
 
   SampleType processSample(SampleType sample) {
     const auto& x = sample;
-    const auto xh = x + feedback_ * delayLine_.popSample(middleDelay_);
+    const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
 
     const auto lfoUnipolarValue = (lfo_.processSample(0) + 1) / 2;
     const auto currentDelay = lfoUnipolarValue * maxDelay_;
 
     const auto y =
-        blend_ * xh + feedforward_ * delayLine_.popSample(currentDelay);
+        (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
 
     delayLine_.pushSample(xh);
 

@@ -42,30 +42,36 @@ img[alt~="align-left"] {
   * DSP Pro on the basics of digital signal processing for audio programming
   * Official JUCE C++ framework audio plugin development course
 
+<!-- Comment -->
+
 ---
 
 # Assumptions
 
 1) You know basic C++ and you are able to write at least a small object-oriented program
-1) You know what CMake is and how to invoke it (no need to know how to exactly write CMakeLists.txt files)
-1) You are interested in music, e.g., you play a musical instrument, you like listening to music, or you perform electronic music
-
+2) You know what CMake is and how to invoke it (no need to know how to exactly write CMakeLists.txt files)
+3) You are interested in music
 
 ---
 
 # Sound in modern software
 
 1. Streaming/videoconferencing just like we are now
-2. Video games
-3. Tools for musicians, music producers, and sound engineers (concert halls, cinema, immersive audio)
-4. Audio playback systems
+2. Video games, VR/AR/XR  
+3. Tools for musicians, music producers, and sound engineers
+4. Audio playback systems (concert halls, cinema, immersive audio)
 5. Embedded applications in microphones, speakers, and smartphones
-6. Automatic speech recognition
-7. Text-to-speech
+6. Simulation software
+7. Automatic speech recognition
+8. Text-to-speech
+
+<!-- These are just examples -->
 
 ---
 
-# We want to play back sound; how to do it in C++?
+# We want to play back sound.
+
+# How to do it in C++?
 
 
 ---
@@ -76,7 +82,9 @@ img[alt~="align-left"] {
 
 # What is sound anyway?
 
-![Acoustic wave in the air](img/acoustc_wave.png)
+![w:900 Acoustic wave in the air](img/acoustc_wave.png)
+
+<!-- Propagation of periodic pressure changes in a medium, such as the air -->
 
 ---
 
@@ -148,13 +156,14 @@ We need to use OS-specific APIs, for example,
 # Isn’t there a cross-platform library that can do it for us?
 
 * PortAudio
-* FFmpeg
 * JUCE
 * other
 
 ---
 
 # How to play back sound using PortAudio?
+
+## Initialization
 
 ```cpp
 #include <portaudio.h>
@@ -165,6 +174,8 @@ const auto error = Pa_Initialize();
 ---
 
 # How to play back sound using PortAudio?
+
+## Initialization
 
 ```cpp
 const auto error = Pa_Initialize();
@@ -177,6 +188,8 @@ if (error == paNoError) {
 ---
 
 # How to play back sound using PortAudio?
+
+## Initialization
 
 ```cpp
 class Initializer {
@@ -196,7 +209,7 @@ private:
 
 ---
 
-# How to play back sound using PortAudio?
+# PortAudio: Opening a stream
 
 ```cpp
 constexpr auto sampleRate = 44100.;
@@ -217,7 +230,7 @@ const auto error = Pa_OpenDefaultStream(
 
 ---
 
-# How to play back sound using PortAudio?
+# PortAudio: Opening a stream
 
 ```cpp
 PaError Pa_OpenDefaultStream( PaStream** stream,
@@ -238,6 +251,21 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 ---
 
+# Samples
+
+```cpp
+PaError Pa_OpenDefaultStream( PaStream** stream,
+                              int numInputChannels,
+                              int numOutputChannels,
+                              PaSampleFormat sampleFormat, // <--
+                              double sampleRate,
+                              unsigned long framesPerBuffer,
+                              PaStreamCallback *streamCallback,
+                              void *userData );
+```
+
+---
+
 # Sample format
 
 * `float` or `double` in the [-1, 1] range (`paFloat32`)
@@ -245,7 +273,7 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 ---
 
-# How to play back sound using PortAudio?
+# Frames per buffer
 
 ```cpp
 PaError Pa_OpenDefaultStream( PaStream** stream,
@@ -260,6 +288,12 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 
 ---
 
+# Audio buffer
+
+![w:900](img/Buffer.png)
+
+---
+
 # Frames per buffer
 
 ![w:800](img/Frame.png)
@@ -269,11 +303,11 @@ PaError Pa_OpenDefaultStream( PaStream** stream,
 # Samples vs frames
 
 * Buffer size = frame count  = samples per channel
-* 480 stereo frames in a buffer → 960 samples
+* 480 stereo frames in a buffer → 480 samples in each of 2 channels → 960 samples
 
 ---
 
-# How to play back sound using PortAudio?
+# Audio callback
 
 ```cpp
 PaError Pa_OpenDefaultStream( PaStream** stream,
@@ -477,6 +511,8 @@ private:
 5. Stop playback
 6. Close the connection to the audio device
 
+<!-- This is what you'll learn in the workshop -->
+
 ---
 
 # Why C++ for audio?
@@ -501,8 +537,8 @@ private:
 // somewhere
 std::filesystem::path filepath{"Guitar_5th.wav"};
 AudioFile<float> file;
-size_t playhead = 0u;
 file.load(filepath.string());
+size_t playhead = 0u;
 // audio callback:
 const auto channelCount =
     std::min(buffer.extent(0), file.getNumChannels());
@@ -550,13 +586,19 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 ---
 
-# An audio effect: Flanger
+# Example effect: flanger
+
+<audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls>
+
+---
+
+# Flanger block diagram
 
 ![](img/WorkshopFlanger.png)
 
 ---
 
-# An audio effect: Flanger
+# Flanger block diagram
 
 ![w:600 align-right](img/WorkshopFlangerAnnotated.png)
 
@@ -636,12 +678,6 @@ public:
   }
 };
 ```
-
----
-
-# Flanger applied
-
-<audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls>
 
 ---
 

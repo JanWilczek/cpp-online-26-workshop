@@ -203,10 +203,12 @@ private:
 int main() {
   std::println("PortAudio version: {}", Pa_GetVersionInfo()->versionText);
 
-  std::vector<std::unique_ptr<AudioProcessor>> processors;
-  processors.push_back(std::make_unique<FilePlayer>(
-      "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
-  MusicPlayer player{std::move(processors)};
+  MusicPlayer player{[] {
+    std::vector<std::unique_ptr<AudioProcessor>> processors;
+    processors.push_back(std::make_unique<FilePlayer>(
+        "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
+    return processors;
+  }()};
   player.start();
 
   Pa_Sleep(3L * 1000L);

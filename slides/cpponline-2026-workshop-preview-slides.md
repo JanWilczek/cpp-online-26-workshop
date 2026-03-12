@@ -576,7 +576,9 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 ---
 
-# We have a nice music player, but what if we want to apply an effect to it?
+# We have a music player.
+
+# How to apply an effect to it?
 
 ---
 
@@ -797,7 +799,7 @@ for (auto& processor : processors) {
 * How to play back sound in a cross-platform way
 * How to play back an audio file, for example, for your video game
 * How to apply an audio effect to your sound
-* How to create a cross-platform audio plugin (flanger) for a DAW
+* How to create a cross-platform audio plugin (flanger) with a UI for a DAW
 * How modern audio apps work
 * What to avoid when processing audio
 * How audio programming differs from regular C++ programming

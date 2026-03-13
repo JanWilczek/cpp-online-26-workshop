@@ -171,15 +171,15 @@ public:
   explicit Flanger() { lfo_.setFrequency(parameters_.lfoFrequency); }
 
   void prepareToPlay(double sampleRate, int maxFramesPerBuffer) override {
-    constexpr auto maxDelaySeconds = 0.002;
-    maxDelay_ = static_cast<float>(std::ceil(sampleRate * maxDelaySeconds));
-    middleDelay_ = maxDelay_ / 2.f;
+    channelProcessors_.resize(2);
+    for (auto& p : channelProcessors_) {
+      p.prepareToPlay(sampleRate);
+    }
+
     lfo_.prepareToPlay(sampleRate, maxFramesPerBuffer);
 
     lfoBuffer_.resize(static_cast<size_t>(maxFramesPerBuffer));
     std::ranges::fill(lfoBuffer_, 0.f);
-
-    delayLine_.reset();
   }
 
   void setParameters(const Parameters& newParameters) {
@@ -187,6 +187,8 @@ public:
   }
 
   void processBlock(AudioBuffer buffer) override {
+    WS_ASSERT(buffer.extent(0) <= std::ssize(channelProcessors_),
+              "too many channels than the effect can handle");
     // Generate the LFO
     WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),
               "the host is misbehaving");
@@ -195,39 +197,55 @@ public:
 
     // Process samples one by one, at least initially.
     using namespace std::views;
-    // We apply the effect only to the first channel for now
-    constexpr auto channel = 0u;
-    for (const auto sample : iota(0, buffer.extent(1))) {
-      const auto processedSample = processSample(
-          buffer[channel, sample], lfoBuffer_[static_cast<size_t>(sample)]);
-      buffer[channel, sample] = processedSample;
+    for (const auto channel : iota(0, buffer.extent(0))) {
+      for (const auto sample : iota(0, buffer.extent(1))) {
+        const auto processedSample =
+            channelProcessors_[static_cast<size_t>(channel)].processSample(
+                buffer[channel, sample],
+                lfoBuffer_[static_cast<size_t>(sample)]);
+        buffer[channel, sample] = processedSample;
+      }
     }
   }
 
-  float processSample(float sample, float lfoSample) {
-    const auto& x = sample;
-    const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
-
-    const auto lfoUnipolarValue = (lfoSample + 1) / 2;
-    const auto currentDelay = lfoUnipolarValue * maxDelay_;
-
-    const auto y =
-        (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
-
-    delayLine_.pushSample(xh);
-
-    return y;
-  }
-
 private:
-  float feedforward_ = 0.7f;
-  float feedback_ = 0.7f;
-  float blend_ = 0.7f;
-  wolfsound::FractionalDelayLine<float> delayLine_;
+  class ChannelProcessor {
+  public:
+    void prepareToPlay(double sampleRate) {
+      constexpr auto maxDelaySeconds = 0.002;
+      maxDelay_ = static_cast<float>(std::ceil(sampleRate * maxDelaySeconds));
+      middleDelay_ = maxDelay_ / 2.f;
+      delayLine_.reset();
+    }
+
+    float processSample(float sample, float lfoSample) {
+      const auto& x = sample;
+      const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
+
+      const auto lfoUnipolarValue = (lfoSample + 1) / 2;
+      const auto currentDelay = lfoUnipolarValue * maxDelay_;
+
+      const auto y =
+          (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
+
+      delayLine_.pushSample(xh);
+
+      return y;
+    }
+
+  private:
+    static constexpr auto feedforward_ = 0.7f;
+    static constexpr auto feedback_ = 0.7f;
+    static constexpr auto blend_ = 0.7f;
+
+    float maxDelay_ = 0.f;
+    float middleDelay_ = 0.f;
+    wolfsound::FractionalDelayLine<float> delayLine_;
+  };
+
   SineGenerator lfo_;
   std::vector<float> lfoBuffer_;
-  float maxDelay_ = 0.f;
-  float middleDelay_ = 0.f;
+  std::vector<ChannelProcessor> channelProcessors_;
   Parameters parameters_;
 };
 

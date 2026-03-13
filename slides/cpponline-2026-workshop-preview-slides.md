@@ -34,7 +34,7 @@ img[alt~="align-left"] {
 
 # Jumpstart to C++ in Audio Workshop Preview
 
-## About me
+![w:300 align-right](img/0002-round.png)
 
 * Jan Wilczek [Yan Vil-check]
 * Audio programming consultant & coach

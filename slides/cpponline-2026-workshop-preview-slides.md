@@ -41,8 +41,7 @@ img[alt~="align-left"] {
 * Online course creator
   * DSP Pro on the basics of digital signal processing for audio programming
   * Official JUCE C++ framework audio plugin development course
-
-<!-- Comment -->
+* Available for training & 1-on-1 coaching
 
 ---
 
@@ -51,6 +50,20 @@ img[alt~="align-left"] {
 1) You know basic C++ and you are able to write at least a small object-oriented program
 2) You know what CMake is and how to invoke it (no need to know how to exactly write CMakeLists.txt files)
 3) You are interested in music
+
+---
+
+# What you will learn from the workshop
+
+* How to represent sound on a computer
+* How to play back sound in a cross-platform way
+* How to play back an audio file, for example, for your video game
+* How to research, develop & apply an audio effect to your sound
+* How to create a cross-platform audio plugin (flanger) with a UI for a DAW
+* How modern audio apps work
+* What to avoid when processing audio
+* How audio programming differs from regular C++ programming
+* Where you can find more information
 
 ---
 

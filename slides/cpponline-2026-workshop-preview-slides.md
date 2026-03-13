@@ -194,16 +194,16 @@ if (error == paNoError) {
 ```cpp
 class Initializer {
 public:
-  Initializer() : _error{Pa_Initialize()} {}
+  Initializer() : error_{Pa_Initialize()} {}
 
   ~Initializer() {
-    if (_error == paNoError) {
+    if (error_ == paNoError) {
       Pa_Terminate();
     }
   }
   // copy & move assignments & operators
 private:
-  PaError _error;
+  PaError error_;
 };
 ```
 
@@ -378,12 +378,12 @@ $$s[n] = A\sin(2\pi f n / f_s),$$
 
 ```cpp
 constexpr auto amplitude = 0.25f;
-const auto outputSample = amplitude * std::sin(_phase);
+const auto outputSample = amplitude * std::sin(phase_);
 
 // output the sample...
 
 constexpr auto frequency = 220.f;
-_phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
+phase_ += 2 * std::numbers::pi_v<float> * frequency / sampleRate_;
 ```
 
 ---
@@ -446,14 +446,14 @@ auto buffer = AudioBuffer{static_cast<float*>(output), 2, 480};
 ```cpp
 for (const auto frame : std::views::iota(0, buffer.extent(1))) {
   constexpr auto amplitude = 0.25f;
-  const auto outputSample = amplitude * std::sin(_phase);
+  const auto outputSample = amplitude * std::sin(phase_);
 
   for (const auto channel : std::views::iota(0, buffer.extent(0))) {
     buffer[channel, frame] = outputSample;
   }
 
   constexpr auto frequency = 220.f;
-  _phase += 2 * std::numbers::pi_v<float> * frequency / _sampleRate;
+  phase_ += 2 * std::numbers::pi_v<float> * frequency / sampleRate_;
 }
 ```
 
@@ -479,24 +479,24 @@ class Stream {
 public:
   template <typename... Ts>
   explicit Stream(Ts&&... args)
-      : _error{Pa_OpenDefaultStream(&_stream, std::forward<Ts>(args)...)} {}
+      : error_{Pa_OpenDefaultStream(&stream_, std::forward<Ts>(args)...)} {}
 
   ~Stream() {
-    if (_stream != nullptr && _error == paNoError) {
-      Pa_CloseStream(_stream);
+    if (stream_ != nullptr && error_ == paNoError) {
+      Pa_CloseStream(stream_);
     }
   }
 
   // deleted copy constructor & assignment operator
   // move constructor & assignment operator
 
-  void start() { Pa_StartStream(_stream); }
+  void start() { Pa_StartStream(stream_); }
 
-  void stop() { Pa_StopStream(_stream); }
+  void stop() { Pa_StopStream(stream_); }
 
 private:
-  PaStream* _stream{nullptr};
-  PaError _error{paNoError};
+  PaStream* stream_{nullptr};
+  PaError error_{paNoError};
 };
 ```
 
@@ -544,7 +544,7 @@ const auto channelCount =
     std::min(buffer.extent(0), file.getNumChannels());
 
 for (const auto frame : std::views::iota(0, buffer.extent(1))) {
-  if (_playhead < file.getNumSamplesPerChannel()) {
+  if (playhead < file.getNumSamplesPerChannel()) {
     for (const auto channel : std::views::iota(0, channelCount)) {
       buffer[channel, frame] = file.samples[channel][playhead];
     }
@@ -591,6 +591,8 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 # Example effect: flanger
 
 <audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls>
+
+<!-- We browse the literature [WORKSHOP] -->
 
 ---
 
@@ -790,6 +792,8 @@ for (auto& processor : processors) {
 # Workshop flanger plugin
 
 ![](img/FlangerUI.png)
+
+<!-- Would be cool to show the plugin in action here -->
 
 ---
 

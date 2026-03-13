@@ -33,6 +33,7 @@ img[alt~="align-left"] {
 </style>
 
 # Jumpstart to C++ in Audio Workshop Preview
+
 ## About me
 
 * Jan Wilczek [Yan Vil-check]
@@ -652,6 +653,116 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 ---
 
+# Delay line
+
+![](img/delay/DelayBy5.svg)
+
+<!-- the output sample is equal to the input sample from 5 samples ago -->
+
+---
+
+# Delay line
+
+![](img/delay/empty_delay.png)
+
+---
+
+# Delay line
+
+![](img/delay/zeros_delay.png)
+
+---
+
+# Delay line
+
+![](img/delay/x0_wants_to_enter.png)
+
+---
+
+# Delay line
+
+![](img/delay/samples_move.png)
+
+---
+
+# Delay line
+
+![](img/delay/x0_entered.png)
+
+---
+
+# Delay line
+
+![](img/delay/x1_wants_to_enter.png)
+
+---
+
+# Delay line
+
+![](img/delay/samples_move_fo_x1.png)
+
+---
+
+# Delay line
+
+![](img/delay/x1_entered.png)
+
+---
+
+# Delay line
+
+![](img/delay/x5_wants_to_enter.png)
+
+---
+
+# Delay line
+
+![](img/delay/samples_move_for_x5.png)
+
+---
+
+# Delay line
+
+![](img/delay/x5_entered.png)
+
+---
+
+# Delay line
+
+![](img/delay/x6_entered.png)
+
+---
+
+# Delay line
+
+![](img/delay/x7_entered.png)
+
+---
+
+# Delay line
+
+![](img/delay/x9_entered.png)
+
+---
+
+# Delay line
+
+![](img/delay/delay_buffer_representation.png)
+
+---
+
+![w:1100](img/delay/sine_phase_delay_T=5_signal.png)
+
+---
+
+# Flanger block diagram
+
+![](img/WorkshopFlanger.png)
+
+<!-- The delay line here is modulated so the amount of delay changes with each sample. The delay tap D/2 is fixed. Delays typically aren't implemented as moving the samples, but rather with array indices: read head and write head, just like queue would; a circular buffer. We'll use a delay line implementation in the workshop. -->
+
+---
+
 # Flanger difference equations
 
 3. Output sample
@@ -671,30 +782,114 @@ $$m=s_\text{LFO,unipolar}[n]D$$
 # `Flanger` class
 
 ```cpp
-class Flanger {
-  float feedforward_ = 0.7f, feedback_ = 0.7f, blend_ = 0.7f, maxDelay_ = 0.f, middleDelay_ = 0.f;
-  FractionalDelayLine delayLine_;
-  juce::dsp::Oscillator<float> lfo_{[](auto phase) { return std::sin(phase); }, 128u};
+class Flanger : public AudioProcessor {
 public:
-  void prepare(double sampleRate) {
-    constexpr auto MAX_DELAY_SECONDS = 0.002;
-    maxDelay_ = std::ceil(sampleRate * MAX_DELAY_SECONDS);
-    middleDelay_ = maxDelay_ / 2.f;
-    lfo_.prepare(sampleRate);
-  }
-  float processSample(float sample) {
-    const auto& x = sample;
-    const auto xh = x + feedback_ * delayLine_.popSample(middleDelay_);
+  struct Parameters {
+    wolfsound::Frequency lfoFrequency{0.1f};
+  };
 
-    const auto lfoUnipolarValue = (lfo_.processSample(0) + 1) / 2;
+  explicit Flanger() { lfo_.setFrequency(parameters_.lfoFrequency); }
+
+  void prepareToPlay(double sampleRate, int maxFramesPerBuffer) override {
+    constexpr auto maxDelaySeconds = 0.002;
+    maxDelay_ = static_cast<float>(std::ceil(sampleRate * maxDelaySeconds));
+    middleDelay_ = maxDelay_ / 2.f;
+    lfo_.prepareToPlay(sampleRate, maxFramesPerBuffer);
+
+    lfoBuffer_.resize(static_cast<size_t>(maxFramesPerBuffer));
+    std::ranges::fill(lfoBuffer_, 0.f);
+
+    delayLine_.reset();
+  }
+
+  void setParameters(const Parameters& newParameters) {
+    lfo_.setFrequency(newParameters.lfoFrequency);
+  }
+
+  void processBlock(AudioBuffer buffer) override {
+    // Generate the LFO
+    WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),
+              "the host is misbehaving");
+    lfo_.processBlock(
+        AudioBuffer{lfoBuffer_.data(), 1, std::ssize(lfoBuffer_)});
+
+    // Process samples one by one, at least initially.
+    using namespace std::views;
+    // We apply the effect only to the first channel for now
+    constexpr auto channel = 0u;
+    for (const auto sample : iota(0, buffer.extent(1))) {
+      const auto processedSample = processSample(
+          buffer[channel, sample], lfoBuffer_[static_cast<size_t>(sample)]);
+      buffer[channel, sample] = processedSample;
+    }
+  }
+
+  float processSample(float sample, float lfoSample) {
+    const auto& x = sample;
+    const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
+
+    const auto lfoUnipolarValue = (lfoSample + 1) / 2;
     const auto currentDelay = lfoUnipolarValue * maxDelay_;
 
-    const auto y = blend_ * xh + feedforward_ * delayLine_.popSample(currentDelay);
+    const auto y =
+        (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
+
     delayLine_.pushSample(xh);
+
+    return y;
+  }
+
+private:
+  float feedforward_ = 0.7f;
+  float feedback_ = 0.7f;
+  float blend_ = 0.7f;
+  wolfsound::FractionalDelayLine<float> delayLine_;
+  SineGenerator lfo_;
+  std::vector<float> lfoBuffer_;
+  float maxDelay_ = 0.f;
+  float middleDelay_ = 0.f;
+  Parameters parameters_;
+};
+```
+
+---
+
+# `Flanger` class
+
+```cpp
+class Flanger : public AudioProcessor {
+  float processSample(float sample, float lfoSample) {
+    const auto& x = sample;
+    const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
+
+    const auto lfoUnipolarValue = (lfoSample + 1) / 2;
+    const auto currentDelay = lfoUnipolarValue * maxDelay_;
+
+    const auto y =
+        (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
+
+    delayLine_.pushSample(xh);
+
     return y;
   }
 };
 ```
+
+---
+
+# Flanger difference equations
+
+3. Output sample
+
+$$y[n] = \text{blend } x_h[n] + \text{feedforward } x_h[n-m]$$
+
+2. Helper sample
+
+$$x_h[n] = x[n] + \text{feedback } x_h[n-D/2]$$
+
+1. Modulated-delay value
+
+$$m=s_\text{LFO,unipolar}[n]D$$
 
 ---
 

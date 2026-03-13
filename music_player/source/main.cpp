@@ -187,12 +187,6 @@ public:
   }
 
   void processBlock(AudioBuffer buffer) override {
-    // Implementing mono first? Assert it!
-    // [[maybe_unused]] const auto channelCount = buffer.extent(0);
-    // [[maybe_unused]] constexpr auto supportedChannels = 1u;
-    // WS_ASSERT(channelCount == supportedChannels, "flanger handles mono
-    // only");
-
     // Generate the LFO
     WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),
               "the host is misbehaving");
@@ -201,6 +195,7 @@ public:
 
     // Process samples one by one, at least initially.
     using namespace std::views;
+    // We apply the effect only to the first channel for now
     constexpr auto channel = 0u;
     for (const auto sample : iota(0, buffer.extent(1))) {
       const auto processedSample = processSample(
@@ -225,14 +220,14 @@ public:
   }
 
 private:
-  float feedforward_ = float(0.7);
-  float feedback_ = float(0.7);
-  float blend_ = float(0.7);
+  float feedforward_ = 0.7f;
+  float feedback_ = 0.7f;
+  float blend_ = 0.7f;
   wolfsound::FractionalDelayLine<float> delayLine_;
   SineGenerator lfo_;
   std::vector<float> lfoBuffer_;
-  float maxDelay_{};
-  float middleDelay_{};
+  float maxDelay_ = 0.f;
+  float middleDelay_ = 0.f;
   Parameters parameters_;
 };
 

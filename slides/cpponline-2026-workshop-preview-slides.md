@@ -66,6 +66,8 @@ img[alt~="align-left"] {
 * How audio programming differs from regular C++ programming
 * Where you can find more information
 
+<!-- Please, interrupt me by asking questions in the Q&A -->
+
 ---
 
 # Sound in modern software
@@ -534,7 +536,7 @@ private:
 * High-level zero-cost abstractions
 * Easy C and Objective-C interoperability
 * OS audio APIs are in C++ (Windows, Android) or C
-* **Powerful C or C++ libraries and frameworks related to audio**
+* **Powerful C and C++ libraries and frameworks related to audio**
   * FFmpeg
   * JUCE C++ framework
 
@@ -655,7 +657,9 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # Delay line
 
-![](img/delay/DelayBy5.svg)
+![w:800](img/delay/DelayBy5.svg)
+
+$y[n]=x[n-5]$
 
 <!-- the output sample is equal to the input sample from 5 samples ago -->
 
@@ -782,7 +786,7 @@ $$m=s_\text{LFO,unipolar}[n]D$$
 # `Flanger` class
 
 ```cpp
-class Flanger : public AudioProcessor {
+class Flanger {
 public:
   struct Parameters {
     wolfsound::Frequency lfoFrequency{0.1f};
@@ -857,7 +861,7 @@ private:
 # `Flanger` class
 
 ```cpp
-class Flanger : public AudioProcessor {
+class Flanger {
   float processSample(float sample, float lfoSample) {
     const auto& x = sample;
     const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
@@ -1027,7 +1031,7 @@ for (auto& processor : processors) {
 * Part 3 - Modifying the played back sound
 * Break
 * Part 4 - Building an audio app/plugin with a user interface using the JUCE C++ framework
-* Part 5 - Summary & where to go from here
+* Summary: Where to go from here
 
 ---
 

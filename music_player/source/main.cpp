@@ -90,7 +90,8 @@ public:
   AudioProcessor& operator=(AudioProcessor&&) = delete;
 
   virtual void prepareToPlay([[maybe_unused]] double sampleRate,
-                             [[maybe_unused]] int maxFramesPerBuffer) {}
+                             [[maybe_unused]] int maxFramesPerBuffer,
+                             [[maybe_unused]] int channelCount) {}
 
   using AudioBuffer =
       std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
@@ -103,7 +104,7 @@ public:
 
   void setFrequency(wolfsound::Frequency f) { frequency_ = f; }
 
-  void prepareToPlay(double sampleRate, int) override {
+  void prepareToPlay(double sampleRate, int, int) override {
     sampleRate_ = static_cast<float>(sampleRate);
   }
 
@@ -170,13 +171,15 @@ public:
 
   explicit Flanger() { lfo_.setFrequency(parameters_.lfoFrequency); }
 
-  void prepareToPlay(double sampleRate, int maxFramesPerBuffer) override {
-    channelProcessors_.resize(2);
+  void prepareToPlay(double sampleRate,
+                     int maxFramesPerBuffer,
+                     int channelCount) override {
+    channelProcessors_.resize(static_cast<size_t>(channelCount));
     for (auto& p : channelProcessors_) {
       p.prepareToPlay(sampleRate);
     }
 
-    lfo_.prepareToPlay(sampleRate, maxFramesPerBuffer);
+    lfo_.prepareToPlay(sampleRate, maxFramesPerBuffer, 1u);
 
     lfoBuffer_.resize(static_cast<size_t>(maxFramesPerBuffer));
     std::ranges::fill(lfoBuffer_, 0.f);
@@ -276,7 +279,8 @@ public:
       processor->prepareToPlay(
           sampleRate,
           static_cast<int>(
-              sampleRate) /* buffer sizes longer than 1 second are rare */);
+              sampleRate) /* buffer sizes longer than 1 second are rare */,
+          outputChannelCount);
     }
   }
 

@@ -9,7 +9,7 @@ theme: default
 ---
 
 <!-- paginate: true -->
-<!-- footer: "&copy; WolfSound Jan Wilczek 2026 (TheWolfSound.com) | [cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)" --->
+<!-- footer: "&copy; WolfSound Jan Wilczek 2026 | [contact@thewolfsound.com](mailto:contact@thewolfsound.com) | [cpponline.uk/workshop/jumpstart-to-cpp-in-audio](https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/)" --->
 
 <style>
 h1 {
@@ -39,10 +39,11 @@ img[alt~="align-left"] {
 * Jan Wilczek [Yan Vil-check]
 * Audio programming consultant & coach
 * Founder of TheWolfSound.com blog & YouTube channel
+* WolfTalk podcast host
 * Online course creator
-  * DSP Pro on the basics of digital signal processing for audio programming
+  * DSP Pro on digital audio signal processing
   * Official JUCE C++ framework audio plugin development course
-* Available for training & 1-on-1 coaching
+* Available for programming, training & 1-on-1 coaching
 
 ---
 

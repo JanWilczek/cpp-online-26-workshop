@@ -76,8 +76,8 @@ cpmaddpackage(
   GOOGLETEST
   GITHUB_REPOSITORY
   google/googletest
-  VERSION
-  1.17.0
+  GIT_TAG
+  d72f9c8aea6817cdf1ca0ac10887f328de7f3da2
   OPTIONS
   "INSTALL_GTEST OFF"
   "gtest_force_shared_crt ON"
@@ -122,6 +122,8 @@ juce_add_plugin(
   COPY_PLUGIN_AFTER_BUILD
   TRUE # Changing this to TRUE will enable automatic copying of the built plugin formats
   # to correct directories on your system. The directories must exist, though
+  VST3_AUTO_MANIFEST
+  FALSE
 )
 
 # These definitions are recommended by JUCE

@@ -1,17 +1,9 @@
-#include "wolfsound/dsp/wolfsound_FractionalDelayLine.hpp"
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <portaudio.h>
 #pragma GCC diagnostic pop
 
 #include <print>
-#include <ranges>
-#include <numbers>
-#include <cmath>
-#include <mdspan>
-#include <filesystem>
-#include <AudioFile.h>
-#include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <fx/fx.h>
 
 namespace pa_ex {

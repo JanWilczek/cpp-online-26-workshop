@@ -1,4 +1,12 @@
 #pragma once
+#include <mdspan>
+#include <numbers>
+#include <cmath>
+#include <ranges>
+#include <filesystem>
+#include <AudioFile.h>
+#include <wolfsound/common/wolfsound_Frequency.hpp>
+#include <wolfsound/dsp/wolfsound_FractionalDelayLine.hpp>
 
 class AudioProcessor {
 public:

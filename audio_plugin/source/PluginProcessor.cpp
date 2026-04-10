@@ -8,6 +8,21 @@ Param& addToLayout(Group& layout, Ts&&... ts) {
   layout.add(std::move(param));
   return ref;
 }
+
+void interleave(juce::AudioBuffer<float>& src, std::span<float> dest) {
+  using namespace std::views;
+
+  jassert(static_cast<size_t>(src.getNumChannels() * src.getNumSamples()) <=
+          dest.size());
+
+  for (const auto channel : iota(0, src.getNumChannels())) {
+    for (const auto sample : iota(0, src.getNumSamples())) {
+      const auto destIndex =
+          static_cast<size_t>(sample * src.getNumChannels() + channel);
+      dest[destIndex] = src.getSample(channel, sample);
+    }
+  }
+}
 }  // namespace
 
 namespace id {
@@ -87,8 +102,10 @@ void PluginProcessor::changeProgramName(int index,
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
   // initialisation that you need..
-  flanger_.prepareToPlay(sampleRate, samplesPerBlock,
-                         getTotalNumInputChannels());
+  const auto maxChannels =
+      std::max(getTotalNumInputChannels(), getTotalNumOutputChannels());
+  flanger_.prepareToPlay(sampleRate, samplesPerBlock, maxChannels);
+  interleavedBuffer_.resize(static_cast<size_t>(samplesPerBlock * maxChannels));
 }
 
 void PluginProcessor::releaseResources() {
@@ -136,10 +153,10 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   };
   flanger_.setParameters(newParameters);
 
-  // TODO: Convert juce::AudioBuffer to fx::AudioBuffer
-  //  flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
-  //      buffer.getArrayOfWritePointers(), buffer.getNumChannels(),
-  //      buffer.getNumSamples()});
+  interleave(buffer, interleavedBuffer_);
+  flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
+      interleavedBuffer_.data(), buffer.getNumChannels(),
+      buffer.getNumSamples()});
 }
 
 bool PluginProcessor::hasEditor() const {

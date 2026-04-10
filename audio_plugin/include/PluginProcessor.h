@@ -46,6 +46,7 @@ private:
   Parameters parameters_;
   juce::AudioProcessorValueTreeState apvts_;
   fx::Flanger flanger_;
+  std::vector<float> interleavedBuffer_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };

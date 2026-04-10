@@ -23,6 +23,7 @@ END_JUCE_MODULE_DECLARATION
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_dsp/juce_dsp.h>
 #include <ranges>
+#include <vector>
 #include <wolfsound/dsp/wolfsound_FractionalDelayLine.hpp>
 #include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <wolfsound/common/wolfsound_assert.hpp>

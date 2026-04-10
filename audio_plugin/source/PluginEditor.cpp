@@ -5,6 +5,21 @@ juce::Point<float> getRandomPoint(const juce::Rectangle<float>& bounds) {
   return {random.nextFloat() * bounds.getWidth(),
           random.nextFloat() * bounds.getHeight()};
 }
+
+void drawNoise(juce::Graphics& g,
+               const juce::Rectangle<float>& localBounds,
+               float density) {
+  constexpr auto radius = 1.f;
+  const auto componentArea = localBounds.getWidth() * localBounds.getHeight();
+  constexpr auto pointArea = juce::MathConstants<float>::pi * radius * radius;
+  const auto pointsToPaint =
+      static_cast<int>(density * componentArea / pointArea);
+
+  for ([[maybe_unused]] const auto i : std::views::iota(0, pointsToPaint)) {
+    const auto point = getRandomPoint(localBounds);
+    g.fillEllipse(point.x, point.y, radius, radius);
+  }
+}
 }  // namespace
 
 void Background::paint(juce::Graphics& g) {
@@ -12,19 +27,7 @@ void Background::paint(juce::Graphics& g) {
 
   g.setColour(juce::Colours::black);
   g.setOpacity(0.15f);
-  // density 68%
-  // size 1.4
-  constexpr auto density = 0.68f;
-  constexpr auto radius = 1.f;
-  const auto componentArea = static_cast<float>(getWidth() * getHeight());
-  constexpr auto pointArea = juce::MathConstants<float>::pi * radius * radius;
-  const auto pointsToPaint =
-      static_cast<int>(density * componentArea / pointArea);
-
-  for ([[maybe_unused]] const auto i : std::views::iota(0, pointsToPaint)) {
-    const auto point = getRandomPoint(getLocalBounds().toFloat());
-    g.fillEllipse(point.x, point.y, radius, radius);
-  }
+  drawNoise(g, getLocalBounds().toFloat(), 0.68f);
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)

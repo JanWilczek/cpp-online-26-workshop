@@ -75,7 +75,8 @@ private:
 
 class MusicPlayer {
 public:
-  explicit MusicPlayer(std::vector<std::unique_ptr<AudioProcessor>> processors)
+  explicit MusicPlayer(
+      std::vector<std::unique_ptr<fx::AudioProcessor>> processors)
       : stream_{inputChannelCount,
                 outputChannelCount,
                 paFloat32,
@@ -118,8 +119,8 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    auto buffer = AudioProcessor::AudioBuffer{static_cast<float*>(output),
-                                              outputChannelCount, frameCount};
+    auto buffer = fx::AudioProcessor::AudioBuffer{
+        static_cast<float*>(output), outputChannelCount, frameCount};
 
     for (auto& processor : processors_) {
       processor->processBlock(buffer);
@@ -130,17 +131,17 @@ private:
 
   pa_ex::Initializer initializer_;
   pa_ex::Stream stream_;
-  std::vector<std::unique_ptr<AudioProcessor>> processors_;
+  std::vector<std::unique_ptr<fx::AudioProcessor>> processors_;
 };
 
 int main() {
   std::println("PortAudio version: {}", Pa_GetVersionInfo()->versionText);
 
   MusicPlayer player{[] {
-    std::vector<std::unique_ptr<AudioProcessor>> processors;
-    processors.push_back(std::make_unique<FilePlayer>(
+    std::vector<std::unique_ptr<fx::AudioProcessor>> processors;
+    processors.push_back(std::make_unique<fx::FilePlayer>(
         "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
-    processors.push_back(std::make_unique<Flanger>());
+    processors.push_back(std::make_unique<fx::Flanger>());
     return processors;
   }()};
   player.start();

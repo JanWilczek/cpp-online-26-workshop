@@ -8,6 +8,7 @@
 #include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <wolfsound/dsp/wolfsound_FractionalDelayLine.hpp>
 
+namespace fx {
 class AudioProcessor {
 public:
   AudioProcessor() = default;
@@ -179,3 +180,4 @@ private:
   std::vector<ChannelProcessor> channelProcessors_;
   Parameters parameters_;
 };
+}  // namespace fx

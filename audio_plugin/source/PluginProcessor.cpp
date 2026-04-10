@@ -87,17 +87,13 @@ void PluginProcessor::changeProgramName(int index,
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
   // initialisation that you need..
-  flanger_.prepare(juce::dsp::ProcessSpec{
-      .sampleRate = sampleRate,
-      .maximumBlockSize = static_cast<juce::uint32>(samplesPerBlock),
-      .numChannels = static_cast<juce::uint32>(getTotalNumInputChannels()),
-  });
+  flanger_.prepareToPlay(sampleRate, samplesPerBlock,
+                         getTotalNumInputChannels());
 }
 
 void PluginProcessor::releaseResources() {
   // When playback stops, you can use this as an opportunity to free up any
   // spare memory, etc.
-  flanger_.reset();
 }
 
 bool PluginProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const {
@@ -135,13 +131,15 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     buffer.clear(i, 0, buffer.getNumSamples());
   }
 
-  Flanger<SampleType>::Parameters newParameters{
+  const fx::Flanger::Parameters newParameters{
       .lfoFrequency = wolfsound::Frequency{parameters_.lfoFrequency.get()},
   };
-  *flanger_.state = newParameters;
+  flanger_.setParameters(newParameters);
 
-  juce::dsp::AudioBlock<SampleType> audioBlock{buffer};
-  flanger_.process(juce::dsp::ProcessContextReplacing<SampleType>{audioBlock});
+  // TODO: Convert juce::AudioBuffer to fx::AudioBuffer
+  //  flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
+  //      buffer.getArrayOfWritePointers(), buffer.getNumChannels(),
+  //      buffer.getNumSamples()});
 }
 
 bool PluginProcessor::hasEditor() const {
@@ -173,7 +171,7 @@ PluginProcessor::Parameters::Parameters(
           id::LFO_FREQUENCY_HZ,
           "LFO frequency",
           juce::NormalisableRange<float>{0.01f, 10.f, 0.01f},
-          Flanger<SampleType>::Parameters{}.lfoFrequency.value(),
+          fx::Flanger::Parameters{}.lfoFrequency.value(),
           juce::AudioParameterFloatAttributes{}.withLabel("Hz"))} {}
 }  // namespace audio_plugin
 

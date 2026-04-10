@@ -45,9 +45,7 @@ private:
 
   Parameters parameters_;
   juce::AudioProcessorValueTreeState apvts_;
-  juce::dsp::ProcessorDuplicator<Flanger<SampleType>,
-                                 Flanger<SampleType>::Parameters>
-      flanger_;
+  fx::Flanger flanger_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };

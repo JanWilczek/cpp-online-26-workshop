@@ -155,7 +155,7 @@ target_compile_definitions(
 # Enables strict C++ warnings and treats warnings as errors.
 target_compile_options(audio_plugin INTERFACE "${PROJECT_WARNINGS_CXX}")
 
-target_link_libraries(audio_plugin INTERFACE wolfsound::wolfsound_dsp_utils)
+target_link_libraries(audio_plugin INTERFACE my_company::fx)
 
 # We need to link the plugin targets with the module containing our code.
 target_link_libraries(

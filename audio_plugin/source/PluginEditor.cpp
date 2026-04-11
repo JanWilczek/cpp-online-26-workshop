@@ -49,8 +49,12 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   addAndMakeVisible(background_);
 
   flangerLabel_.setText("FLANGER", juce::dontSendNotification);
-  flangerLabel_.setFont(getBungeeShadeTypeface().withPointHeight(40.f));
-  flangerLabel_.setJustificationType(juce::Justification::centredTop);
+  flangerLabel_.setBorderSize({0, 0, 0, 0});
+  flangerLabel_.setMinimumHorizontalScale(1.f);
+  flangerLabel_.setFont(
+      getBungeeShadeTypeface().withPointHeight(40.f).withKerningFactor(.76f));
+  flangerLabel_.setJustificationType(
+      juce::Justification::horizontallyJustified | juce::Justification::top);
   flangerLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
   addAndMakeVisible(flangerLabel_);
 
@@ -69,7 +73,12 @@ void PluginEditor::resized() {
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
   background_.setBounds(getLocalBounds());
-  flangerLabel_.setBounds(24, 15, 473, 55);
+  auto flangerLabelBounds = getLocalBounds();
+  flangerLabelBounds.removeFromLeft(27);
+  flangerLabelBounds.removeFromTop(13);
+  // add extra space so that the letters aren't squished
+  flangerLabelBounds.setWidth(flangerLabelBounds.getWidth() + 50);
+  flangerLabel_.setBounds(flangerLabelBounds);
   modLabel_.setBounds(181, 188, 158, 29);
 }
 }  // namespace audio_plugin

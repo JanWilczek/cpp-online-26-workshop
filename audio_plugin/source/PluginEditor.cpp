@@ -68,6 +68,13 @@ RotarySlider::RotarySlider() {
 void RotarySlider::paint(juce::Graphics& g) {
   const auto bounds = getLocalBounds().toFloat();
   const auto rotaryParams = getRotaryParameters();
+  const auto range = getRange();
+  const auto proportionOfValue =
+      (getValue() - range.getStart()) / range.getLength();
+  const auto valueAngle =
+      static_cast<float>(rotaryParams.startAngleRadians +
+                         proportionOfValue * (rotaryParams.endAngleRadians -
+                                              rotaryParams.startAngleRadians));
 
   // canal
   constexpr auto canalWidth = 6.f;
@@ -82,6 +89,18 @@ void RotarySlider::paint(juce::Graphics& g) {
                           canalWidth, juce::PathStrokeType::JointStyle::curved,
                           juce::PathStrokeType::EndCapStyle::rounded});
 
+  // value arc
+  juce::Path valueArc;
+  valueArc.addCentredArc(canalBounds.getCentreX(), canalBounds.getCentreY(),
+                         canalBounds.getWidth() / 2.f,
+                         canalBounds.getHeight() / 2.f, 0.f,
+                         rotaryParams.startAngleRadians, valueAngle, true);
+  g.setColour(getColor(Colors::orange));
+  g.strokePath(
+      valueArc,
+      juce::PathStrokeType{canalWidth, juce::PathStrokeType::JointStyle::curved,
+                           juce::PathStrokeType::EndCapStyle::rounded});
+
   // knob
   auto knobBounds = bounds.reduced(10);
   g.setColour(getColor(Colors::darkGray));
@@ -91,15 +110,9 @@ void RotarySlider::paint(juce::Graphics& g) {
   g.fillEllipse(knobBounds.reduced(borderThickness));
 
   // value indicator
-  const auto range = getRange();
-  const auto proportionOfValue =
-      (getValue() - range.getStart()) / range.getLength();
-  const auto valueAngle = rotaryParams.startAngleRadians +
-                          proportionOfValue * (rotaryParams.endAngleRadians -
-                                               rotaryParams.startAngleRadians);
   const auto radius = knobBounds.getWidth() / 2.f;
   const auto radiusLine = juce::Line<float>::fromStartAndAngle(
-      knobBounds.getCentre(), radius, static_cast<float>(valueAngle));
+      knobBounds.getCentre(), radius, valueAngle);
   constexpr auto valueIndicatorLength = 22.f;
   const auto valueIndicator =
       radiusLine.withShortenedStart(radius - valueIndicatorLength);

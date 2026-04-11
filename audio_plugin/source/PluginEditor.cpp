@@ -32,10 +32,18 @@ auto getBungeeShadeTypeface() {
       assets::BungeeShadeRegular_ttf, assets::BungeeShadeRegular_ttfSize);
   return juce::FontOptions{result};
 }
+
+enum class Colors : size_t { darkGray, lightGray, orange };
+juce::Colour getColor(Colors colorName) {
+  static const std::array colors{juce::Colour{0xFF4E4E4E},
+                                 juce::Colour{0xFFF5F5F5},
+                                 juce::Colour{0xFFEF7600}};
+  return colors.at(juce::toUnderlyingType(colorName));
+}
 }  // namespace
 
 void Background::paint(juce::Graphics& g) {
-  g.fillAll(juce::Colour{0xFFF5F5F5});
+  g.fillAll(getColor(Colors::lightGray));
 
   g.setColour(juce::Colours::black);
   g.setOpacity(0.15f);
@@ -50,7 +58,7 @@ RotarySlider::RotarySlider() {
 void RotarySlider::paint(juce::Graphics& g) {
   // knob
   const auto knobBounds = getLocalBounds().reduced(10);
-  g.setColour(juce::Colour{0xFFF5F5F5});
+  g.setColour(getColor(Colors::lightGray));
   g.fillEllipse(knobBounds.toFloat());
 }
 
@@ -67,13 +75,15 @@ PluginEditor::PluginEditor(PluginProcessor& p)
       getBungeeShadeTypeface().withPointHeight(40.f).withKerningFactor(.76f));
   flangerLabel_.setJustificationType(
       juce::Justification::horizontallyJustified | juce::Justification::top);
-  flangerLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
+  flangerLabel_.setColour(juce::Label::textColourId,
+                          getColor(Colors::darkGray));
   addAndMakeVisible(flangerLabel_);
 
   modRateLabel_.setText("mod rate", juce::dontSendNotification);
   modRateLabel_.setFont(getAudiowideTypeface().withPointHeight(20.f));
   modRateLabel_.setJustificationType(juce::Justification::centredTop);
-  modRateLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
+  modRateLabel_.setColour(juce::Label::textColourId,
+                          getColor(Colors::darkGray));
   addAndMakeVisible(modRateLabel_);
 
   addAndMakeVisible(modRateSlider_);

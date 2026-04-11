@@ -9,8 +9,10 @@ public:
 class RotarySlider : public juce::Slider, private juce::Slider::Listener {
 public:
   RotarySlider();
+  ~RotarySlider() override;
   void paint(juce::Graphics& g) override;
   void resized() override;
+  juce::String getTextFromValue(double value) override;
 
 private:
   void sliderValueChanged(juce::Slider*) override;

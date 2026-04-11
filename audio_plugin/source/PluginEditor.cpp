@@ -74,7 +74,19 @@ RotarySlider::RotarySlider() {
   valueLabel_.setColour(juce::Label::textColourId, getColor(Colors::darkGray));
   valueLabel_.setJustificationType(juce::Justification::centred);
   valueLabel_.setInterceptsMouseClicks(false, false);
+  // initial text update
+  sliderValueChanged(this);
   addAndMakeVisible(valueLabel_);
+
+  addListener(this);
+}
+
+RotarySlider::~RotarySlider() {
+  removeListener(this);
+}
+
+juce::String RotarySlider::getTextFromValue(double v) {
+  return {v, 2};
 }
 
 void RotarySlider::sliderValueChanged(juce::Slider*) {

@@ -85,7 +85,9 @@ void RotarySlider::paint(juce::Graphics& g) {
   const auto radius = knobBounds.getWidth() / 2.f;
   const auto radiusLine = juce::Line<float>::fromStartAndAngle(
       knobBounds.getCentre(), radius, static_cast<float>(valueAngle));
-  const auto valueIndicator = radiusLine.withShortenedStart(radius - 22.f);
+  constexpr auto valueIndicatorLength = 22.f;
+  const auto valueIndicator =
+      radiusLine.withShortenedStart(radius - valueIndicatorLength);
   g.setColour(getColor(Colors::darkGray));
   g.drawLine(valueIndicator, borderThickness);
 }

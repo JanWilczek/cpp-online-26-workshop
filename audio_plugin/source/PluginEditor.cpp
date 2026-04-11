@@ -141,7 +141,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
                           getColor(Colors::darkGray));
   addAndMakeVisible(flangerLabel_);
 
-  modRateLabel_.setText("mod rate", juce::dontSendNotification);
+  modRateLabel_.setText("mod rate [hz]", juce::dontSendNotification);
   modRateLabel_.setFont(getAudiowideTypeface().withPointHeight(20.f));
   modRateLabel_.setJustificationType(juce::Justification::centredTop);
   modRateLabel_.setColour(juce::Label::textColourId,

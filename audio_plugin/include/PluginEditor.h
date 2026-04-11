@@ -17,6 +17,8 @@ private:
   // access the processor object that created it.
   PluginProcessor& processorRef;
   Background background_;
+  juce::Label flangerLabel_;
+  juce::Label modLabel_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

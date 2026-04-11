@@ -95,6 +95,15 @@ endif()
 add_subdirectory(fx)
 add_subdirectory(music_player)
 
+juce_add_binary_data(
+  audio_plugin_assets
+  NAMESPACE
+  audio_plugin::assets
+  SOURCES
+  audio_plugin/assets/Audiowide-Regular.ttf
+  audio_plugin/assets/BungeeShade-Regular.ttf
+)
+
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(
   AudioPlugin
@@ -157,7 +166,7 @@ target_compile_definitions(
 # Enables strict C++ warnings and treats warnings as errors.
 target_compile_options(audio_plugin INTERFACE "${PROJECT_WARNINGS_CXX}")
 
-target_link_libraries(audio_plugin INTERFACE my_company::fx)
+target_link_libraries(audio_plugin INTERFACE my_company::fx audio_plugin_assets)
 
 # We need to link the plugin targets with the module containing our code.
 target_link_libraries(

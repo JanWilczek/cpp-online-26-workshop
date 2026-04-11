@@ -20,6 +20,18 @@ void drawNoise(juce::Graphics& g,
     g.fillEllipse(point.x, point.y, radius, radius);
   }
 }
+
+auto getAudiowideTypeface() {
+  static const auto result = juce::Typeface::createSystemTypefaceFor(
+      assets::AudiowideRegular_ttf, assets::AudiowideRegular_ttfSize);
+  return juce::FontOptions{result};
+}
+
+auto getBungeeShadeTypeface() {
+  static const auto result = juce::Typeface::createSystemTypefaceFor(
+      assets::BungeeShadeRegular_ttf, assets::BungeeShadeRegular_ttfSize);
+  return juce::FontOptions{result};
+}
 }  // namespace
 
 void Background::paint(juce::Graphics& g) {
@@ -36,6 +48,18 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
   addAndMakeVisible(background_);
 
+  flangerLabel_.setText("FLANGER", juce::dontSendNotification);
+  flangerLabel_.setFont(getBungeeShadeTypeface().withPointHeight(40.f));
+  flangerLabel_.setJustificationType(juce::Justification::centredTop);
+  flangerLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
+  addAndMakeVisible(flangerLabel_);
+
+  modLabel_.setText("mod rate", juce::dontSendNotification);
+  modLabel_.setFont(getAudiowideTypeface().withPointHeight(20.f));
+  modLabel_.setJustificationType(juce::Justification::centredTop);
+  modLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
+  addAndMakeVisible(modLabel_);
+
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
   setSize(520, 250);
@@ -45,5 +69,7 @@ void PluginEditor::resized() {
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
   background_.setBounds(getLocalBounds());
+  flangerLabel_.setBounds(24, 15, 473, 55);
+  modLabel_.setBounds(181, 188, 158, 29);
 }
 }  // namespace audio_plugin

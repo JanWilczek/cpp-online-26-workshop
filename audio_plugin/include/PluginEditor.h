@@ -6,6 +6,12 @@ public:
   void paint(juce::Graphics& g) override;
 };
 
+class RotarySlider : public juce::Slider {
+public:
+  RotarySlider();
+  void paint(juce::Graphics& g) override;
+};
+
 class PluginEditor : public juce::AudioProcessorEditor {
 public:
   explicit PluginEditor(PluginProcessor&);
@@ -19,6 +25,7 @@ private:
   Background background_;
   juce::Label flangerLabel_;
   juce::Label modLabel_;
+  RotarySlider modRateSlider_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

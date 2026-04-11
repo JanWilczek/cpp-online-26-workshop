@@ -42,6 +42,12 @@ void Background::paint(juce::Graphics& g) {
   drawNoise(g, getLocalBounds().toFloat(), 0.68f);
 }
 
+RotarySlider::RotarySlider() {}
+
+void RotarySlider::paint(juce::Graphics& g) {
+  g.fillAll();
+}
+
 PluginEditor::PluginEditor(PluginProcessor& p)
     : AudioProcessorEditor(&p), processorRef(p) {
   juce::ignoreUnused(processorRef);

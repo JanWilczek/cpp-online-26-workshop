@@ -1,10 +1,19 @@
 namespace audio_plugin {
 namespace {
-juce::Point<float> getRandomPoint(const juce::Rectangle<float>& bounds) {
-  static auto random = juce::Random{42};
-  return {random.nextFloat() * bounds.getWidth(),
-          random.nextFloat() * bounds.getHeight()};
-}
+class RandomPointGenerator {
+public:
+  RandomPointGenerator(juce::Rectangle<float> bounds)
+      : bounds_{std::move(bounds)} {}
+
+  juce::Point<float> generate() {
+    return {random_.nextFloat() * bounds_.getWidth(),
+            random_.nextFloat() * bounds_.getHeight()};
+  }
+
+private:
+  juce::Rectangle<float> bounds_;
+  juce::Random random_{42};
+};
 
 void drawNoise(juce::Graphics& g,
                const juce::Rectangle<float>& localBounds,
@@ -15,8 +24,9 @@ void drawNoise(juce::Graphics& g,
   const auto pointsToPaint =
       static_cast<int>(density * componentArea / pointArea);
 
+  RandomPointGenerator pointGenerator{localBounds};
   for ([[maybe_unused]] const auto i : std::views::iota(0, pointsToPaint)) {
-    const auto point = getRandomPoint(localBounds);
+    const auto point = pointGenerator.generate();
     g.fillEllipse(point.x, point.y, radius, radius);
   }
 }
@@ -98,7 +108,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
 void PluginEditor::resized() {
   // This is generally where you'll want to lay out the positions of any
-  // subcomponents in your editor..
+  // subcomponents in your editor.
   background_.setBounds(getLocalBounds());
   auto flangerLabelBounds = getLocalBounds();
   flangerLabelBounds.removeFromLeft(27);

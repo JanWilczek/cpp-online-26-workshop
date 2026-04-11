@@ -74,6 +74,7 @@ void RotarySlider::paint(juce::Graphics& g) {
   g.setColour(getColor(Colors::lightGray));
   g.fillEllipse(knobBounds.reduced(borderThickness));
 
+  // value indicator
   const auto rotaryParams = getRotaryParameters();
   const auto range = getRange();
   const auto proportionOfValue =
@@ -82,8 +83,9 @@ void RotarySlider::paint(juce::Graphics& g) {
                           proportionOfValue * (rotaryParams.endAngleRadians -
                                                rotaryParams.startAngleRadians);
   const auto radius = knobBounds.getWidth() / 2.f;
-  const auto valueIndicator = juce::Line<float>::fromStartAndAngle(
+  const auto radiusLine = juce::Line<float>::fromStartAndAngle(
       knobBounds.getCentre(), radius, static_cast<float>(valueAngle));
+  const auto valueIndicator = radiusLine.withShortenedStart(radius - 22.f);
   g.setColour(getColor(Colors::darkGray));
   g.drawLine(valueIndicator, borderThickness);
 }

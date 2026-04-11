@@ -57,9 +57,12 @@ RotarySlider::RotarySlider() {
 
 void RotarySlider::paint(juce::Graphics& g) {
   // knob
-  const auto knobBounds = getLocalBounds().reduced(10);
+  auto knobBounds = getLocalBounds().reduced(10).toFloat();
+  g.setColour(getColor(Colors::darkGray));
+  g.fillEllipse(knobBounds);
+  knobBounds.reduce(2.f, 2.f);
   g.setColour(getColor(Colors::lightGray));
-  g.fillEllipse(knobBounds.toFloat());
+  g.fillEllipse(knobBounds);
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)

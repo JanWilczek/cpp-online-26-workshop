@@ -78,6 +78,9 @@ void RotarySlider::paint(juce::Graphics& g) {
 
   // canal
   constexpr auto canalWidth = 6.f;
+  static const auto arcStyle =
+      juce::PathStrokeType{canalWidth, juce::PathStrokeType::JointStyle::curved,
+                           juce::PathStrokeType::EndCapStyle::butt};
   const auto canalBounds = bounds.reduced(canalWidth / 2.f);
   juce::Path canal;
   canal.addCentredArc(
@@ -85,9 +88,7 @@ void RotarySlider::paint(juce::Graphics& g) {
       canalBounds.getWidth() / 2.f, canalBounds.getHeight() / 2.f, 0.f,
       rotaryParams.startAngleRadians, rotaryParams.endAngleRadians, true);
   g.setColour(getColor(Colors::darkGray));
-  g.strokePath(canal, juce::PathStrokeType{
-                          canalWidth, juce::PathStrokeType::JointStyle::curved,
-                          juce::PathStrokeType::EndCapStyle::butt});
+  g.strokePath(canal, arcStyle);
 
   // value arc
   juce::Path valueArc;
@@ -96,10 +97,7 @@ void RotarySlider::paint(juce::Graphics& g) {
                          canalBounds.getHeight() / 2.f, 0.f,
                          rotaryParams.startAngleRadians, valueAngle, true);
   g.setColour(getColor(Colors::orange));
-  g.strokePath(
-      valueArc,
-      juce::PathStrokeType{canalWidth, juce::PathStrokeType::JointStyle::curved,
-                           juce::PathStrokeType::EndCapStyle::butt});
+  g.strokePath(valueArc, arcStyle);
 
   // knob
   auto knobBounds = bounds.reduced(10);

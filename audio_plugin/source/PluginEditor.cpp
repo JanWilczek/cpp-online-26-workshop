@@ -62,7 +62,7 @@ void Background::paint(juce::Graphics& g) {
 
 RotarySlider::RotarySlider() {
   setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-  setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
+  setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
   constexpr auto angle = juce::degreesToRadians(20.f + 90.f);
   setRotaryParameters(juce::Slider::RotaryParameters{
       .startAngleRadians = juce::MathConstants<float>::twoPi - angle,
@@ -117,7 +117,7 @@ void RotarySlider::paint(juce::Graphics& g) {
   const auto radius = knobBounds.getWidth() / 2.f;
   const auto radiusLine = juce::Line<float>::fromStartAndAngle(
       knobBounds.getCentre(), radius, valueAngle);
-  constexpr auto valueIndicatorLength = 22.f;
+  constexpr auto valueIndicatorLength = 11.66f;
   const auto valueIndicator =
       radiusLine.withShortenedStart(radius - valueIndicatorLength);
   g.setColour(getColor(Colors::darkGray));

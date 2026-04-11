@@ -42,10 +42,16 @@ void Background::paint(juce::Graphics& g) {
   drawNoise(g, getLocalBounds().toFloat(), 0.68f);
 }
 
-RotarySlider::RotarySlider() {}
+RotarySlider::RotarySlider() {
+  setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+  setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
+}
 
 void RotarySlider::paint(juce::Graphics& g) {
-  g.fillAll();
+  // knob
+  const auto knobBounds = getLocalBounds().reduced(10);
+  g.setColour(juce::Colour{0xFFF5F5F5});
+  g.fillEllipse(knobBounds.toFloat());
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)

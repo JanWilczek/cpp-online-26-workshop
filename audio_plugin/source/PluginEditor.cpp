@@ -64,11 +64,11 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   flangerLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
   addAndMakeVisible(flangerLabel_);
 
-  modLabel_.setText("mod rate", juce::dontSendNotification);
-  modLabel_.setFont(getAudiowideTypeface().withPointHeight(20.f));
-  modLabel_.setJustificationType(juce::Justification::centredTop);
-  modLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
-  addAndMakeVisible(modLabel_);
+  modRateLabel_.setText("mod rate", juce::dontSendNotification);
+  modRateLabel_.setFont(getAudiowideTypeface().withPointHeight(20.f));
+  modRateLabel_.setJustificationType(juce::Justification::centredTop);
+  modRateLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
+  addAndMakeVisible(modRateLabel_);
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -85,6 +85,6 @@ void PluginEditor::resized() {
   // add extra space so that the letters aren't squished
   flangerLabelBounds.setWidth(flangerLabelBounds.getWidth() + 50);
   flangerLabel_.setBounds(flangerLabelBounds);
-  modLabel_.setBounds(181, 187, 158, 29);
+  modRateLabel_.setBounds(181, 187, 158, 29);
 }
 }  // namespace audio_plugin

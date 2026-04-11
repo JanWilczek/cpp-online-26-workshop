@@ -109,6 +109,6 @@ void PluginEditor::resized() {
 
   modRateLabel_.setBounds(181, 187, 158, 29);
 
-  modRateSlider_.setBounds(210, 95, 100, 89);
+  modRateSlider_.setBounds(210, 95, 100, 100);
 }
 }  // namespace audio_plugin

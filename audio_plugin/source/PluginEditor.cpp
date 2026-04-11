@@ -69,6 +69,16 @@ RotarySlider::RotarySlider() {
       .endAngleRadians = juce::MathConstants<float>::twoPi + angle,
       .stopAtEnd = true,
   });
+
+  valueLabel_.setFont(getAudiowideTypeface().withPointHeight(14.f));
+  valueLabel_.setColour(juce::Label::textColourId, getColor(Colors::darkGray));
+  valueLabel_.setJustificationType(juce::Justification::centred);
+  valueLabel_.setInterceptsMouseClicks(false, false);
+  addAndMakeVisible(valueLabel_);
+}
+
+void RotarySlider::sliderValueChanged(juce::Slider*) {
+  valueLabel_.setText(getTextFromValue(getValue()), juce::dontSendNotification);
 }
 
 void RotarySlider::paint(juce::Graphics& g) {
@@ -122,6 +132,10 @@ void RotarySlider::paint(juce::Graphics& g) {
       radiusLine.withShortenedStart(radius - valueIndicatorLength);
   g.setColour(getColor(Colors::darkGray));
   g.drawLine(valueIndicator, borderThickness);
+}
+
+void RotarySlider::resized() {
+  valueLabel_.setBounds(getLocalBounds());
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)

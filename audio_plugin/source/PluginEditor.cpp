@@ -79,6 +79,6 @@ void PluginEditor::resized() {
   // add extra space so that the letters aren't squished
   flangerLabelBounds.setWidth(flangerLabelBounds.getWidth() + 50);
   flangerLabel_.setBounds(flangerLabelBounds);
-  modLabel_.setBounds(181, 188, 158, 29);
+  modLabel_.setBounds(181, 187, 158, 29);
 }
 }  // namespace audio_plugin

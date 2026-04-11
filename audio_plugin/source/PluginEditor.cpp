@@ -70,9 +70,22 @@ void RotarySlider::paint(juce::Graphics& g) {
   auto knobBounds = getLocalBounds().reduced(10).toFloat();
   g.setColour(getColor(Colors::darkGray));
   g.fillEllipse(knobBounds);
-  knobBounds.reduce(2.f, 2.f);
+  constexpr auto borderThickness = 2.f;
   g.setColour(getColor(Colors::lightGray));
-  g.fillEllipse(knobBounds);
+  g.fillEllipse(knobBounds.reduced(borderThickness));
+
+  const auto rotaryParams = getRotaryParameters();
+  const auto range = getRange();
+  const auto proportionOfValue =
+      (getValue() - range.getStart()) / range.getLength();
+  const auto valueAngle = rotaryParams.startAngleRadians +
+                          proportionOfValue * (rotaryParams.endAngleRadians -
+                                               rotaryParams.startAngleRadians);
+  const auto radius = knobBounds.getWidth() / 2.f;
+  const auto valueIndicator = juce::Line<float>::fromStartAndAngle(
+      knobBounds.getCentre(), radius, static_cast<float>(valueAngle));
+  g.setColour(getColor(Colors::darkGray));
+  g.drawLine(valueIndicator, borderThickness);
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)

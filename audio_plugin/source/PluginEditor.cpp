@@ -87,7 +87,7 @@ void RotarySlider::paint(juce::Graphics& g) {
   g.setColour(getColor(Colors::darkGray));
   g.strokePath(canal, juce::PathStrokeType{
                           canalWidth, juce::PathStrokeType::JointStyle::curved,
-                          juce::PathStrokeType::EndCapStyle::rounded});
+                          juce::PathStrokeType::EndCapStyle::butt});
 
   // value arc
   juce::Path valueArc;
@@ -99,7 +99,7 @@ void RotarySlider::paint(juce::Graphics& g) {
   g.strokePath(
       valueArc,
       juce::PathStrokeType{canalWidth, juce::PathStrokeType::JointStyle::curved,
-                           juce::PathStrokeType::EndCapStyle::rounded});
+                           juce::PathStrokeType::EndCapStyle::butt});
 
   // knob
   auto knobBounds = bounds.reduced(10);

@@ -63,6 +63,12 @@ void Background::paint(juce::Graphics& g) {
 RotarySlider::RotarySlider() {
   setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
   setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
+  constexpr auto angle = juce::degreesToRadians(20.f + 90.f);
+  setRotaryParameters(juce::Slider::RotaryParameters{
+      .startAngleRadians = juce::MathConstants<float>::twoPi - angle,
+      .endAngleRadians = juce::MathConstants<float>::twoPi + angle,
+      .stopAtEnd = true,
+  });
 }
 
 void RotarySlider::paint(juce::Graphics& g) {

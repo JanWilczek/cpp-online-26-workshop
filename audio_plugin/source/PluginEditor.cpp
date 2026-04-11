@@ -70,6 +70,8 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   modRateLabel_.setColour(juce::Label::textColourId, juce::Colour{0xFF4E4E4E});
   addAndMakeVisible(modRateLabel_);
 
+  addAndMakeVisible(modRateSlider_);
+
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
   setSize(520, 250);
@@ -85,6 +87,9 @@ void PluginEditor::resized() {
   // add extra space so that the letters aren't squished
   flangerLabelBounds.setWidth(flangerLabelBounds.getWidth() + 50);
   flangerLabel_.setBounds(flangerLabelBounds);
+
   modRateLabel_.setBounds(181, 187, 158, 29);
+
+  modRateSlider_.setBounds(210, 95, 100, 89);
 }
 }  // namespace audio_plugin

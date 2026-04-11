@@ -66,8 +66,24 @@ RotarySlider::RotarySlider() {
 }
 
 void RotarySlider::paint(juce::Graphics& g) {
+  const auto bounds = getLocalBounds().toFloat();
+  const auto rotaryParams = getRotaryParameters();
+
+  // canal
+  constexpr auto canalWidth = 6.f;
+  const auto canalBounds = bounds.reduced(canalWidth / 2.f);
+  juce::Path canal;
+  canal.addCentredArc(
+      canalBounds.getCentreX(), canalBounds.getCentreY(),
+      canalBounds.getWidth() / 2.f, canalBounds.getHeight() / 2.f, 0.f,
+      rotaryParams.startAngleRadians, rotaryParams.endAngleRadians, true);
+  g.setColour(getColor(Colors::darkGray));
+  g.strokePath(canal, juce::PathStrokeType{
+                          canalWidth, juce::PathStrokeType::JointStyle::curved,
+                          juce::PathStrokeType::EndCapStyle::rounded});
+
   // knob
-  auto knobBounds = getLocalBounds().reduced(10).toFloat();
+  auto knobBounds = bounds.reduced(10);
   g.setColour(getColor(Colors::darkGray));
   g.fillEllipse(knobBounds);
   constexpr auto borderThickness = 2.f;
@@ -75,7 +91,6 @@ void RotarySlider::paint(juce::Graphics& g) {
   g.fillEllipse(knobBounds.reduced(borderThickness));
 
   // value indicator
-  const auto rotaryParams = getRotaryParameters();
   const auto range = getRange();
   const auto proportionOfValue =
       (getValue() - range.getStart()) / range.getLength();

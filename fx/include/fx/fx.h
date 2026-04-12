@@ -152,13 +152,13 @@ private:
 
     float processSample(float sample, float lfoSample) {
       const auto& x = sample;
-      const auto xh = x + (feedback_ * delayLine_.popSample(middleDelay_));
+      const auto xh = x + (feedback * delayLine_.popSample(middleDelay_));
 
       const auto lfoUnipolarValue = (lfoSample + 1) / 2;
       const auto currentDelay = lfoUnipolarValue * maxDelay_;
 
       const auto y =
-          (blend_ * xh) + (feedforward_ * delayLine_.popSample(currentDelay));
+          (blend * xh) + (feedforward * delayLine_.popSample(currentDelay));
 
       delayLine_.pushSample(xh);
 
@@ -166,9 +166,9 @@ private:
     }
 
   private:
-    static constexpr auto feedforward_ = 0.7f;
-    static constexpr auto feedback_ = 0.7f;
-    static constexpr auto blend_ = 0.7f;
+    static constexpr auto feedforward = 0.7f;
+    static constexpr auto feedback = 0.7f;
+    static constexpr auto blend = 0.7f;
 
     float maxDelay_ = 0.f;
     float middleDelay_ = 0.f;

@@ -96,9 +96,7 @@ void RotarySlider::sliderValueChanged(juce::Slider*) {
 void RotarySlider::paint(juce::Graphics& g) {
   const auto bounds = getLocalBounds().toFloat();
   const auto rotaryParams = getRotaryParameters();
-  const auto range = getRange();
-  const auto proportionOfValue =
-      (getValue() - range.getStart()) / range.getLength();
+  const auto proportionOfValue = valueToProportionOfLength(getValue());
   const auto valueAngle =
       static_cast<float>(rotaryParams.startAngleRadians +
                          proportionOfValue * (rotaryParams.endAngleRadians -

@@ -146,7 +146,7 @@ int main() {
   }()};
   player.start();
 
-  Pa_Sleep(3L * 1000L);
+  Pa_Sleep(5L * 1000L);
 
   player.stop();
 }

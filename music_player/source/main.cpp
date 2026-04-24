@@ -141,7 +141,11 @@ int main() {
     std::vector<std::unique_ptr<fx::AudioProcessor>> processors;
     processors.push_back(std::make_unique<fx::FilePlayer>(
         "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
-    processors.push_back(std::make_unique<fx::Flanger>());
+    auto flanger = std::make_unique<fx::Flanger>();
+    flanger->setParameters({
+        .lfoFrequency = wolfsound::Frequency{7.f},
+    });
+    processors.push_back(std::move(flanger));
     return processors;
   }()};
   player.start();

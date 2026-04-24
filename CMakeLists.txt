@@ -67,7 +67,7 @@ cpmaddpackage(
   GITHUB_REPOSITORY
   JanWilczek/wolfsound-dsp-utils
   VERSION
-  0.5.0
+  0.6.0
 )
 
 # Adds googletest.

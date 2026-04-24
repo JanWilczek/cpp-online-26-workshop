@@ -6,7 +6,7 @@ public:
   using SampleType = float;
 
   explicit PluginProcessor(
-      juce::AudioProcessorValueTreeState::ParameterLayout parameterLayout);
+      wolfsound::JuceParameterHolder::Builder builder = {});
 
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
@@ -39,12 +39,12 @@ private:
   using ParameterLayout = juce::AudioProcessorValueTreeState::ParameterLayout;
 
   struct Parameters {
-    explicit Parameters(ParameterLayout&);
+    explicit Parameters(wolfsound::JuceParameterHolder::Builder&);
     juce::AudioParameterFloat& lfoFrequency;  // NOLINT
   };
 
   Parameters parameters_;
-  juce::AudioProcessorValueTreeState apvts_;
+  wolfsound::JuceParameterHolder parameterHolder_;
   fx::Flanger flanger_;
   std::vector<float> interleavedBuffer_;
 

@@ -1,14 +1,5 @@
 namespace audio_plugin {
 namespace {
-/** @brief This is taken straight from JUCE's WebViewPluginDemo.h */
-template <typename Param, typename Group, typename... Ts>
-Param& addToLayout(Group& layout, Ts&&... ts) {
-  auto param = std::make_unique<Param>(std::forward<Ts>(ts)...);
-  auto& ref = *param;
-  layout.add(std::move(param));
-  return ref;
-}
-
 void interleave(juce::AudioBuffer<float>& src, std::span<float> dest) {
   using namespace std::views;
 
@@ -30,7 +21,7 @@ static const juce::ParameterID LFO_FREQUENCY_HZ{"lfoFrequencyHz", 1};
 }
 
 PluginProcessor::PluginProcessor(
-    juce::AudioProcessorValueTreeState::ParameterLayout parameterLayout)
+    wolfsound::JuceParameterHolder::Builder builder)
     : AudioProcessor(
           BusesProperties()
 #if !JucePlugin_IsMidiEffect
@@ -40,9 +31,10 @@ PluginProcessor::PluginProcessor(
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
               ),
-      parameters_{parameterLayout},
-      apvts_{*this, nullptr, "FLANGERPARAMS", std::move(parameterLayout)} {
+      parameters_{builder},
+      parameterHolder_{std::move(builder).build(*this)} {
 }
+
 const juce::String PluginProcessor::getName() const {
   return JUCE_PLUGIN_NAME;
 }
@@ -171,20 +163,31 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
   // You should use this method to store your parameters in the memory block.
   // You could do that either as raw data, or use the XML or ValueTree classes
   // as intermediaries to make it easy to save and load complex data.
-  juce::ignoreUnused(destData);
+  const auto serializedParameters = wolfsound::SerializedParameters::from(
+      wolfsound::toVarArray(parameterHolder_));
+  if (serializedParameters.has_value()) {
+    juce::MemoryOutputStream memory{destData, true};
+    juce::JSON::writeToStream(memory, serializedParameters->toVar());
+  }
 }
 
 void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
   // You should use this method to restore your parameters from this memory
   // block, whose contents will have been created by the getStateInformation()
   // call.
-  juce::ignoreUnused(data, sizeInBytes);
+  juce::MemoryInputStream inputStream{data, static_cast<size_t>(sizeInBytes),
+                                      false};
+  const auto deserializedParameters = juce::JSON::parse(inputStream);
+  const auto parameters =
+      wolfsound::SerializedParameters::from(deserializedParameters);
+  if (parameters.has_value()) {
+    wolfsound::update(parameterHolder_, parameters->toVarArray());
+  }
 }
 
 PluginProcessor::Parameters::Parameters(
-    juce::AudioProcessorValueTreeState::ParameterLayout& layout)
-    : lfoFrequency{addToLayout<juce::AudioParameterFloat>(
-          layout,
+    wolfsound::JuceParameterHolder ::Builder& builder)
+    : lfoFrequency{builder.add<juce::AudioParameterFloat>(
           id::LFO_FREQUENCY_HZ,
           "LFO frequency",
           juce::NormalisableRange<float>{0.01f, 10.f, 0.01f},
@@ -195,5 +198,5 @@ PluginProcessor::Parameters::Parameters(
 // This creates new instances of the plugin.
 // This function definition must be in the global namespace.
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
-  return new audio_plugin::PluginProcessor({});
+  return new audio_plugin::PluginProcessor();
 }

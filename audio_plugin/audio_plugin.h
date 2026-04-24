@@ -27,6 +27,7 @@ END_JUCE_MODULE_DECLARATION
 #include <wolfsound/dsp/wolfsound_FractionalDelayLine.hpp>
 #include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <wolfsound/common/wolfsound_assert.hpp>
+#include <wolfsound/juce/wolfsound_ParameterHolder.hpp>
 #include <fx/fx.h>
 #include "include/PluginProcessor.h"
 #include "include/PluginEditor.h"

@@ -82,6 +82,10 @@ public:
           buffer[channel, frame] =
               file_.samples[static_cast<size_t>(channel)][playhead_];
         }
+        for (const auto channel :
+             std::views::iota(channelCount, buffer.extent(0))) {
+          buffer[channel, frame] = 0.f;
+        }
         playhead_++;
       }
     }
@@ -124,18 +128,16 @@ public:
     // Generate the LFO
     WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),
               "the host is misbehaving");
-    lfo_.processBlock(
-        AudioBuffer{lfoBuffer_.data(), 1, std::ssize(lfoBuffer_)});
+    lfo_.processBlock(AudioBuffer{lfoBuffer_.data(), 1, buffer.extent(1)});
 
     // Process samples one by one, at least initially.
     using namespace std::views;
     for (const auto channel : iota(0, buffer.extent(0))) {
-      for (const auto sample : iota(0, buffer.extent(1))) {
+      for (const auto frame : iota(0, buffer.extent(1))) {
         const auto processedSample =
             channelProcessors_[static_cast<size_t>(channel)].processSample(
-                buffer[channel, sample],
-                lfoBuffer_[static_cast<size_t>(sample)]);
-        buffer[channel, sample] = processedSample;
+                buffer[channel, frame], lfoBuffer_[static_cast<size_t>(frame)]);
+        buffer[channel, frame] = processedSample;
       }
     }
   }

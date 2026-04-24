@@ -14,6 +14,21 @@ void interleave(juce::AudioBuffer<float>& src, std::span<float> dest) {
     }
   }
 }
+
+void deinterleave(std::span<float> src, juce::AudioBuffer<float>& dst) {
+  using namespace std::views;
+
+  jassert(static_cast<size_t>(dst.getNumChannels() * dst.getNumSamples()) <=
+          src.size());
+
+  for (const auto channel : iota(0, dst.getNumChannels())) {
+    for (const auto sample : iota(0, dst.getNumSamples())) {
+      const auto srcIndex =
+          static_cast<size_t>(sample * dst.getNumChannels() + channel);
+      dst.setSample(channel, sample, src[srcIndex]);
+    }
+  }
+}
 }  // namespace
 
 namespace id {
@@ -149,6 +164,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
       interleavedBuffer_.data(), buffer.getNumChannels(),
       buffer.getNumSamples()});
+  deinterleave(interleavedBuffer_, buffer);
 }
 
 bool PluginProcessor::hasEditor() const {

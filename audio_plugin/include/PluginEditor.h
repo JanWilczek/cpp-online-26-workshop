@@ -34,6 +34,7 @@ private:
   juce::Label flangerLabel_;
   juce::Label modRateLabel_;
   RotarySlider modRateSlider_;
+  juce::SliderParameterAttachment sliderAttachment_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

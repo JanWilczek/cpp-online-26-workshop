@@ -35,13 +35,14 @@ public:
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
 
-private:
-  using ParameterLayout = juce::AudioProcessorValueTreeState::ParameterLayout;
-
   struct Parameters {
     explicit Parameters(wolfsound::JuceParameterHolder::Builder&);
     juce::AudioParameterFloat& lfoFrequency;  // NOLINT
   };
+  const Parameters& getParameterRefs() const;
+
+private:
+  using ParameterLayout = juce::AudioProcessorValueTreeState::ParameterLayout;
 
   Parameters parameters_;
   wolfsound::JuceParameterHolder parameterHolder_;

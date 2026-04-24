@@ -149,7 +149,9 @@ void RotarySlider::resized() {
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)
-    : AudioProcessorEditor(&p), processorRef(p) {
+    : AudioProcessorEditor(&p),
+      processorRef(p),
+      sliderAttachment_{p.getParameterRefs().lfoFrequency, modRateSlider_} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(background_);

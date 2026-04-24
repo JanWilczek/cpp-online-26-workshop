@@ -93,7 +93,7 @@ void PluginProcessor::changeProgramName(int index,
 
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
-  // initialisation that you need..
+  // initialisation that you need.
   const auto maxChannels =
       std::max(getTotalNumInputChannels(), getTotalNumOutputChannels());
   flanger_.prepareToPlay(sampleRate, samplesPerBlock, maxChannels);
@@ -183,6 +183,10 @@ void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
   if (parameters.has_value()) {
     wolfsound::update(parameterHolder_, parameters->toVarArray());
   }
+}
+
+auto PluginProcessor::getParameterRefs() const -> const Parameters& {
+  return parameters_;
 }
 
 PluginProcessor::Parameters::Parameters(

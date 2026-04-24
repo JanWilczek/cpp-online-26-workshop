@@ -31,10 +31,6 @@ void deinterleave(std::span<float> src, juce::AudioBuffer<float>& dst) {
 }
 }  // namespace
 
-namespace id {
-static const juce::ParameterID LFO_FREQUENCY_HZ{"lfoFrequencyHz", 1};
-}
-
 PluginProcessor::PluginProcessor(
     wolfsound::JuceParameterHolder::Builder builder)
     : AudioProcessor(
@@ -208,7 +204,7 @@ auto PluginProcessor::getParameterRefs() const -> const Parameters& {
 PluginProcessor::Parameters::Parameters(
     wolfsound::JuceParameterHolder ::Builder& builder)
     : lfoFrequency{builder.add<juce::AudioParameterFloat>(
-          id::LFO_FREQUENCY_HZ,
+          "lfoFrequencyHz",
           "LFO frequency",
           juce::NormalisableRange<float>{0.01f, 10.f, 0.01f},
           fx::Flanger::Parameters{}.lfoFrequency.value(),

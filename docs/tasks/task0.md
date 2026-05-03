@@ -52,11 +52,10 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
 3. Run the compiled projects. The built targets are in platform- and buildsystem-specific folders. For the `default` preset and the `make` buildsystem, run
     ```bash
     build/Debug/music_player/music_player # you should hear guitar sound
-    build/Debug/test/AudioPluginTest # runs tests
+    build/Debug/test/AudioPluginTest # runs tests: has file data/Guitar_5th_FlangerEnd2EndTestOutput.wav been created?
     build/Debug/AudioPlugin_artefacts/Debug/Standalone/CppOnline2026WorkshopFlanger.app/Contents/MacOS/CppOnline2026WorkshopFlanger # start the GUI app
     ```
 4. Watch [the workshop preview on YouTube](https://youtu.be/VSr5o7kR1KM?si=L30yOa4LO5kV6HpT). It conveys basic knowledge that we'll use in the workshop. Watching it before the workshop will greatly aid you in writing code.
-
 
 ## Bonus tip
 

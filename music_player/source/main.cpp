@@ -81,7 +81,8 @@ public:
                 outputChannelCount,
                 paFloat32,
                 sampleRate,
-                static_cast<unsigned long>(paFramesPerBufferUnspecified),
+                static_cast<unsigned long>(paFramesPerBufferUnspecified) |
+                    static_cast<unsigned long>(paNonInterleaved),
                 [](const void* input,
                    void* output,
                    unsigned long frameCount,

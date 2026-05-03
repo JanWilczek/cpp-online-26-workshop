@@ -1,36 +1,4 @@
 namespace audio_plugin {
-namespace {
-void interleave(juce::AudioBuffer<float>& src, std::span<float> dest) {
-  using namespace std::views;
-
-  jassert(static_cast<size_t>(src.getNumChannels() * src.getNumSamples()) <=
-          dest.size());
-
-  for (const auto channel : iota(0, src.getNumChannels())) {
-    for (const auto sample : iota(0, src.getNumSamples())) {
-      const auto destIndex =
-          static_cast<size_t>(sample * src.getNumChannels() + channel);
-      dest[destIndex] = src.getSample(channel, sample);
-    }
-  }
-}
-
-void deinterleave(std::span<float> src, juce::AudioBuffer<float>& dst) {
-  using namespace std::views;
-
-  jassert(static_cast<size_t>(dst.getNumChannels() * dst.getNumSamples()) <=
-          src.size());
-
-  for (const auto channel : iota(0, dst.getNumChannels())) {
-    for (const auto sample : iota(0, dst.getNumSamples())) {
-      const auto srcIndex =
-          static_cast<size_t>(sample * dst.getNumChannels() + channel);
-      dst.setSample(channel, sample, src[srcIndex]);
-    }
-  }
-}
-}  // namespace
-
 PluginProcessor::PluginProcessor(
     wolfsound::JuceParameterHolder::Builder builder)
     : AudioProcessor(
@@ -156,11 +124,13 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   };
   flanger_.setParameters(newParameters);
 
-  interleave(buffer, interleavedBuffer_);
+  // Creating AudioBuffer this way works only thanks to how
+  // juce::AudioBuffer stores samples. This is not documented
+  // in the interface, and, as such, may change. However, I doubt
+  // that they will change that anytime soon.
   flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
-      interleavedBuffer_.data(), buffer.getNumChannels(),
+      buffer.getWritePointer(0), buffer.getNumChannels(),
       buffer.getNumSamples()});
-  deinterleave(interleavedBuffer_, buffer);
 }
 
 bool PluginProcessor::hasEditor() const {

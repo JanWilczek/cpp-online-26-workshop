@@ -22,8 +22,7 @@ public:
                              [[maybe_unused]] int maxFramesPerBuffer,
                              [[maybe_unused]] int channelCount) {}
 
-  using AudioBuffer =
-      std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
+  using AudioBuffer = std::mdspan<float, std::dextents<int, 2>>;
   virtual void processBlock(AudioBuffer) = 0;
 };
 

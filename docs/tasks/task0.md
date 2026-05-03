@@ -1,6 +1,6 @@
 # Task 0
 
-!> [!WARNING]
+> [!WARNING]
 > Don't test audio using headphones. If there's a glitch, it may impair your hearing.
 
 Your first task is to compile the code on the `main` branch. Do this **BEFORE** the workshop starts. Although that may seem simple, it typically is the biggest hurdle students face.
@@ -55,6 +55,7 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
     build/Debug/test/AudioPluginTest # runs tests
     build/Debug/AudioPlugin_artefacts/Debug/Standalone/CppOnline2026WorkshopFlanger.app/Contents/MacOS/CppOnline2026WorkshopFlanger # start the GUI app
     ```
+4. Watch [the workshop preview on YouTube](https://youtu.be/VSr5o7kR1KM?si=L30yOa4LO5kV6HpT). It conveys basic knowledge that we'll use in the workshop. Watching it before the workshop will greatly aid you in writing code.
 
 
 ## Bonus tip

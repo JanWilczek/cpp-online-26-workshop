@@ -3,7 +3,7 @@
 git checkout main
 git checkout homework/draw-background-noise && \
   git merge main && \
-git checkout task/add-custom-font && \
+git checkout task/add-custom-fonts && \
   git merge homework/draw-background-noise && \
 git checkout main
 

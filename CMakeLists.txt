@@ -95,8 +95,8 @@ juce_add_binary_data(
   NAMESPACE
   audio_plugin::assets
   SOURCES
-  audio_plugin/assets/Audiowide-Regular.ttf
-  audio_plugin/assets/BungeeShade-Regular.ttf
+  # TODO: Add font files as binary data
+  audio_plugin/assets/placeholder.txt
 )
 
 # Adds a plugin target (that's basically what the Projucer does).

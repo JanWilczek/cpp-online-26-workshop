@@ -15,18 +15,6 @@ void drawNoise(juce::Graphics& g,
   }
 }
 
-auto getAudiowideTypeface() {
-  static const auto result = juce::Typeface::createSystemTypefaceFor(
-      assets::AudiowideRegular_ttf, assets::AudiowideRegular_ttfSize);
-  return juce::FontOptions{result};
-}
-
-auto getBungeeShadeTypeface() {
-  static const auto result = juce::Typeface::createSystemTypefaceFor(
-      assets::BungeeShadeRegular_ttf, assets::BungeeShadeRegular_ttfSize);
-  return juce::FontOptions{result};
-}
-
 enum class Colors : size_t { darkGray, lightGray, orange };
 juce::Colour getColor(Colors colorName) {
   static const std::array colors{juce::Colour{0xFF4E4E4E},
@@ -54,12 +42,12 @@ RotarySlider::RotarySlider() {
       .stopAtEnd = true,
   });
 
-  valueLabel_.setFont(getAudiowideTypeface().withPointHeight(14.f));
   valueLabel_.setColour(juce::Label::textColourId, getColor(Colors::darkGray));
   valueLabel_.setJustificationType(juce::Justification::centred);
   valueLabel_.setInterceptsMouseClicks(false, false);
   // initial text update
   sliderValueChanged(this);
+  // TODO: Set valueLabel_'s font
   addAndMakeVisible(valueLabel_);
 
   addListener(this);
@@ -143,19 +131,18 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   flangerLabel_.setText("FLANGER", juce::dontSendNotification);
   flangerLabel_.setBorderSize({0, 0, 0, 0});
   flangerLabel_.setMinimumHorizontalScale(1.f);
-  flangerLabel_.setFont(
-      getBungeeShadeTypeface().withPointHeight(40.f).withKerningFactor(.76f));
   flangerLabel_.setJustificationType(
       juce::Justification::horizontallyJustified | juce::Justification::top);
   flangerLabel_.setColour(juce::Label::textColourId,
                           getColor(Colors::darkGray));
+  // TODO: Set "FLANGER" label font
   addAndMakeVisible(flangerLabel_);
 
   modRateLabel_.setText("mod rate [hz]", juce::dontSendNotification);
-  modRateLabel_.setFont(getAudiowideTypeface().withPointHeight(20.f));
   modRateLabel_.setJustificationType(juce::Justification::centredTop);
   modRateLabel_.setColour(juce::Label::textColourId,
                           getColor(Colors::darkGray));
+  // TODO: Set "mod rate [hz]" font
   addAndMakeVisible(modRateLabel_);
 
   addAndMakeVisible(modRateSlider_);

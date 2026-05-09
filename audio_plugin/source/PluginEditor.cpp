@@ -126,11 +126,6 @@ void PluginEditor::resized() {
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor.
   background_.setBounds(getLocalBounds());
-  auto flangerLabelBounds = getLocalBounds();
-  flangerLabelBounds.removeFromLeft(27);
-  flangerLabelBounds.removeFromTop(13);
-  // add extra space so that the letters aren't squished
-  flangerLabelBounds.setWidth(flangerLabelBounds.getWidth() + 50);
 
   // TODO: Set labels' bounds
 

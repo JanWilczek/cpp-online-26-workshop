@@ -17,5 +17,7 @@ git checkout task/create-custom-editor && \
   git rebase task/add-slider && \
 git checkout task/add-parameter && \
   git rebase task/create-custom-editor && \
+git checkout task/flanger-plugin && \
+  git rebase task/add-parameter && \
 git checkout main
 

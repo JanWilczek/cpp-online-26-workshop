@@ -15,12 +15,13 @@
 
 ## Part -2: Audio plugin in JUCE C++ framework
 
+From now on, we will work exclusively in the *audio_plugin* folder (apart from the _CMakeLists.txt_ file).
+
 ### Task
 
-- add Flanger to PluginProcessor
-- add prepareToPlay()
-- add reset()
-- add processBlock() between interleave/deinterleave
+1. Add an `fx::Flanger flanger_` member to `PluginProcessor`.
+1. Call `flanger_.prepareToPlay()` in `PluginProcessor::prepareToPlay`.
+1. Apply the flanger effect to the audio in the `PluginProcessor::processBlock()` function. `interleave()` and `deinterleave()` functions have been provided for you, since JUCE does not use interleaved buffers.
 
 ### Task: Parameters
 

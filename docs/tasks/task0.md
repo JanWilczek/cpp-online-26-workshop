@@ -26,9 +26,14 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
     "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
     ```
 
-3. (Linux-only) Before generating the project, you need to install [JUCE dependencies](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md) with the following command:
+3. (Linux-only) Before generating the project, you need to install GCC 16 (if you don't already have it installed) and [JUCE dependencies](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md). You can do it with the following commands:
     ```bash
     sudo apt update
+    sudo apt install gcc-16 g++-16
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-16 100
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-16 100
+    sudo update-alternatives --set gcc /usr/bin/gcc-16
+    sudo update-alternatives --set g++ /usr/bin/g++-16
     sudo apt install libasound2-dev libjack-jackd2-dev \
         ladspa-sdk \
         libcurl4-openssl-dev  \

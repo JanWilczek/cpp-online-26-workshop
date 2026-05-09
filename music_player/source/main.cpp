@@ -92,8 +92,6 @@ public:
                                                 timeInfo, statusFlags);
                 },
                 this} {
-    using namespace wolfsound::literals;
-    sineGenerator_.setFrequency(440_Hz);
     sineGenerator_.prepareToPlay(sampleRate);
   }
 

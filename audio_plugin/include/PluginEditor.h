@@ -11,6 +11,8 @@ public:
   RotarySlider();
   void paint(juce::Graphics& g) override;
   juce::String getTextFromValue(double value) override;
+
+  // TODO: Add value label
 };
 
 class PluginEditor : public juce::AudioProcessorEditor {

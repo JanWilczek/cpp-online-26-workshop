@@ -10,8 +10,9 @@ enum class Colors : size_t { darkGray, lightGray, orange };
 }  // namespace
 PluginEditor::PluginEditor(PluginProcessor& p)
     : AudioProcessorEditor(&p),
-      processorRef(p),
-      sliderAttachment_{p.getParameterRefs().lfoFrequency, modRateSlider_} {
+      processorRef(p)
+// TODO: Add slider attachment
+{
   juce::ignoreUnused(processorRef);
 
   // TODO: Add background
@@ -22,10 +23,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   // TODO: Add "mod rate [hz]" label
   // TODO: Set "mod rate [hz]" font
 
-  modRateSlider_.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-  modRateSlider_.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox,
-                                 true, 0, 0);
-  addAndMakeVisible(modRateSlider_);
+  // TODO: Add modulation rate slider
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -39,6 +37,6 @@ void PluginEditor::resized() {
 
   // TODO: Set labels' bounds
 
-  modRateSlider_.setBounds(210, 95, 100, 100);
+  // TODO: Set slider's bounds
 }
 }  // namespace audio_plugin

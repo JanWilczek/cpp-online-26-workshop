@@ -14,8 +14,8 @@ private:
   // TODO: Add background component
   // TODO: Add labels
   // TODO: Subclass juce::Slider to style it
-  juce::Slider modRateSlider_;
-  juce::SliderParameterAttachment sliderAttachment_;
+  // TODO: Add modulation rate slider
+  // TODO: Add slider attachment
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

@@ -1,14 +1,49 @@
 namespace audio_plugin {
-PluginProcessor::PluginProcessor()
+namespace {
+void interleave(juce::AudioBuffer<float>& src, std::span<float> dest) {
+  using namespace std::views;
+
+  jassert(static_cast<size_t>(src.getNumChannels() * src.getNumSamples()) <=
+          dest.size());
+
+  for (const auto channel : iota(0, src.getNumChannels())) {
+    for (const auto sample : iota(0, src.getNumSamples())) {
+      const auto destIndex =
+          static_cast<size_t>(sample * src.getNumChannels() + channel);
+      dest[destIndex] = src.getSample(channel, sample);
+    }
+  }
+}
+
+void deinterleave(std::span<float> src, juce::AudioBuffer<float>& dst) {
+  using namespace std::views;
+
+  jassert(static_cast<size_t>(dst.getNumChannels() * dst.getNumSamples()) <=
+          src.size());
+
+  for (const auto channel : iota(0, dst.getNumChannels())) {
+    for (const auto sample : iota(0, dst.getNumSamples())) {
+      const auto srcIndex =
+          static_cast<size_t>(sample * dst.getNumChannels() + channel);
+      dst.setSample(channel, sample, src[srcIndex]);
+    }
+  }
+}
+}  // namespace
+
+PluginProcessor::PluginProcessor(
+    wolfsound::JuceParameterHolder::Builder builder)
     : AudioProcessor(
           BusesProperties()
-#if !JUCE_IS_MIDI_EFFECT
-#if !JUCE_IS_SYNTH
+#if !JucePlugin_IsMidiEffect
+#if !JucePlugin_IsSynth
               .withInput("Input", juce::AudioChannelSet::stereo(), true)
 #endif
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      ) {
+              ),
+      parameters_{builder},
+      parameterHolder_{std::move(builder).build(*this)} {
 }
 
 const juce::String PluginProcessor::getName() const {
@@ -69,8 +104,11 @@ void PluginProcessor::changeProgramName(int index,
 
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
-  // initialisation that you need..
-  juce::ignoreUnused(sampleRate, samplesPerBlock);
+  // initialisation that you need.
+  const auto maxChannels =
+      std::max(getTotalNumInputChannels(), getTotalNumOutputChannels());
+  flanger_.prepareToPlay(sampleRate, samplesPerBlock, maxChannels);
+  interleavedBuffer_.resize(static_cast<size_t>(samplesPerBlock * maxChannels));
 }
 
 void PluginProcessor::releaseResources() {
@@ -109,26 +147,20 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   auto totalNumInputChannels = getTotalNumInputChannels();
   auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-  // In case we have more outputs than inputs, this code clears any output
-  // channels that didn't contain input data, (because these aren't
-  // guaranteed to be empty - they may contain garbage).
-  // This is here to avoid people getting screaming feedback
-  // when they first compile a plugin, but obviously you don't need to keep
-  // this code if your algorithm always overwrites all the output channels.
-  for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+  for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
     buffer.clear(i, 0, buffer.getNumSamples());
-
-  // This is the place where you'd normally do the guts of your plugin's
-  // audio processing...
-  // Make sure to reset the state if your inner loop is processing
-  // the samples and the outer loop is handling the channels.
-  // Alternatively, you can process the samples with the channels
-  // interleaved by keeping the same state.
-  for (int channel = 0; channel < totalNumInputChannels; ++channel) {
-    auto* channelData = buffer.getWritePointer(channel);
-    juce::ignoreUnused(channelData);
-    // ..do something to the data...
   }
+
+  const fx::Flanger::Parameters newParameters{
+      .lfoFrequency = wolfsound::Frequency{parameters_.lfoFrequency.get()},
+  };
+  flanger_.setParameters(newParameters);
+
+  interleave(buffer, interleavedBuffer_);
+  flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
+      interleavedBuffer_.data(), buffer.getNumChannels(),
+      buffer.getNumSamples()});
+  deinterleave(interleavedBuffer_, buffer);
 }
 
 bool PluginProcessor::hasEditor() const {
@@ -143,15 +175,40 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
   // You should use this method to store your parameters in the memory block.
   // You could do that either as raw data, or use the XML or ValueTree classes
   // as intermediaries to make it easy to save and load complex data.
-  juce::ignoreUnused(destData);
+  const auto serializedParameters = wolfsound::SerializedParameters::from(
+      wolfsound::toVarArray(parameterHolder_));
+  if (serializedParameters.has_value()) {
+    juce::MemoryOutputStream memory{destData, true};
+    juce::JSON::writeToStream(memory, serializedParameters->toVar());
+  }
 }
 
 void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
   // You should use this method to restore your parameters from this memory
   // block, whose contents will have been created by the getStateInformation()
   // call.
-  juce::ignoreUnused(data, sizeInBytes);
+  juce::MemoryInputStream inputStream{data, static_cast<size_t>(sizeInBytes),
+                                      false};
+  const auto deserializedParameters = juce::JSON::parse(inputStream);
+  const auto parameters =
+      wolfsound::SerializedParameters::from(deserializedParameters);
+  if (parameters.has_value()) {
+    wolfsound::update(parameterHolder_, parameters->toVarArray());
+  }
 }
+
+auto PluginProcessor::getParameterRefs() const -> const Parameters& {
+  return parameters_;
+}
+
+PluginProcessor::Parameters::Parameters(
+    wolfsound::JuceParameterHolder ::Builder& builder)
+    : lfoFrequency{builder.add<juce::AudioParameterFloat>(
+          "lfoFrequencyHz",
+          "LFO frequency",
+          juce::NormalisableRange<float>{0.01f, 10.f, 0.01f},
+          fx::Flanger::Parameters{}.lfoFrequency.value(),
+          juce::AudioParameterFloatAttributes{}.withLabel("Hz"))} {}
 }  // namespace audio_plugin
 
 // This creates new instances of the plugin.

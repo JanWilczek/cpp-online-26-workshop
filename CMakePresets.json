@@ -8,16 +8,18 @@
   "configurePresets": [
     {
       "name": "default",
-      "binaryDir": "build",
+      "binaryDir": "build/Debug",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CPM_SOURCE_CACHE": "~/.cache/CPM",
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
     {
       "name": "release",
       "inherits": "default",
-      "binaryDir": "release-build",
+      "binaryDir": "build/Release",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
@@ -25,17 +27,17 @@
     {
       "name": "vs2022",
       "generator": "Visual Studio 17 2022",
-      "binaryDir": "vs2022-build"
+      "binaryDir": "build/VisualStudio2022"
     },
     {
       "name": "vs",
       "generator": "Visual Studio 18 2026",
-      "binaryDir": "vs-build"
+      "binaryDir": "build/VisualStudio2026"
     },
     {
       "name": "xcode",
       "generator": "Xcode",
-      "binaryDir": "xcode-build"
+      "binaryDir": "build/Xcode"
     }
   ],
   "buildPresets": [

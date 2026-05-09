@@ -3,7 +3,10 @@
 namespace audio_plugin {
 class PluginProcessor : public juce::AudioProcessor {
 public:
-  PluginProcessor();
+  using SampleType = float;
+
+  explicit PluginProcessor(
+      wolfsound::JuceParameterHolder::Builder builder = {});
 
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
@@ -32,7 +35,20 @@ public:
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
 
+  struct Parameters {
+    explicit Parameters(wolfsound::JuceParameterHolder::Builder&);
+    juce::AudioParameterFloat& lfoFrequency;  // NOLINT
+  };
+  const Parameters& getParameterRefs() const;
+
 private:
+  using ParameterLayout = juce::AudioProcessorValueTreeState::ParameterLayout;
+
+  Parameters parameters_;
+  wolfsound::JuceParameterHolder parameterHolder_;
+  fx::Flanger flanger_;
+  std::vector<float> interleavedBuffer_;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };
 }  // namespace audio_plugin

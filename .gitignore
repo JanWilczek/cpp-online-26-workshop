@@ -9,6 +9,9 @@ vs-build/
 vs2022-build/
 .idea/
 .DS_Store
+*.wav
+*.html
+*.pdf
 
 # I'm often using a todo.md file to track my thoughts in development. What's done goes to the done.md file. These two typically should not be versioned with git.
 todo.md
@@ -458,3 +461,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+test_project

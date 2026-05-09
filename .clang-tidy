@@ -54,7 +54,7 @@ CheckOptions:
   - key: readability-identifier-naming.ConstexprVariableCase
     value: camelBack
   - key: readability-identifier-naming.PrivateMemberSuffix
-    value: ''
+    value: '_'
   - key: readability-identifier-naming.ProtectedMemberSuffix
     value: ''
 

@@ -14,7 +14,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0141
 # Sets the minimum deployment target
 # macOS 10.11 is the minimum required by JUCE
 set(CMAKE_OSX_DEPLOYMENT_TARGET
-    "10.11"
+    "13.3"
     CACHE STRING "" FORCE
 )
 # Builds a binary that works on Apple Silicon (arm64) and Intel-based Macs
@@ -43,11 +43,6 @@ if(PROJECT_IS_TOP_LEVEL)
   )
 endif()
 
-# I like to download the dependencies to the same folder as the project.
-# If you want to install them system wide, set CPM_SOURCE_CACHE with the path to the dependencies
-# either as an environment variable or pass it to the cmake script with -DCPM_SOURCE_CACHE=<path>.
-set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs)
-
 # Downloads CPM if not already downloaded. CPM is an easy-to-use package manager nicely integrated with CMake.
 include(cmake/cpm.cmake)
 
@@ -59,8 +54,15 @@ cpmaddpackage(
   8.0.12
   GITHUB_REPOSITORY
   juce-framework/JUCE
-  SOURCE_DIR
-  ${LIB_DIR}/juce
+)
+
+cpmaddpackage(
+  NAME
+  WOLFSOUND_DSP_UTILS
+  GITHUB_REPOSITORY
+  JanWilczek/wolfsound-dsp-utils
+  VERSION
+  0.6.1
 )
 
 # Adds googletest.
@@ -69,10 +71,8 @@ cpmaddpackage(
   GOOGLETEST
   GITHUB_REPOSITORY
   google/googletest
-  VERSION
-  1.17.0
-  SOURCE_DIR
-  ${LIB_DIR}/googletest
+  GIT_TAG
+  d72f9c8aea6817cdf1ca0ac10887f328de7f3da2
   OPTIONS
   "INSTALL_GTEST OFF"
   "gtest_force_shared_crt ON"
@@ -87,33 +87,47 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set_directory_properties(PROPERTIES JUCE_VST3_COPY_DIR "$ENV{LOCALAPPDATA}/Programs/Common/VST3")
 endif()
 
+add_subdirectory(fx)
+add_subdirectory(music_player)
+
+juce_add_binary_data(
+  audio_plugin_assets
+  NAMESPACE
+  audio_plugin::assets
+  SOURCES
+  audio_plugin/assets/Audiowide-Regular.ttf
+  audio_plugin/assets/BungeeShade-Regular.ttf
+)
+
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(
   AudioPlugin
   COMPANY_NAME
   "MyCompany" # change this
   IS_SYNTH
-  FALSE # may change this
+  FALSE
   NEEDS_MIDI_INPUT
-  FALSE # may change this
+  FALSE
   NEEDS_MIDI_OUTPUT
-  FALSE # may change this
+  FALSE
   PLUGIN_MANUFACTURER_CODE
   Mcmp # change this (for max compatibility, first letter must be uppercase, remaining lowercase)
   PLUGIN_CODE
-  Expl # change this (for max compatibility, first letter must be uppercase, remaining lowercase)
+  Cwfl # change this (for max compatibility, first letter must be uppercase, remaining lowercase)
   FORMATS
-  AAX
-  AU
   Standalone
   VST3
   PRODUCT_NAME
-  "YourPluginName" # change this
+  CppOnline2026WorkshopFlanger
+  PLUGIN_NAME
+  "C++ Online 2026 Workshop Flanger" # change this
   VERSION
   0.0.0 # 0.0.0 forces AU host to always rescan the plugin. Change this before releasing
   COPY_PLUGIN_AFTER_BUILD
-  FALSE # Changing this to TRUE will enable automatic copying of the built plugin formats
-        # to correct directories on your system. The directories must exist, though
+  TRUE # Changing this to TRUE will enable automatic copying of the built plugin formats
+  # to correct directories on your system. The directories must exist, though
+  VST3_AUTO_MANIFEST
+  FALSE
 )
 
 # These definitions are recommended by JUCE
@@ -146,6 +160,8 @@ target_compile_definitions(
 
 # Enables strict C++ warnings and treats warnings as errors.
 target_compile_options(audio_plugin INTERFACE "${PROJECT_WARNINGS_CXX}")
+
+target_link_libraries(audio_plugin INTERFACE my_company::fx audio_plugin_assets)
 
 # We need to link the plugin targets with the module containing our code.
 target_link_libraries(

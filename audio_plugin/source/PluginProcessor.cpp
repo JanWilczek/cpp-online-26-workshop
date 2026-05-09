@@ -107,7 +107,7 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // initialisation that you need.
   const auto maxChannels =
       std::max(getTotalNumInputChannels(), getTotalNumOutputChannels());
-  flanger_.prepareToPlay(sampleRate, samplesPerBlock, maxChannels);
+  // TODO: Prepare the flanger
   interleavedBuffer_.resize(static_cast<size_t>(samplesPerBlock * maxChannels));
 }
 
@@ -154,9 +154,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   // TODO: Pass LFO modulation rate parameter value to flanger
 
   interleave(buffer, interleavedBuffer_);
-  flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
-      interleavedBuffer_.data(), buffer.getNumChannels(),
-      buffer.getNumSamples()});
+  // TODO: Process audio with flanger
   deinterleave(interleavedBuffer_, buffer);
 }
 

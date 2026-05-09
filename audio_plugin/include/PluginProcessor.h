@@ -46,7 +46,7 @@ private:
 
   Parameters parameters_;
   wolfsound::JuceParameterHolder parameterHolder_;
-  fx::Flanger flanger_;
+  // TODO: Add flanger
   std::vector<float> interleavedBuffer_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)

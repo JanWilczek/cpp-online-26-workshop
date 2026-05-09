@@ -24,6 +24,13 @@ jobs:
       if: matrix.os == 'macos-14'
       run: sudo xcode-select -s /Applications/Xcode_16.2.0.app/Contents/Developer
 
+    - name: Set up GCC on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      uses: egor-tensin/setup-gcc@v2
+      with:
+        version: latest
+        platform: x64
+
     - name: Install JUCE dependencies on Ubuntu
       if: matrix.os == 'ubuntu-latest'
       run: |

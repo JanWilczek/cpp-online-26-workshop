@@ -38,6 +38,10 @@
 ### Task
 
 - add slider
+1. In `PluginEditor`'s constructor,
+    1. `setSliderStyle()` to "rotary vertical drag"
+    1. `setTextBoxStyle()` to "no text box"
+1. In `PluginEditor::resized()` method, set the slider's bounds according to the Figma design.
 - connect slider to parameter
 
 ### Task: Style components
@@ -50,13 +54,24 @@ There are 3 ways to customize (style) JUCE components:
 
 In this workshop, we will use the first two. In this task, we will add a custom background and customize our rate slider.
 
+#### Adding background
+
 1. Create a new class called `Background` that inherits from `juce::Component`. The class should override only the `paint()` method of the `Component` class.
 1. In the overridden `paint()` method, call `g.fillAll(getColor(Colors::lightGray)`. `getColor()` is a helper function to avoid using hex values directly in code.
 1. Add `Background` as a `PluginEditor` member called `background_`.
 3. Call `addAndMakeVisible(background_)` in `PluginEditor`'s constructor.
 1. Call `background_.setBounds()` in `PluginEditor::resized()` method. Pass in the result of `getLocalBounds()` call because we want the `background_` to fill the entire editor area.
-- add white background
-- customize slider's look
+1. Compile and check your result.
+
+#### Customizing the slider
+
+1. Create a subclass of the `juce::Slider` class called `RateSlider`.
+1. Change `modRateSlider_` type to `RateSlider`.
+1. Override its `paint()` method.
+1. In the `paint()` method, draw the slider according to its current value.
+    1. Copy the code from `juce::LookAndFeel_V4::drawRotarySlider()` and adapt it to the fact that `paint()` is a member of `RateSlider`.
+    1. Tweak the drawing code according to Figma design. It's OK not to accomplish everything here, as this can get pretty lengthy.
+1. As an additional challenge, use `setRotaryParameters()` in a custom `RotarySlider`'s constructor to change the extreme angles of the knob.
 
 ### Task: Add labels
 

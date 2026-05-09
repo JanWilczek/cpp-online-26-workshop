@@ -37,7 +37,7 @@ public:
 
   struct Parameters {
     explicit Parameters(wolfsound::JuceParameterHolder::Builder&);
-    juce::AudioParameterFloat& lfoFrequency;  // NOLINT
+    // TODO: Add LFO frequency parameter (as a reference)
   };
   const Parameters& getParameterRefs() const;
 

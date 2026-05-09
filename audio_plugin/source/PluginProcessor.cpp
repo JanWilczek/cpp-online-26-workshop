@@ -151,10 +151,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     buffer.clear(i, 0, buffer.getNumSamples());
   }
 
-  const fx::Flanger::Parameters newParameters{
-      .lfoFrequency = wolfsound::Frequency{parameters_.lfoFrequency.get()},
-  };
-  flanger_.setParameters(newParameters);
+  // TODO: Pass LFO modulation rate parameter value to flanger
 
   interleave(buffer, interleavedBuffer_);
   flanger_.processBlock(fx::AudioProcessor::AudioBuffer{
@@ -204,13 +201,9 @@ auto PluginProcessor::getParameterRefs() const -> const Parameters& {
 }
 
 PluginProcessor::Parameters::Parameters(
-    wolfsound::JuceParameterHolder ::Builder& builder)
-    : lfoFrequency{builder.add<juce::AudioParameterFloat>(
-          "lfoFrequencyHz",
-          "LFO frequency",
-          juce::NormalisableRange<float>{0.01f, 10.f, 0.01f},
-          fx::Flanger::Parameters{}.lfoFrequency.value(),
-          juce::AudioParameterFloatAttributes{}.withLabel("Hz"))} {}
+    [[maybe_unused]] wolfsound::JuceParameterHolder ::Builder& builder)
+// TODO: Instantiate LFO frequency parameter using builder.add<>()
+{}
 }  // namespace audio_plugin
 
 // This creates new instances of the plugin.

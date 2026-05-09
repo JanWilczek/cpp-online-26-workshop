@@ -75,8 +75,7 @@ private:
 
 class MusicPlayer {
 public:
-  explicit MusicPlayer(
-      std::vector<std::unique_ptr<fx::AudioProcessor>> processors)
+  explicit MusicPlayer(/* TODO: Pass the processing chain */)
       : stream_{inputChannelCount,
                 outputChannelCount,
                 paFloat32,
@@ -92,18 +91,10 @@ public:
                   return thisPtr->audioCallback(input, output, frameCount,
                                                 timeInfo, statusFlags);
                 },
-                this},
-        processors_{std::move(processors)} {
-    const auto ret = std::ranges::remove_if(
-        processors_, [](auto& p) { return p.get() == nullptr; });
-    processors_.erase(ret.begin(), ret.end());
-    for (auto& processor : processors_) {
-      processor->prepareToPlay(
-          sampleRate,
-          static_cast<int>(
-              sampleRate) /* buffer sizes longer than 1 second are rare */,
-          outputChannelCount);
-    }
+                this} {
+    using namespace wolfsound::literals;
+    sineGenerator_.setFrequency(440_Hz);
+    sineGenerator_.prepareToPlay(sampleRate);
   }
 
   void start() { stream_.start(); }
@@ -119,35 +110,26 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    auto buffer = fx::AudioProcessor::AudioBuffer{
-        static_cast<float*>(output), outputChannelCount, frameCount};
+    auto buffer = fx::AudioBuffer{static_cast<float*>(output),
+                                  outputChannelCount, frameCount};
 
-    for (auto& processor : processors_) {
-      processor->processBlock(buffer);
-    }
+    // TODO: Replace with processing chain
+    sineGenerator_.processBlock(buffer);
 
     return paContinue;
   }
 
   pa_ex::Initializer initializer_;
   pa_ex::Stream stream_;
-  std::vector<std::unique_ptr<fx::AudioProcessor>> processors_;
+  // TODO: Add FilePlayer
+  // TODO: Replace with a chain of processors
+  fx::SineGenerator sineGenerator_;
 };
 
 int main() {
   std::println("PortAudio version: {}", Pa_GetVersionInfo()->versionText);
 
-  MusicPlayer player{[] {
-    std::vector<std::unique_ptr<fx::AudioProcessor>> processors;
-    const auto filePath = std::filesystem::path{__FILE__}
-                              .parent_path()
-                              .parent_path()
-                              .parent_path() /
-                          "data/Guitar_5th.wav";
-    processors.push_back(std::make_unique<fx::FilePlayer>(filePath));
-    // TODO: Set up the flanger and add to processors
-    return processors;
-  }()};
+  MusicPlayer player;
   player.start();
 
   Pa_Sleep(5L * 1000L);

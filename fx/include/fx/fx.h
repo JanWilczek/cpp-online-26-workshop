@@ -5,40 +5,24 @@
 #include <cmath>
 #include <ranges>
 #include <filesystem>
-#include <AudioFile.h>
+// TODO: Include AudioFile.h
 #include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <wolfsound/dsp/wolfsound_FractionalDelayLine.hpp>
 
 namespace fx {
-class AudioProcessor {
-public:
-  AudioProcessor() = default;
-  virtual ~AudioProcessor() = default;
-  AudioProcessor(const AudioProcessor&) = delete;
-  AudioProcessor& operator=(const AudioProcessor&) = delete;
-  AudioProcessor(AudioProcessor&&) = delete;
-  AudioProcessor& operator=(AudioProcessor&&) = delete;
+using AudioBuffer = std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
 
-  virtual void prepareToPlay([[maybe_unused]] double sampleRate,
-                             [[maybe_unused]] int maxFramesPerBuffer,
-                             [[maybe_unused]] int channelCount) {}
-
-  using AudioBuffer =
-      std::mdspan<float, std::dextents<int, 2>, std::layout_left>;
-  virtual void processBlock(AudioBuffer) = 0;
-};
-
-class SineGenerator : public AudioProcessor {
+class SineGenerator {
 public:
   SineGenerator() = default;
 
   void setFrequency(wolfsound::Frequency f) { frequency_ = f; }
 
-  void prepareToPlay(double sampleRate, int, int) override {
+  void prepareToPlay(double sampleRate) {
     sampleRate_ = static_cast<float>(sampleRate);
   }
 
-  void processBlock(AudioBuffer buffer) override {
+  void processBlock(AudioBuffer buffer) {
     for (const auto frame : std::views::iota(0, buffer.extent(1))) {
       constexpr auto amplitude = 0.25f;
       const auto outputSample = amplitude * std::sin(phase_);
@@ -67,37 +51,29 @@ private:
   wolfsound::Frequency frequency_{220.f};
 };
 
-class FilePlayer : public AudioProcessor {
+class FilePlayer {
 public:
-  explicit FilePlayer(const std::filesystem::path& filepath) {
-    file_.load(filepath.string());
+  explicit FilePlayer([[maybe_unused]] const std::filesystem::path& filepath) {
+    // TODO: Load file
   }
 
-  void processBlock(AudioBuffer buffer) override {
-    const auto channelCount =
-        std::min(buffer.extent(0), file_.getNumChannels());
-
-    for (const auto frame : std::views::iota(0, buffer.extent(1))) {
-      if (playhead_ < static_cast<size_t>(file_.getNumSamplesPerChannel())) {
-        for (const auto channel : std::views::iota(0, channelCount)) {
-          buffer[channel, frame] =
-              file_.samples[static_cast<size_t>(channel)][playhead_];
-        }
-        for (const auto channel :
-             std::views::iota(channelCount, buffer.extent(0))) {
-          buffer[channel, frame] = 0.f;
-        }
-        playhead_++;
-      }
+  void processBlock(AudioBuffer buffer) {
+    for ([[maybe_unused]] const auto frame :
+         std::views::iota(0, buffer.extent(1))) {
+      // TODO: Fill the played back channels with channel data from file
+      // TODO: Fill the played back channels that aren't in the file with
+      // silence
+      // TODO: Fill the samples beyond file length with zeros
+      // TODO: Update playhead_
     }
   }
 
 private:
-  AudioFile<float> file_;
-  size_t playhead_ = 0u;
+  // TODO: Instantiate AudioFile
+  [[maybe_unused]] size_t playhead_ = 0u;
 };
 
-class Flanger : public AudioProcessor {
+class Flanger {
 public:
   struct Parameters {
     wolfsound::Frequency lfoFrequency{0.1f};
@@ -108,7 +84,7 @@ public:
 
   void prepareToPlay(double sampleRate,
                      int maxFramesPerBuffer,
-                     int channelCount) override {
+                     int channelCount) {
     channelProcessors_.resize(static_cast<size_t>(channelCount));
     for (auto& p : channelProcessors_) {
       p.prepareToPlay(sampleRate);
@@ -124,7 +100,7 @@ public:
     // TODO: Set LFO frequency
   }
 
-  void processBlock(AudioBuffer buffer) override {
+  void processBlock(AudioBuffer buffer) {
     WS_ASSERT(buffer.extent(0) <= std::ssize(channelProcessors_),
               "too many channels than the effect can handle");
     WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),

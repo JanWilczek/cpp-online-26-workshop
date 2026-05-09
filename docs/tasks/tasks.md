@@ -47,7 +47,12 @@
 
 ### Task: Add labels
 
-As you can see, our UI design in Figma uses 3 labels: one for the "FLANGER" logo, one for the modulation rate knob, and one for the knob's value. In this task, you will add these labels.
+As you can see, our UI design in Figma uses 3 labels: one for the "FLANGER" logo, one for the modulation rate knob, and one for the knob's value. In this task, you will add the first two.
+
+1. Add `juce::Label valueLabel_` and `juce::Label modRateLabel_` members to `PluginEditor`.
+1. Call `addAndMakeVisible()` in `PluginEditor`'s constructor.
+1. Call `setBounds()` in `PluginEditor::resized()`.
+1. Call `setText()`, `setJustificationType()`, and `setColour()` on the labels in `PluginEditor`'s constructor. Don't worry about font, font size, and exact placement yet.
 
 ### Task: Add value label
 
@@ -66,7 +71,7 @@ So far our labels use the stock Font that ships with JUCE. That's fine for hobby
 
 1. Find where we define plugin's binary data in _CMakeLists.txt_. Add both TTF files as binary data. Regenerate and recompile the project.
 1. Read the font files from binary data. For, this, use the `juce::createSystemTypefaceFor()` static function with appropriate arguments. You have to do it only once per plugin instantiation and only if the user opens the GUI.
-1. Note that the `juce::Label` class has a member function named `setFont()`. Call this function on label objects with appropriate `juce::FontOptions` objects.
+1. Note that the `juce::Label` class has a member function named `setFont()`. Call this function on label objects with appropriate `juce::FontOptions` objects. Note that `FontOptions` allows you to configure the font size.
 
 ### Homework
 

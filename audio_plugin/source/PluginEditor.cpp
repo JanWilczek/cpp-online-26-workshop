@@ -109,22 +109,11 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
   addAndMakeVisible(background_);
 
-  flangerLabel_.setText("FLANGER", juce::dontSendNotification);
-  flangerLabel_.setBorderSize({0, 0, 0, 0});
-  flangerLabel_.setMinimumHorizontalScale(1.f);
-  flangerLabel_.setJustificationType(
-      juce::Justification::horizontallyJustified | juce::Justification::top);
-  flangerLabel_.setColour(juce::Label::textColourId,
-                          getColor(Colors::darkGray));
+  // TODO: Add "FLANGER" label
   // TODO: Set "FLANGER" label font
-  addAndMakeVisible(flangerLabel_);
 
-  modRateLabel_.setText("mod rate [hz]", juce::dontSendNotification);
-  modRateLabel_.setJustificationType(juce::Justification::centredTop);
-  modRateLabel_.setColour(juce::Label::textColourId,
-                          getColor(Colors::darkGray));
+  // TODO: Add "mod rate [hz]" label
   // TODO: Set "mod rate [hz]" font
-  addAndMakeVisible(modRateLabel_);
 
   addAndMakeVisible(modRateSlider_);
 
@@ -142,9 +131,8 @@ void PluginEditor::resized() {
   flangerLabelBounds.removeFromTop(13);
   // add extra space so that the letters aren't squished
   flangerLabelBounds.setWidth(flangerLabelBounds.getWidth() + 50);
-  flangerLabel_.setBounds(flangerLabelBounds);
 
-  modRateLabel_.setBounds(181, 187, 158, 29);
+  // TODO: Set labels' bounds
 
   modRateSlider_.setBounds(210, 95, 100, 100);
 }

@@ -26,8 +26,7 @@ private:
   // access the processor object that created it.
   PluginProcessor& processorRef;
   Background background_;
-  juce::Label flangerLabel_;
-  juce::Label modRateLabel_;
+  // TODO: Add labels
   RotarySlider modRateSlider_;
   juce::SliderParameterAttachment sliderAttachment_;
 

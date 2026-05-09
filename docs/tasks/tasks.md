@@ -21,17 +21,28 @@
 - add processBlock() between interleave/deinterleave
 - setParameters()
 
-## Task 5: Plugin GUI in JUCE C++ framework
+## Part -1: Plugin GUI in JUCE C++ framework
+
+### Task
 
 - show UI-less editor
 - create editor
-- show Figma file and how to use it
 - change its size
-- change its background to white
+
+### Task
+
 - add slider
 - connect slider to parameter
+
+### Task
+
+- show Figma file and how to use it
+- add white background
 - customize slider's look
 - add labels
 - make label values reactive
 - add custom font
 
+### Homework
+
+- Homework: add "grains" programmatically

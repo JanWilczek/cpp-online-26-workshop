@@ -103,7 +103,8 @@ public:
     wolfsound::Frequency lfoFrequency{0.1f};
   };
 
-  explicit Flanger() { lfo_.setFrequency(parameters_.lfoFrequency); }
+  explicit Flanger() { /* TODO: Call setParameters() with default parameters */
+  }
 
   void prepareToPlay(double sampleRate,
                      int maxFramesPerBuffer,
@@ -119,8 +120,8 @@ public:
     std::ranges::fill(lfoBuffer_, 0.f);
   }
 
-  void setParameters(const Parameters& newParameters) {
-    lfo_.setFrequency(newParameters.lfoFrequency);
+  void setParameters([[maybe_unused]] const Parameters& newParameters) {
+    // TODO: Set LFO frequency
   }
 
   void processBlock(AudioBuffer buffer) override {
@@ -146,13 +147,13 @@ public:
 private:
   class ChannelProcessor {
   public:
-    void prepareToPlay(double sampleRate) {
-      constexpr auto maxDelaySeconds = 0.002;
+    void prepareToPlay([[maybe_unused]] double sampleRate) {
+      [[maybe_unused]] constexpr auto maxDelaySeconds = 0.002;
       // TODO: Calculate the middleDelay_ and maxDelay_ in samples
       delayLine_.reset();
     }
 
-    float processSample(float sample, float lfoSample) {
+    float processSample(float sample, [[maybe_unused]] float lfoSample) {
       const auto& x = sample;
 
       // TODO: Implement the flanger difference equation
@@ -167,8 +168,8 @@ private:
     static constexpr auto feedback = 0.7f;
     static constexpr auto blend = 0.7f;
 
-    float maxDelay_ = 0.f;
-    float middleDelay_ = 0.f;
+    [[maybe_unused]] float maxDelay_ = 0.f;
+    [[maybe_unused]] float middleDelay_ = 0.f;
     wolfsound::FractionalDelayLine<float> delayLine_;
   };
 

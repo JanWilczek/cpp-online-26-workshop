@@ -4,6 +4,8 @@
 
 ## Task 2: Play back audio file
 
+- Unify the interface
+
 ## Task 3: Flanger audio effect
 
 - research & design (in short explained)
@@ -12,6 +14,26 @@
 - interface considerations
 - unification with sine generator
 - reuse of sine generator
+
+1. Add a `SineGenerator lfo_` member to the `Flanger` class.
+1. "Prepare" it in `Flanger::prepareToPlay()`.
+1. In `Flanger::processBlock()`, generate the LFO signal to the LFO buffer so that it can be used by all channels.
+1. Calculate `middleDelay_` and `maxDelay_` in samples in `Flanger::ChannelProcessor::prepareToPlay()` assuming that the maximum delay in seconds is 0.002.
+1. Implement the flanger difference equation in `Flanger::ChannelProcessor::processBlock()`: 
+
+    1. Calculate the modulated-delay value
+
+        $$m = s_\text{LFO,unipolar}[n]D.$$
+
+    2. Calculate the helper signal sample
+
+        $$x_h[n] = x[n] + \text{feedback } x_h[n-D/2].$$
+
+    3. Calculate the output sample
+
+        $$y[n] = \text{blend }x_h[n] + \text{feedforward } x_h[n - m].$$
+1. Emplace an `fx::Flanger` instance in the `vector` passed to `MusicPlayer`, just after the `FilePlayer` (so that flanger impacts the played back file).
+1. Run the `music_player` app; is the flanger effect applied?
 
 ## Part -2: Audio plugin in JUCE C++ framework
 

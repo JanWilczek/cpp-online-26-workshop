@@ -45,10 +45,20 @@
 - add white background
 - customize slider's look
 
-### Task: Labels
+### Task: Add labels
 
-- add labels
-- make label values reactive
+As you can see, our UI design in Figma uses 3 labels: one for the "FLANGER" logo, one for the modulation rate knob, and one for the knob's value. In this task, you will add these labels.
+
+### Task: Add value label
+
+As you can see in the Figma design, we have a label indicating slider's value. The value label should update on every slider change to reflect the current value. In JUCE, the standard way to achieve this is by observing the slider value. 
+
+1. Add another `juce::Label` instance, this time as a member of the `RateSlider` class.
+1. Remember to call `addAndMakeVisible()` on it in the constructor and `setBounds()` in the overridden `resized()` method.
+1. Set its color and justification.
+1. Make it transparent to clicks by calling `setInterceptsMouseClicks()` with appropriate arguments on it.
+1. Make `RateSlider` inherit from `juce::Slider::Listener` and override its `sliderValueChanged()` method to update the value label on each slider value change. You can use the `getTextFromValue()` method to retrieve the value as a string.
+6. Observe the slider (=itself) in `RateSlider`'s constructor using `addListener()`. Remember to remove itself from the observer list by calling `removeListener()` in the destructor.
 
 ### Task: Fonts
 

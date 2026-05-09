@@ -12,8 +12,7 @@
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
-        "CPM_SOURCE_CACHE": "~/.cache/CPM",
-        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON"
+        "CPM_SOURCE_CACHE": "$env{HOME}/.cache/CPM"
       }
     },
     {
@@ -27,17 +26,26 @@
     {
       "name": "vs2022",
       "generator": "Visual Studio 17 2022",
-      "binaryDir": "build/VisualStudio2022"
+      "binaryDir": "build/VisualStudio2022",
+      "cacheVariables": {
+        "CPM_SOURCE_CACHE": "$env{HOME}/.cache/CPM"
+      }
     },
     {
-      "name": "vs",
+      "name": "vs2026",
       "generator": "Visual Studio 18 2026",
-      "binaryDir": "build/VisualStudio2026"
+      "binaryDir": "build/VisualStudio2026",
+      "cacheVariables": {
+        "CPM_SOURCE_CACHE": "$env{HOME}/.cache/CPM"
+      }
     },
     {
       "name": "xcode",
       "generator": "Xcode",
-      "binaryDir": "build/Xcode"
+      "binaryDir": "build/Xcode",
+      "cacheVariables": {
+        "CPM_SOURCE_CACHE": "$env{HOME}/.cache/CPM"
+      }
     }
   ],
   "buildPresets": [
@@ -54,8 +62,8 @@
       "configurePreset": "vs2022"
     },
     {
-      "name": "vs",
-      "configurePreset": "vs"
+      "name": "vs2026",
+      "configurePreset": "vs2026"
     },
     {
       "name": "xcode",
@@ -84,9 +92,9 @@
       "configuration": "Debug"
     },
     {
-      "name": "vs",
+      "name": "vs2026",
       "inherits": "default",
-      "configurePreset": "vs",
+      "configurePreset": "vs2026",
       "configuration": "Debug"
     },
     {

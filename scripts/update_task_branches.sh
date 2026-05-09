@@ -9,5 +9,7 @@ git checkout task/add-value-label && \
   git rebase task/add-custom-fonts && \
 git checkout task/add-labels && \
   git rebase task/add-value-label && \
+git checkout task/style-components && \
+  git rebase task/add-labels && \
 git checkout main
 

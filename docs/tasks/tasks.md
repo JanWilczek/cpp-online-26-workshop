@@ -4,7 +4,9 @@
 
 ## Task 2: Play back audio file
 
-- Unify the interface
+1. Replace `SineGenerator` with `FilePlayer` in `MusicPlayer`.
+1. Introduce an `AudioProcessor` interface with two virtual functions: `prepareToPlay(double sampleRate, int maxFramesPerBuffer, int channelCount)` and `processBlock(AudioBuffer)`. Make `SineGenerator` and `FilePlayer` implement this interface.
+1. Pass a `std::vector<std::unique_ptr<AudioProcessor>>` to `MusicPlayer` instead of hardcoding the actual class that does the processing. Call `prepareToPlay()` of all generators in the constructor. Call them all in the `audioCallback()` function.
 
 ## Task 3: Flanger audio effect
 

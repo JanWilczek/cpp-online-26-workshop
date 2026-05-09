@@ -21,5 +21,7 @@ git checkout task/flanger-plugin && \
   git rebase task/add-parameter && \
 git checkout task/flanger-effect && \
   git rebase task/flanger-plugin && \
+git checkout task/file-player && \
+  git rebase task/flanger-effect && \
 git checkout main
 

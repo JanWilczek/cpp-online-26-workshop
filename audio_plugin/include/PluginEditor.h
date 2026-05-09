@@ -6,18 +6,11 @@ public:
   void paint(juce::Graphics& g) override;
 };
 
-class RotarySlider : public juce::Slider, private juce::Slider::Listener {
+class RotarySlider : public juce::Slider {
 public:
   RotarySlider();
-  ~RotarySlider() override;
   void paint(juce::Graphics& g) override;
-  void resized() override;
   juce::String getTextFromValue(double value) override;
-
-private:
-  void sliderValueChanged(juce::Slider*) override;
-
-  juce::Label valueLabel_;
 };
 
 class PluginEditor : public juce::AudioProcessorEditor {

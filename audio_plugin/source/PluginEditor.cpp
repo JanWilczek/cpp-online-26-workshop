@@ -42,27 +42,12 @@ RotarySlider::RotarySlider() {
       .stopAtEnd = true,
   });
 
-  valueLabel_.setColour(juce::Label::textColourId, getColor(Colors::darkGray));
-  valueLabel_.setJustificationType(juce::Justification::centred);
-  valueLabel_.setInterceptsMouseClicks(false, false);
-  // initial text update
-  sliderValueChanged(this);
+  // TODO: Add value label and observe the slider for value changes to update it
   // TODO: Set valueLabel_'s font
-  addAndMakeVisible(valueLabel_);
-
-  addListener(this);
-}
-
-RotarySlider::~RotarySlider() {
-  removeListener(this);
 }
 
 juce::String RotarySlider::getTextFromValue(double v) {
   return {v, 2};
-}
-
-void RotarySlider::sliderValueChanged(juce::Slider*) {
-  valueLabel_.setText(getTextFromValue(getValue()), juce::dontSendNotification);
 }
 
 void RotarySlider::paint(juce::Graphics& g) {
@@ -114,10 +99,6 @@ void RotarySlider::paint(juce::Graphics& g) {
       radiusLine.withShortenedStart(radius - valueIndicatorLength);
   g.setColour(getColor(Colors::darkGray));
   g.drawLine(valueIndicator, borderThickness);
-}
-
-void RotarySlider::resized() {
-  valueLabel_.setBounds(getLocalBounds());
 }
 
 PluginEditor::PluginEditor(PluginProcessor& p)

@@ -145,11 +145,7 @@ int main() {
                               .parent_path() /
                           "data/Guitar_5th.wav";
     processors.push_back(std::make_unique<fx::FilePlayer>(filePath));
-    auto flanger = std::make_unique<fx::Flanger>();
-    flanger->setParameters({
-        .lfoFrequency = wolfsound::Frequency{7.f},
-    });
-    processors.push_back(std::move(flanger));
+    // TODO: Set up the flanger and add to processors
     return processors;
   }()};
   player.start();

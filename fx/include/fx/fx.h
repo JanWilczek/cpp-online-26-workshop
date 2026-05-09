@@ -113,7 +113,7 @@ public:
       p.prepareToPlay(sampleRate);
     }
 
-    lfo_.prepareToPlay(sampleRate, maxFramesPerBuffer, 1u);
+    // TODO: Prepare the LFO
 
     lfoBuffer_.resize(static_cast<size_t>(maxFramesPerBuffer));
     std::ranges::fill(lfoBuffer_, 0.f);
@@ -126,10 +126,10 @@ public:
   void processBlock(AudioBuffer buffer) override {
     WS_ASSERT(buffer.extent(0) <= std::ssize(channelProcessors_),
               "too many channels than the effect can handle");
-    // Generate the LFO
     WS_ASSERT(buffer.extent(1) <= std::ssize(lfoBuffer_),
               "the host is misbehaving");
-    lfo_.processBlock(AudioBuffer{lfoBuffer_.data(), 1, buffer.extent(1)});
+
+    // TODO: Generate the LFO signal to the lfoBuffer_
 
     // Process samples one by one, at least initially.
     using namespace std::views;
@@ -148,22 +148,16 @@ private:
   public:
     void prepareToPlay(double sampleRate) {
       constexpr auto maxDelaySeconds = 0.002;
-      maxDelay_ = static_cast<float>(std::ceil(sampleRate * maxDelaySeconds));
-      middleDelay_ = maxDelay_ / 2.f;
+      // TODO: Calculate the middleDelay_ and maxDelay_ in samples
       delayLine_.reset();
     }
 
     float processSample(float sample, float lfoSample) {
       const auto& x = sample;
-      const auto xh = x + (feedback * delayLine_.popSample(middleDelay_));
 
-      const auto lfoUnipolarValue = (lfoSample + 1) / 2;
-      const auto currentDelay = lfoUnipolarValue * maxDelay_;
+      // TODO: Implement the flanger difference equation
 
-      const auto y =
-          (blend * xh) + (feedforward * delayLine_.popSample(currentDelay));
-
-      delayLine_.pushSample(xh);
+      const auto y = x;
 
       return y;
     }
@@ -178,7 +172,7 @@ private:
     wolfsound::FractionalDelayLine<float> delayLine_;
   };
 
-  SineGenerator lfo_;
+  // TODO: Add LFO generator
   std::vector<float> lfoBuffer_;
   std::vector<ChannelProcessor> channelProcessors_;
   Parameters parameters_;

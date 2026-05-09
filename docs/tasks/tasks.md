@@ -40,8 +40,21 @@
 - add slider
 - connect slider to parameter
 
-### Task: Styling
+### Task: Style components
 
+There are 3 ways to customize (style) JUCE components:
+
+1. call their member functions,
+1. subclass them and override their `paint()` method, or
+1. subclass `juce::LookAndFeel_V4` and override the methods relevant for components you want to style.
+
+In this workshop, we will use the first two. In this task, we will add a custom background and customize our rate slider.
+
+1. Create a new class called `Background` that inherits from `juce::Component`. The class should override only the `paint()` method of the `Component` class.
+1. In the overridden `paint()` method, call `g.fillAll(getColor(Colors::lightGray)`. `getColor()` is a helper function to avoid using hex values directly in code.
+1. Add `Background` as a `PluginEditor` member called `background_`.
+3. Call `addAndMakeVisible(background_)` in `PluginEditor`'s constructor.
+1. Call `background_.setBounds()` in `PluginEditor::resized()` method. Pass in the result of `getLocalBounds()` call because we want the `background_` to fill the entire editor area.
 - add white background
 - customize slider's look
 

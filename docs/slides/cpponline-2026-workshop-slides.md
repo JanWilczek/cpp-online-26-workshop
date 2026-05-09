@@ -127,13 +127,9 @@ class MusicPlayer {
 PaStream* stream;
 const auto error = Pa_OpenDefaultStream( &stream, /* many arguments */);
 //...
-<<<<<<< HEAD
 if (stream != nullptr && error == paNoError) {
   Pa_CloseStream(stream_);
 }
-=======
-
->>>>>>> 50b794b (feat: set up task/flanger-effect)
 ```
 
 ---

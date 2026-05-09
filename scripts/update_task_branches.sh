@@ -1,12 +1,9 @@
 #!/bin/bash
 
-git checkout task4 && \
+git checkout main
+git checkout homework/draw-background-noise && \
   git merge main && \
-git checkout task3 && \
-  git merge task4 && \
-git checkout task2 && \
-  git merge task3 && \
-git checkout task1 && \
-  git merge task2 && \
+git checkout task/add-custom-font && \
+  git merge homework/draw-background-noise && \
 git checkout main
 

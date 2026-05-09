@@ -45,12 +45,20 @@
 - add white background
 - customize slider's look
 
-### Task: Labels & fonts
+### Task: Labels
 
 - add labels
 - make label values reactive
-- add custom font
+
+### Task: Fonts
+
+So far our labels use the stock Font that ships with JUCE. That's fine for hobby projects, but professional-grade audio plugins always use custom fonts in their GUIs. Since we don't know whether the chosen font is present on user's machine, we must bundle the fonts with the plugin binary. As you can see, we have two fonts in the Figma projects and both are preset as TTF files in the _audio_plugin/assets/_ folder. You task is to add them to the project and use them in the GUI.
+
+1. Find where we define plugin's binary data in _CMakeLists.txt_. Add both TTF files as binary data. Regenerate and recompile the project.
+1. Read the font files from binary data. For, this, use the `juce::createSystemTypefaceFor()` static function with appropriate arguments. You have to do it only once per plugin instantiation and only if the user opens the GUI.
+1. Note that the `juce::Label` class has a member function named `setFont()`. Call this function on label objects with appropriate `juce::FontOptions` objects.
 
 ### Homework
 
-- Homework: add "grains" programmatically
+Based on the Figma design file, fill the background with programmatically generated "noise." For this, look up Figma noise parameters and implement the `drawNoise()` function in PluginProcessor.cpp accordingly. Good luck!
+

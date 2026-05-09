@@ -11,5 +11,7 @@ git checkout task/add-labels && \
   git rebase task/add-value-label && \
 git checkout task/style-components && \
   git rebase task/add-labels && \
+git checkout task/add-slider && \
+  git rebase task/style-components && \
 git checkout main
 

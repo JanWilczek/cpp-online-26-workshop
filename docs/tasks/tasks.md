@@ -26,23 +26,28 @@
 
 - define LFO frequency parameter using builder.add<>
 - setParameters()
+- show UI-less editor
+- show automation
 
 ## Part -1: Plugin GUI in JUCE C++ framework
 
 ### Task
 
-- show UI-less editor
 - create editor
 - change its size
 
-### Task
+### Task: Add a slider controling the modulation rate
 
-- add slider
+1. Add a `juce::Slider modRateSlider_` member to `PluginEditor`.
 1. In `PluginEditor`'s constructor,
-    1. `setSliderStyle()` to "rotary vertical drag"
-    1. `setTextBoxStyle()` to "no text box"
+    1. Call `addAndMakeVisible(modRateSlider_)`,
+    1. `setSliderStyle()` to "rotary vertical drag",
+    1. `setTextBoxStyle()` to "no text box".
 1. In `PluginEditor::resized()` method, set the slider's bounds according to the Figma design.
-- connect slider to parameter
+1. Connect the slider to the parameter.
+    1. Add a `juce::SliderParameterAttachment` member in `PluginEditor`
+    1. In `PluginEditor`'s constructor, initialize it with the reference to the `lfoFrequency` parameter (that you can obtain from the processor) and the slider reference
+1. Compile and test. Does dragging the slider change the parameter?
 
 ### Task: Style components
 

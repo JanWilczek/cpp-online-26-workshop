@@ -26,15 +26,16 @@
 
 - define LFO frequency parameter using builder.add<>
 - setParameters()
-- show UI-less editor
+- show generic and UI-less editor
 - show automation
 
 ## Part -1: Plugin GUI in JUCE C++ framework
 
-### Task
+### Task: Create a custom editor
 
-- create editor
-- change its size
+1. Return `true` from `PluginProcessor::hasEditor()`.
+1. Return an owning `PluginEditor` instance from `PluginProcessor::createEditor()`.
+1. Set the size of the editor in its constructor according to the Figma design.
 
 ### Task: Add a slider controling the modulation rate
 

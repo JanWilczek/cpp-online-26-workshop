@@ -24,10 +24,13 @@
 
 ### Task: Parameters
 
-- define LFO frequency parameter using builder.add<>
-- setParameters()
-- show generic and UI-less editor
-- show automation
+To control an audio plugin, we need plugin parameters. There are a few approaches to defining your plugin parameters. In the workshop, we will use a utility class from my library `wolfsound-dsp-utils`.
+
+1. Add a `juce::AudioParameterFloat& lfoFrequency` member to `PluginProcessor::Parameters` struct.
+1. Define it by calling `builder.add<juce::AudioParameterFloat>()` in `Parameters`'s constructor and passing appropriate arguments. I suggest an LFO in the [0.01, 10] range with steps of size 0.1 Hz. Consider adding a custom "Hz" label. As the default, pass the initial value of `Flanger::Parameters::lfoFrequency`.
+1. Remember to call `flanger_.setParameters()` with the current parameter value in `PluginProcessor::processBlock()`.
+1. Check that you can see the parameter value changing (and being remembered) in the generic editor and the UI-less editor.
+1. Draw an automation curve for this parameter. Does it work as intended?
 
 ## Part -1: Plugin GUI in JUCE C++ framework
 

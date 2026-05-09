@@ -15,5 +15,7 @@ git checkout task/add-slider && \
   git rebase task/style-components && \
 git checkout task/create-custom-editor && \
   git rebase task/add-slider && \
+git checkout task/add-parameter && \
+  git rebase task/create-custom-editor && \
 git checkout main
 

@@ -102,7 +102,8 @@ void PluginProcessor::changeProgramName(int index,
   juce::ignoreUnused(index, newName);
 }
 
-void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
+void PluginProcessor::prepareToPlay([[maybe_unused]] double sampleRate,
+                                    int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
   // initialisation that you need.
   const auto maxChannels =

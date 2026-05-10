@@ -389,7 +389,7 @@ git checkout task/add-parameter
 
 # JUCE parameter classes hierarchy
 
-![w:2000px](img/AudioProcessorParameterClassHierarchy.svg)
+<img src="img/AudioProcessorParameterClassHierarchy.svg" width="100%">
 
 ---
 

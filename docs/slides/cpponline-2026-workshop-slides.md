@@ -223,11 +223,11 @@ Focus:
 
 Input:
 
-<audio src="../../data/Guitar_5th.wav" controls/>
+<audio src="../../data/Guitar_5th.wav" controls></audio>
 
 Output:
 
-<audio src="../../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls/>
+<audio src="../../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls></audio>
 
 ---
 

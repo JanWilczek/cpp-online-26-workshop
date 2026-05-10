@@ -11,22 +11,22 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
    3. Latest version of the C++ compiler
       1. GCC on Linux
       2. AppleClang on macOS (ships with Xcode)
-      3. MSVC on Widnows (ships with Visual Studio)
+      3. MSVC on Windows (ships with Visual Studio)
    4. Latest version of the C++ build system
       1. make on Linux
       2. Xcode build system on macOS (ships with Xcode)
       3. MSBuild on Widnows (ships with Visual Studio)
       4. Ninja
    5. IDE of your choice, e.g., CLion, Visual Studio Code, Visual Studio, Xcode.
-      1. ⚠️ On Windows and macOS, you still need to install Visual Studio and Xcode respectively, even if you decide to use Visual Studio Code.
-   6. To run the workshop plugin, you need a digital audio workstation (DAW). I recommend [Reaper](https://www.reaper.fm/) or [Audacity](https://www.audacityteam.org/).
-2. (Windows-only) If you want to use CMake from the command line, to have the compiler on your PATH, you need to run a batch script. Assuming, you have Visual Studio 2022 installed, you can run the following command to initialize C++ environment in your shell.
+      1. ⚠️ On Windows and macOS, you still need to install Visual Studio and Xcode respectively, even if you decide to use a different IDE, e.g., Visual Studio Code.
+   6. To run the workshop plugin, you need a digital audio workstation (DAW). I recommend [Reaper](https://www.reaper.fm/).
+1. (Windows-only) If you use CMake from the command line and you get "missing C++ compiler" information or other weird errors, you need to put the compiler on your PATH. For this, you need to run a batch script. Assuming, you have Visual Studio 2022 installed, you can run the following command to initialize C++ environment in your shell.
 
     ```bash
     "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
     ```
 
-3. (Linux-only) Before generating the project, you need to install GCC 16 (if you don't already have it installed) and [JUCE dependencies](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md). You can do it with the following commands:
+1. (Linux-only) Before generating the project, you need to install GCC 16 (if you don't already have it installed) and [JUCE dependencies](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md). You can do it with the following commands:
     ```bash
     sudo apt update
     sudo apt install gcc-16 g++-16
@@ -42,8 +42,7 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
         libwebkit2gtk-4.1-dev \
         libglu1-mesa-dev mesa-common-dev
     ```
-```
-2. To compile the project, you can use the CMake command-line interface.
+1. To compile the project, you can use the CMake command-line interface.
     ```bash
     # Generate the buildsystem
     cmake --preset default
@@ -54,13 +53,13 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
     ```
 
     If you're using an IDE, follow their instructions on working with CMake-based projects. I am using CLion from JetBrains, because it integrates great with JUCE modules, but you don't have to. Visual Studio Code, Visual Studio, or Xcode work great.
-3. Run the compiled projects. The built targets are in platform- and buildsystem-specific folders. For the `default` preset and the `make` buildsystem, run
+1. Run the compiled projects. The built targets are in platform- and buildsystem-specific folders. For the `default` preset and the `make` buildsystem, run
     ```bash
-    build/Debug/music_player/music_player # you should hear guitar sound
+    build/Debug/music_player/music_player # you should hear a guitar sound with the flanger effect applied
     build/Debug/test/AudioPluginTest # runs tests: has file data/Guitar_5th_FlangerEnd2EndTestOutput.wav been created?
     build/Debug/AudioPlugin_artefacts/Debug/Standalone/CppOnline2026WorkshopFlanger.app/Contents/MacOS/CppOnline2026WorkshopFlanger # start the GUI app
     ```
-4. Watch [the workshop preview on YouTube](https://youtu.be/VSr5o7kR1KM?si=L30yOa4LO5kV6HpT). It conveys basic knowledge that we'll use in the workshop. Watching it before the workshop will greatly aid you in writing code.
+1. Watch [the workshop preview on YouTube](https://youtu.be/VSr5o7kR1KM?si=L30yOa4LO5kV6HpT). It conveys basic knowledge that we'll use in the workshop. Watching it before the workshop will greatly aid you in writing code.
 
 ## Bonus tip
 
@@ -70,4 +69,6 @@ The complete solution to all the tasks are present on the `main` branch. If at a
 git diff main
 ```
 
-In Visual Studio Code, there's a wonderful GitLens plugin that allows you to visually compare against the `main` branch via "GitLens: Compare Working Tree with..." command.
+You can also compare against the branch of the next task.
+
+In Visual Studio Code, there's the wonderful GitLens plugin that allows you to visually compare against another branch via the "GitLens: Compare Working Tree with..." command.

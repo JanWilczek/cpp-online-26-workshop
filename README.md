@@ -15,7 +15,7 @@ Throughout the workshop, you will build
 * a flanger effect
 * a flanger effect app/plugin
 
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/design/knuE1YOpeBarbBjHkL6Tc0/Workshop-Flanger-Plugin-UI?embed-host=share" allowfullscreen></iframe>
+[](docs/slides/img/FlangerUI.png)
 
 ## 🔨 Building the project
 

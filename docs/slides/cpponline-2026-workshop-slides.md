@@ -303,14 +303,6 @@ Source: J. Dattoro. _Effect design, part 2: Delay-line modulation and chorus._ J
 
 # Part 2: Audio plugin in JUCE C++ framework
 
----
-
-# Task: Flanger plugin
-
-```bash
-git checkout task/flanger-plugin
-```
-
 <!-- Have you worked with audio plugins and DAWs before? -->
 
 ---
@@ -500,6 +492,41 @@ git checkout task/add-slider
 
 ---
 
+# JUCE component system
+
+1. Everything you see on the screen is a juce::Component subclass instance
+1. Each component has 0, 1, or more child components ➡️ component hierarchy
+
+---
+
+# JUCE coordinate system
+
+![width:600](img/JUCE%20UI%20coordinate%20system.png)
+
+---
+
+# Adding a new child component
+
+```cpp
+class PluginEditor : ... {
+  struct BackgroundComponent : juce::Component {
+
+  };
+  BackgroundComponent background;
+
+public:
+  PluginEditor(...) {
+    addAndMakeVisible(background);
+  }
+
+  void resized() override {
+    background.setBounds(getLocalBounds());
+  }
+};
+```
+
+---
+
 # Task: Style components
 
 ```bash
@@ -528,6 +555,51 @@ git checkout task/add-value-label
 
 ```bash
 git checkout task/add-custom-fonts
+```
+
+---
+
+# JUCE binary data
+
+```cmake
+juce_add_binary_data(
+    audio_plugin_assets
+  NAMESPACE
+    audio_plugin::assets
+  SOURCES
+    audio_plugin/assets/MyFont.ttf
+    audio_plugin/assets/SomeImage.png
+)
+```
+
+---
+
+# JUCE binary data
+
+```cpp
+namespace audio_plugin::assets {
+    extern const char*   MyFont_ttf;
+    const int            MyFont_ttfSize = 47676;
+
+    extern const char*   SomeImage_png;
+    const int            SomeImage_ttfSize = 300764;
+
+    //... some utilities
+}
+```
+
+---
+
+# JUCE binary data
+
+```cpp
+auto getMyFont() {
+  static const auto result = juce::Typeface::createSystemTypefaceFor(
+      assets::MyFont_ttf, assets::MyFont_ttfSize);
+  return juce::FontOptions{result};
+}
+//...
+label.setFont(getMyFont());
 ```
 
 ---

@@ -27,6 +27,7 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
     ```
 
 1. (Linux-only) Before generating the project, you need to install GCC 16 (if you don't already have it installed) and [JUCE dependencies](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md). You can do it with the following commands:
+
     ```bash
     sudo apt update
     sudo apt install gcc-16 g++-16
@@ -42,7 +43,15 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
         libwebkit2gtk-4.1-dev \
         libglu1-mesa-dev mesa-common-dev
     ```
+
+1. Clone the project locally
+
+   ```bash
+   git clone https://github.com/JanWilczek/cpp-online-26-workshop.git
+   ```
+
 1. To compile the project, you can use the CMake command-line interface.
+
     ```bash
     # Generate the buildsystem
     cmake --preset default
@@ -54,11 +63,21 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
 
     If you're using an IDE, follow their instructions on working with CMake-based projects. I am using CLion from JetBrains, because it integrates great with JUCE modules, but you don't have to. Visual Studio Code, Visual Studio, or Xcode work great.
 1. Run the compiled projects. The built targets are in platform- and buildsystem-specific folders. For the `default` preset and the `make` buildsystem, run
+
     ```bash
     build/Debug/music_player/music_player # you should hear a guitar sound with the flanger effect applied
     build/Debug/test/AudioPluginTest # runs tests: has file data/Guitar_5th_FlangerEnd2EndTestOutput.wav been created?
     build/Debug/AudioPlugin_artefacts/Debug/Standalone/CppOnline2026WorkshopFlanger.app/Contents/MacOS/CppOnline2026WorkshopFlanger # start the GUI app
     ```
+
+1. Check if the plugin works in Reaper.
+   1. Create a blank Reaper project.
+   2. Add a new track.
+   3. Put _data/Guitar_5th.wav_ file on this track.
+   4. Click the "FX" button on the track.
+   5. Click "Add".
+   6. Find "C++ Online 2026 Workshop Flanger" plugin and add it to the track.
+   7. Start the playback, turn the rate knob, and check if the sound changes with the rate.
 1. Watch [the workshop preview on YouTube](https://youtu.be/VSr5o7kR1KM?si=L30yOa4LO5kV6HpT). It conveys basic knowledge that we'll use in the workshop. Watching it before the workshop will greatly aid you in writing code.
 
 ## Bonus tip

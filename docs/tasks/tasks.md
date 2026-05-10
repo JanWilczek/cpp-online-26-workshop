@@ -1,10 +1,30 @@
 # Tasks
 
+## Table of contents
+
+1. [Part 1: Building a music player in C++](#part-1-building-a-music-player-in-c)
+    1. [Task: Play back a sine](#task-play-back-a-sine)
+    2. [Task: Play back an audio file](#task-play-back-an-audio-file)
+    3. [Task: Flanger audio effect](#task-flanger-audio-effect)
+2. [Part 2: Audio plugin in JUCE C++ framework](#part-2-audio-plugin-in-juce-c-framework)
+    1. [Task: Flanger plugin](#task-flanger-plugin)
+    2. [Task: Parameters](#task-parameters)
+3. [Part 3: Plugin GUI in JUCE C++ framework](#part-3-plugin-gui-in-juce-c-framework)
+    1. [Task: Create a custom editor](#task-create-a-custom-editor)
+    2. [Task: Add a slider controlling the modulation rate](#task-add-a-slider-controlling-the-modulation-rate)
+    3. [Task: Style components](#task-style-components)
+        1. [Adding background](#adding-background)
+        2. [Customizing the slider](#customizing-the-slider)
+    4. [Task: Add labels](#task-add-labels)
+    5. [Task: Add value label](#task-add-value-label)
+    6. [Task: Fonts](#task-fonts)
+4. [Homework](#homework)
+
 ## Part 1: Building a music player in C++
 
 In this part of the workshop, you will learn the basics of operating on audio samples and interacting with the operating system to play them back.
 
-### Task: Play back sine
+### Task: Play back a sine
 
 ```bash
 git checkout task/generate-sine
@@ -29,16 +49,16 @@ Your first task is to play back a test tone through speakers: a 220 Hz sine. You
 1. Compile the `music_player` project and exectue it. Can you hear the sine? Remember not to use headphones for testing!
 1. Extract sine generation to a `SineGenerator` class with the following declaration:
 
-```cpp
-class SineGenerator {
-public:
-  void setFrequency(wolfsound::Frequency f);
-  void prepareToPlay(double sampleRate);
-  void processBlock(AudioBuffer buffer);
-};
-```
+   ```cpp
+   class SineGenerator {
+   public:
+    void setFrequency(wolfsound::Frequency f);
+    void prepareToPlay(double sampleRate);
+    void processBlock(AudioBuffer buffer);
+   };
+   ```
 
-### Task: Play back audio file
+### Task: Play back an audio file
 
 ```bash
 git checkout task/file-player

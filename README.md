@@ -49,10 +49,10 @@ You can start working on each task independently by checking out the appropriate
 
 ## 🚉 Tested platforms
 
-* AppleClang version 21.0.0 (clang-2100.0.123.102, Xcode 26.4.1) Target: arm64-apple-darwin25.3.0
-* Visual Studio 2026
-* Visual Studio 2022
-* GCC 16
+* Xcode 26.4.1
+* Visual Studio 2026 (18.5.2)
+* Visual Studio 2022 (17.14.31)
+* GCC 16.0.1
 
 ## 📃 License
 

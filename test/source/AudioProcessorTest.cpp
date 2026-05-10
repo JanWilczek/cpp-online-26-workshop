@@ -10,7 +10,7 @@ struct Processor {
                             static_cast<int>(spec.maximumBlockSize));
     buffer.setSize(static_cast<int>(spec.numChannels),
                    static_cast<int>(spec.maximumBlockSize));
-    processor.getParameterRefs().lfoFrequency = 7.f;
+    // processor.getParameterRefs().lfoFrequency = 7.f;
   }
 
   void process(juce::dsp::ProcessContextReplacing<float> context) {

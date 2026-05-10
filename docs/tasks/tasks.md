@@ -4,7 +4,7 @@
 
 In this part of the workshop, you will learn the basics of operating on audio samples and interacting with operating system to play them back.
 
-### Task 1: Play back sine
+### Task: Play back sine
 
 Your first task is to play back a test tone through speakers: a 220 Hz sine. You will accomplish this using the PortAudio library, which will show you the low-level audio playback through your operating system's audio driver API. For now, just focus on the *music_player/source/main.cpp* file.
 
@@ -25,7 +25,7 @@ Your first task is to play back a test tone through speakers: a 220 Hz sine. You
 1. Compile the `music_player` project and exectue it. Can you hear the sine? Remember not to use headphones for testing!
 1. Extract sine generation to a `SineGenerator` class with the following declaration:
 
-```
+```cpp
 class SineGenerator {
 public:
   void setFrequency(wolfsound::Frequency f);
@@ -34,7 +34,7 @@ public:
 };
 ```
 
-### Task 2: Play back audio file
+### Task: Play back audio file
 
 Now, we may turn our attention to the _fx/include/fx/fx.h_ file. Here you will implement a class that the `MusicPlayer` can use to retrieve samples from a file.
 
@@ -55,7 +55,7 @@ Now, we may turn our attention to the _fx/include/fx/fx.h_ file. Here you will i
     1. Call `prepareToPlay()` of all processors in the constructor.
     1. Call `processBlock()` of all processors in the `audioCallback()` function.
 
-### Task 3: Flanger audio effect
+### Task: Flanger audio effect
 
 1. Add a `SineGenerator lfo_` member to the `Flanger` class.
 1. "Prepare" it in `Flanger::prepareToPlay()`.

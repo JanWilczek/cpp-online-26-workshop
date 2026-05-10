@@ -478,29 +478,57 @@ PluginProcessor::PluginProcessor(
 
 # Task: Create a custom editor
 
+```bash
+git checkout task/create-custom-editor
+```
+
 ---
 
 # Task: Add a slider controlling the modulation rate
+
+```bash
+git checkout task/add-slider
+```
 
 ---
 
 # Task: Style components
 
+```bash
+git checkout task/style-components
+```
+
 ---
 
 # Task: Add labels
+
+```bash
+git checkout task/add-labels
+```
 
 ---
 
 # Task: Add value label
 
+```bash
+git checkout task/add-value-label
+```
+
 ---
 
 # Task: Fonts
 
+```bash
+git checkout task/add-custom-fonts
+```
+
 ---
 
 # Homework
+
+```bash
+git checkout homework/draw-background-noise
+```
 
 ---
 

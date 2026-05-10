@@ -6,7 +6,7 @@ This is the companion repository for the C++ Online 2026 workshop.
 
 Register here: https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/
 
-## Building the project
+## 🔨 Building the project
 
 Check [_docs/tasks/task0.md_](docs/tasks/task0.md) for details.
 
@@ -15,7 +15,7 @@ cmake --preset default # generate the buildsystem
 cmake --build --preset default # build the project
 ```
 
-## Repository structure
+## 🪾 Repository structure
 
 ```
 cpp-online-26-workshop/
@@ -33,6 +33,8 @@ cpp-online-26-workshop/
 ├── CMakeLists.txt
 └── CMakePresets.json
 ```
+
+You can start working on each task independently by checking out the appropriate branch. See task descriptions in [_docs/tasks/tasks.md_](docs/tasks/tasks.md) for details.
 
 ## 📃 License
 

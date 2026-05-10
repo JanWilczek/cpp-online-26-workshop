@@ -122,6 +122,8 @@ To control an audio plugin, we need plugin parameters. There are a few approache
 
 ## Part 3: Plugin GUI in JUCE C++ framework
 
+In the final part of the workshop, you will build a custom user interface of the flanger plugin. For this, follow the [Figma design file](task/generate-sine).
+
 ### Task: Create a custom editor
 
 ```bash

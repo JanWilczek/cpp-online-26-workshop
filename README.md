@@ -6,6 +6,17 @@ This is the companion repository for the C++ Online 2026 workshop.
 
 Register here: https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/
 
+## Workshop content
+
+Throughout the workshop, you will build
+
+* a sine generator
+* a command-line music player
+* a flanger effect
+* a flanger effect app/plugin
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/design/knuE1YOpeBarbBjHkL6Tc0/Workshop-Flanger-Plugin-UI?embed-host=share" allowfullscreen></iframe>
+
 ## 🔨 Building the project
 
 Check [_docs/tasks/task0.md_](docs/tasks/task0.md) for details.

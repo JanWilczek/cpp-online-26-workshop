@@ -106,6 +106,10 @@ class MusicPlayer {
 ```cpp
 PaStream* stream;
 const auto error = Pa_OpenDefaultStream( &stream, /* many arguments */);
+//...
+if (stream != nullptr && error == paNoError) {
+  Pa_CloseStream(stream_);
+}
 ```
 
 ---
@@ -115,8 +119,52 @@ const auto error = Pa_OpenDefaultStream( &stream, /* many arguments */);
 ## Creating a stream
 
 ```cpp
-
+class MusicPlayer {
+explicit MusicPlayer()
+      : stream_{/* many arguments */} {}
+  //...
+  pa_ex::Stream stream_;
+};
 ```
+
+---
+
+# Task: Play back a sine
+
+## Generating the sine
+
+$$s[n] = A\sin(2\pi f n / f_s),$$
+
+where
+
+* $n$ is the unitless sample index
+* $s[n]$ is the discrete output signal
+* $f$ is the frequency in Hz
+* $f_s$ is the sample rate
+* $A$ is the unitless amplitude
+* $\pi = 3.14159\dots$
+
+---
+
+# Task: Play back a sine
+
+## Generating the sine
+
+$$s[n] = A\sin(2\pi f n / f_s),$$
+
+```cpp
+auto phase_ = 0.f;
+//...
+constexpr auto amplitude = 0.25f;
+const auto outputSample = amplitude * std::sin(phase_);
+
+// output the sample...
+
+constexpr auto frequency = 220.f;
+phase_ += 2 * std::numbers::pi_v<float> * frequency / sampleRate_;
+```
+
+<!-- Now, all should start working on the task -->
 
 ---
 

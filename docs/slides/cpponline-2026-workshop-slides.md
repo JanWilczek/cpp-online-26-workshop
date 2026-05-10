@@ -42,6 +42,7 @@ img[alt~="align-left"] {
 * Online course creator
   * DSP Pro on digital audio signal processing
   * Official JUCE C++ framework audio plugin development course
+* **Workshop repo: https://github.com/JanWilczek/cpp-online-26-workshop**
 * **These slides: _docs/slides/cpponline-2026-workshop-slides.md_**
 * **Task descriptions: _docs/tasks/tasks.md_**
 
@@ -191,6 +192,76 @@ We'll be using the AudioFile library by AdamStark.
 ```bash
 git checkout task/flanger-effect
 ```
+
+Focus:
+
+* _fx/include/fx/fx.h_
+* *music_player/source/main.cpp*
+
+---
+
+# Task: Flanger audio effect
+
+## What is Flanger?
+
+Input:
+
+<audio src="../data/Guitar_5th.wav" controls/>
+
+Output:
+
+<audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls/>
+
+---
+
+# Task: Flanger audio effect
+
+## What is flanger?
+
+A DSP algorithm that can be depicted as:
+
+* DSP diagram
+* Difference equations
+* Textual description
+* Literature reference
+  * ”We will implement equations X-Y from paper Z”
+
+<!-- Difference equations are easiest to implement in code. Diagrams are great for analysis or visual programming languages -->
+
+---
+
+# Sources of DSP algorithms
+
+* Books
+* Research papers
+* Online blogs & videos
+* Online forums
+* External consultancy
+* Self-design (e.g., through experiments)
+
+---
+
+# How to read DSP diagrams?
+
+* TODO:
+* A few simple examples
+  * identity
+  * delay by 1
+  * delay by N
+  * nonlinearity
+
+---
+
+# Task: Flanger audio effect
+
+## DSP diagram
+
+
+* Sound
+* block diagram
+  * sources of block diagrams
+* difference equations
+* plugins
 
 ---
 

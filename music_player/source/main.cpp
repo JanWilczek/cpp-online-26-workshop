@@ -76,27 +76,12 @@ private:
 class MusicPlayer {
 public:
   explicit MusicPlayer(/* TODO: Pass the processing chain */)
-      : stream_{inputChannelCount,
-                outputChannelCount,
-                paFloat32,
-                sampleRate,
-                static_cast<unsigned long>(paFramesPerBufferUnspecified),
-                [](const void* input,
-                   void* output,
-                   unsigned long frameCount,
-                   const PaStreamCallbackTimeInfo* timeInfo,
-                   PaStreamCallbackFlags statusFlags,
-                   void* userData) {
-                  auto* thisPtr = static_cast<MusicPlayer*>(userData);
-                  return thisPtr->audioCallback(input, output, frameCount,
-                                                timeInfo, statusFlags);
-                },
-                this} {
-    sineGenerator_.prepareToPlay(sampleRate);
-  }
+  // TODO: Initialize the stream with no input channels, 2 output channels,
+  // 44.1 kHz sampling rate, and audioCallback() as the callback
+  {}
 
-  void start() { stream_.start(); }
-  void stop() { stream_.stop(); }
+  void start() { /* TODO: Start the stream. */ }
+  void stop() { /* TODO: Stop the stream. */ }
 
 private:
   static constexpr auto inputChannelCount = 0;
@@ -108,20 +93,16 @@ private:
                     unsigned long frameCount,
                     const PaStreamCallbackTimeInfo* /* timeInfo */,
                     PaStreamCallbackFlags /* statusFlags */) {
-    auto buffer = fx::AudioBuffer{static_cast<float*>(output),
-                                  outputChannelCount, frameCount};
+    [[maybe_unused]] auto buffer = fx::AudioBuffer{
+        static_cast<float*>(output), outputChannelCount, frameCount};
 
-    // TODO: Replace with processing chain
-    sineGenerator_.processBlock(buffer);
+    // TODO: Fill all output channels with a 220 Hz sine
 
     return paContinue;
   }
 
-  pa_ex::Initializer initializer_;
-  pa_ex::Stream stream_;
-  // TODO: Add FilePlayer
-  // TODO: Replace with a chain of processors
-  fx::SineGenerator sineGenerator_;
+  // TODO: Initialize PortAudio
+  // TODO: Add a stream
 };
 
 int main() {

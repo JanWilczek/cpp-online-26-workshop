@@ -6,7 +6,7 @@ This is the companion repository for the C++ Online 2026 workshop.
 
 Register here: https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/
 
-## Workshop content
+## 📨 Workshop content
 
 Throughout the workshop, you will build
 
@@ -15,7 +15,7 @@ Throughout the workshop, you will build
 * a flanger effect
 * a flanger effect app/plugin
 
-[](docs/slides/img/FlangerUI.png)
+<img src="docs/slides/img/FlangerUI.png" alt="flanger plugin UI" width="50%">
 
 ## 🔨 Building the project
 

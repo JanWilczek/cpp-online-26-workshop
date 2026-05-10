@@ -1,0 +1,181 @@
+<!-- Title: juce::AudioProcessorParameter Pages: 1 -->
+<svg width="1054pt" height="138pt"
+ viewBox="0.00 0.00 1054.00 138.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 134.25)">
+<title>juce::AudioProcessorParameter</title>
+<!-- Node1 -->
+<g id="Node000001" class="node">
+<title>Node1</title>
+<g id="a_Node000001"><a xlink:title="An abstract base class for parameter objects that can be added to an AudioProcessor.">
+<polygon fill="#999999" stroke="#666666" points="154,-74.25 0,-74.25 0,-55 154,-55 154,-74.25"/>
+<text xml:space="preserve" text-anchor="middle" x="77" y="-60.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioProcessorParameter</text>
+</a>
+</g>
+</g>
+<!-- Node2 -->
+<g id="Node000002" class="node">
+<title>Node2</title>
+<g id="a_Node000002"><a xlink:href="structjuce_1_1HostedAudioProcessorParameter.html" target="_top" xlink:title="A parameter with functions that are useful for plugin hosts.">
+<polygon fill="white" stroke="#666666" points="330.5,-79.88 190,-79.88 190,-49.38 330.5,-49.38 330.5,-79.88"/>
+<text xml:space="preserve" text-anchor="start" x="198" y="-66.38" font-family="Helvetica,sans-Serif" font-size="10.00">juce::HostedAudioProcessor</text>
+<text xml:space="preserve" text-anchor="middle" x="260.25" y="-55.12" font-family="Helvetica,sans-Serif" font-size="10.00">Parameter</text>
+</a>
+</g>
+</g>
+<!-- Node1&#45;&gt;Node2 -->
+<g id="edge1_Node000001_Node000002" class="edge">
+<title>Node1&#45;&gt;Node2</title>
+<g id="a_edge1_Node000001_Node000002"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M165.66,-64.62C173.71,-64.62 181.78,-64.62 189.63,-64.62"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="165.85,-61.13 155.85,-64.63 165.85,-68.13 165.85,-61.13"/>
+</a>
+</g>
+</g>
+<!-- Node3 -->
+<g id="Node000003" class="node">
+<title>Node3</title>
+<g id="a_Node000003"><a xlink:href="structjuce_1_1AudioPluginInstance_1_1Parameter.html" target="_top" xlink:title="Structure used to describe plugin parameters.">
+<polygon fill="white" stroke="#666666" points="508.12,-128.88 378.88,-128.88 378.88,-98.38 508.12,-98.38 508.12,-128.88"/>
+<text xml:space="preserve" text-anchor="start" x="386.88" y="-115.38" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioPluginInstance</text>
+<text xml:space="preserve" text-anchor="middle" x="443.5" y="-104.12" font-family="Helvetica,sans-Serif" font-size="10.00">::Parameter</text>
+</a>
+</g>
+</g>
+<!-- Node2&#45;&gt;Node3 -->
+<g id="edge2_Node000002_Node000003" class="edge">
+<title>Node2&#45;&gt;Node3</title>
+<g id="a_edge2_Node000002_Node000003"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M330.04,-83.22C347.92,-88.06 367,-93.21 384.27,-97.88"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="331.12,-79.89 320.56,-80.66 329.3,-86.65 331.12,-79.89"/>
+</a>
+</g>
+</g>
+<!-- Node4 -->
+<g id="Node000004" class="node">
+<title>Node4</title>
+<g id="a_Node000004"><a xlink:href="classjuce_1_1AudioProcessorParameterWithID.html" target="_top" xlink:title="This abstract base class is used by some AudioProcessorParameter helper classes.">
+<polygon fill="white" stroke="#666666" points="520.5,-79.88 366.5,-79.88 366.5,-49.38 520.5,-49.38 520.5,-79.88"/>
+<text xml:space="preserve" text-anchor="start" x="374.5" y="-66.38" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioProcessorParameter</text>
+<text xml:space="preserve" text-anchor="middle" x="443.5" y="-55.12" font-family="Helvetica,sans-Serif" font-size="10.00">WithID</text>
+</a>
+</g>
+</g>
+<!-- Node2&#45;&gt;Node4 -->
+<g id="edge3_Node000002_Node000004" class="edge">
+<title>Node2&#45;&gt;Node4</title>
+<g id="a_edge3_Node000002_Node000004"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M342.06,-64.62C350.08,-64.62 358.21,-64.62 366.19,-64.62"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="342.32,-61.13 332.32,-64.63 342.32,-68.13 342.32,-61.13"/>
+</a>
+</g>
+</g>
+<!-- Node11 -->
+<g id="Node000011" class="node">
+<title>Node11</title>
+<g id="a_Node000011"><a xlink:href="classjuce_1_1LegacyAudioParameter.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="514.12,-31.25 372.88,-31.25 372.88,-12 514.12,-12 514.12,-31.25"/>
+<text xml:space="preserve" text-anchor="middle" x="443.5" y="-17.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::LegacyAudioParameter</text>
+</a>
+</g>
+</g>
+<!-- Node2&#45;&gt;Node11 -->
+<g id="edge10_Node000002_Node000011" class="edge">
+<title>Node2&#45;&gt;Node11</title>
+<g id="a_edge10_Node000002_Node000011"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M338.65,-46.26C359.63,-41.28 381.58,-36.08 399.87,-31.74"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="337.85,-42.86 328.93,-48.57 339.47,-49.67 337.85,-42.86"/>
+</a>
+</g>
+</g>
+<!-- Node5 -->
+<g id="Node000005" class="node">
+<title>Node5</title>
+<g id="a_Node000005"><a xlink:href="classjuce_1_1RangedAudioParameter.html" target="_top" xlink:title="This abstract base class is used by some AudioProcessorParameter helper classes.">
+<polygon fill="white" stroke="#666666" points="700,-74.25 556.5,-74.25 556.5,-55 700,-55 700,-74.25"/>
+<text xml:space="preserve" text-anchor="middle" x="628.25" y="-60.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::RangedAudioParameter</text>
+</a>
+</g>
+</g>
+<!-- Node4&#45;&gt;Node5 -->
+<g id="edge4_Node000004_Node000005" class="edge">
+<title>Node4&#45;&gt;Node5</title>
+<g id="a_edge4_Node000004_Node000005"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M532.2,-64.62C540.21,-64.62 548.24,-64.62 556.07,-64.62"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="532.46,-61.13 522.46,-64.63 532.46,-68.13 532.46,-61.13"/>
+</a>
+</g>
+</g>
+<!-- Node6 -->
+<g id="Node000006" class="node">
+<title>Node6</title>
+<g id="a_Node000006"><a xlink:href="classjuce_1_1AudioParameterBool.html" target="_top" xlink:title="Provides a class of AudioProcessorParameter that can be used as a boolean value.">
+<polygon fill="white" stroke="#666666" points="870.88,-130.25 741.62,-130.25 741.62,-111 870.88,-111 870.88,-130.25"/>
+<text xml:space="preserve" text-anchor="middle" x="806.25" y="-116.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioParameterBool</text>
+</a>
+</g>
+</g>
+<!-- Node5&#45;&gt;Node6 -->
+<g id="edge5_Node000005_Node000006" class="edge">
+<title>Node5&#45;&gt;Node6</title>
+<g id="a_edge5_Node000005_Node000006"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M666.1,-78.64C686.54,-86.19 712.52,-95.41 736,-102.62 745.02,-105.4 754.79,-108.11 764.07,-110.56"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="667.37,-75.38 656.78,-75.17 664.93,-81.94 667.37,-75.38"/>
+</a>
+</g>
+</g>
+<!-- Node7 -->
+<g id="Node000007" class="node">
+<title>Node7</title>
+<g id="a_Node000007"><a xlink:href="classjuce_1_1AudioParameterChoice.html" target="_top" xlink:title="Provides a class of AudioProcessorParameter that can be used to select an indexed,...">
+<polygon fill="white" stroke="#666666" points="876.5,-93.25 736,-93.25 736,-74 876.5,-74 876.5,-93.25"/>
+<text xml:space="preserve" text-anchor="middle" x="806.25" y="-79.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioParameterChoice</text>
+</a>
+</g>
+</g>
+<!-- Node5&#45;&gt;Node7 -->
+<g id="edge6_Node000005_Node000007" class="edge">
+<title>Node5&#45;&gt;Node7</title>
+<g id="a_edge6_Node000005_Node000007"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M711.61,-73.52C719.64,-74.38 727.73,-75.26 735.62,-76.11"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="712.15,-70.05 701.83,-72.46 711.4,-77.01 712.15,-70.05"/>
+</a>
+</g>
+</g>
+<!-- Node8 -->
+<g id="Node000008" class="node">
+<title>Node8</title>
+<g id="a_Node000008"><a xlink:href="classjuce_1_1AudioParameterFloat.html" target="_top" xlink:title="A subclass of AudioProcessorParameter that provides an easy way to create a parameter which maps onto...">
+<polygon fill="white" stroke="#666666" points="872,-56.25 740.5,-56.25 740.5,-37 872,-37 872,-56.25"/>
+<text xml:space="preserve" text-anchor="middle" x="806.25" y="-42.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioParameterFloat</text>
+</a>
+</g>
+</g>
+<!-- Node5&#45;&gt;Node8 -->
+<g id="edge7_Node000005_Node000008" class="edge">
+<title>Node5&#45;&gt;Node8</title>
+<g id="a_edge7_Node000005_Node000008"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M711.53,-56.21C721.14,-55.23 730.83,-54.24 740.16,-53.28"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="711.43,-52.7 701.83,-57.2 712.14,-59.67 711.43,-52.7"/>
+</a>
+</g>
+</g>
+<!-- Node10 -->
+<g id="Node000010" class="node">
+<title>Node10</title>
+<g id="a_Node000010"><a xlink:href="classjuce_1_1AudioParameterInt.html" target="_top" xlink:title="Provides a class of AudioProcessorParameter that can be used as an integer value with a given range.">
+<polygon fill="white" stroke="#666666" points="866.75,-19.25 745.75,-19.25 745.75,0 866.75,0 866.75,-19.25"/>
+<text xml:space="preserve" text-anchor="middle" x="806.25" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">juce::AudioParameterInt</text>
+</a>
+</g>
+</g>
+<!-- Node5&#45;&gt;Node10 -->
+<g id="edge9_Node000005_Node000010" class="edge">
+<title>Node5&#45;&gt;Node10</title>
+<g id="a_edge9_Node000005_Node000010"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M666.96,-50.74C687.29,-43.46 712.87,-34.63 736,-27.62 745.15,-24.85 755.07,-22.12 764.45,-19.65"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="665.9,-47.4 657.68,-54.08 668.28,-53.98 665.9,-47.4"/>
+</a>
+</g>
+</g>
+</g>
+</svg>

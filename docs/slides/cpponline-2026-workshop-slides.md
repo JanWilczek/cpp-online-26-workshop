@@ -373,6 +373,24 @@ git checkout task/flanger-plugin
 
 # Task: Parameters
 
+```bash
+git checkout task/add-parameter
+```
+
+---
+
+# Purpose of plugin parameters
+ 
+1. DSP control
+1. Generic UI
+1. Visualization
+
+---
+
+# JUCE parameter classes hierarchy
+
+![w:2000px](img/AudioProcessorParameterClassHierarchy.svg)
+
 ---
 
 # Part 3: Plugin GUI in JUCE C++ framework

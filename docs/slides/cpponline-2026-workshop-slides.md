@@ -393,6 +393,79 @@ git checkout task/add-parameter
 
 ---
 
+# JUCE parameter classes
+ 
+<style scoped>section{font-size:2em;}</style>
+
+* `AudioParameterBool`
+  * `true`/`false`
+* `AudioParameterInt`
+  * integer in a closed range
+  * e.g., "1" from {0, 1, 2}
+* `AudioParameterFloat`
+  * real value from a closed range
+  * e.g., "0.25" from [0, 2]
+* `AudioParameterChoice`
+  * a value from a fixed set of named options
+  * e.g., "lowpass" from {"lowpass", "highpass"}
+
+---
+
+# Purpose of JUCE parameter classes
+
+* Single source of truth
+* Plugin version management
+* Plugin presets
+* GUI thread-audio thread synchronization (explained in more detail later)
+
+---
+
+# JUCE parameter class
+
+## Creation (at plugin construction)
+
+* Instantiate dynamically, e.g., using `std::make_unique<>()`
+* Retrieve a reference or a pointer
+* Call `PluginProcessor::addParameter()`
+
+## Usage
+
+* Retrieve the current parameter value in `PluginProcessor::processBlock()`
+
+---
+
+# JUCE parameter class
+
+<style scoped>section{font-size:1.5em;}</style>
+
+We'll use my `wolfsound::JuceParameterHolder` utility.
+
+```cpp
+struct Parameters {
+  juce::AudioParameterFloat& floatParam;
+};
+
+class PluginProcessor {
+  //...
+  Parameters parameters_;
+  wolfsound::JuceParameterHolder parameterHolder_;
+};
+
+// .cpp file
+PluginProcessor::PluginProcessor(
+    JuceParameterHolder::Builder builder)
+    : parameters_.floatParam{builder.add<juce::AudioParameterFloat>(
+          "floatParam",
+          "Float Param",
+          juce::NormalisableRange{1.f, 10.f},
+          5.f)},
+      parameterHolder_{std::move(builder).build(*this)} {}
+```
+
+<!-- Now is the time for implementation -->
+
+---
+
 # Part 3: Plugin GUI in JUCE C++ framework
 
 ---

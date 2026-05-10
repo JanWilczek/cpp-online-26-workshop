@@ -1,8 +1,42 @@
 # Tasks
 
-## Task 1: Play back sine
+## Part 1: Building a music player in C++
 
-## Task 2: Play back audio file
+In this part of the workshop, you will learn the basics of operating on audio samples and interacting with operating system to play them back.
+
+### Task 1: Play back sine
+
+Your first task is to play back a test tone through speakers: a 220 Hz sine. You will accomplish this using the PortAudio library, which will show you the low-level audio playback through your operating system's audio driver API. For now, just focus on the *music_player/source/main.cpp* file.
+
+1. Add `pa_ex::Initializer` and `pa_ex::Stream` members to `MusicPlayer`.
+1. Initialize the stream in the constructor with the following configuration:
+    1. No input channels
+    1. 2 output channels
+    1. 32-bit float-based processing
+    1. No desired frame buffer size
+    1. 44.1 kHz sampling rate
+    1. `audioCallback()` as the audio callback
+1. Start the stream in the `start()` function.
+1. Stop the stream in the `stop()` function.
+1. Iterate over frames in `processBlock()` and for each frame
+    1. Generate the sine sample, using the discrete sine formula: $\sin(\phi)$, where $\phi$ is the phase, which is incremented by $2\pi f / f_s$ with each frame ($f$ is the frequency in Hz and $f_s$ is the sampling rate in Hz).
+    1. Copy the sine sample to all channels
+    1. Increment the phase
+1. Compile the `music_player` project and exectue it. Can you hear the sine? Remember not to use headphones for testing!
+1. Extract sine generation to a `SineGenerator` class with the following declaration:
+
+```
+class SineGenerator {
+public:
+  void setFrequency(wolfsound::Frequency f);
+  void prepareToPlay(double sampleRate);
+  void processBlock(AudioBuffer buffer);
+};
+```
+
+### Task 2: Play back audio file
+
+Now, we may turn our attention to the _fx/include/fx/fx.h_ file. Here you will implement a class that the `MusicPlayer` can use to retrieve samples from a file.
 
 1. Implement the `fx::FilePlayer` class capable of playing back audio files.
     1. `#include` the _AudioFile.h_ header.
@@ -13,21 +47,15 @@
         1. Fill the played back channels not present in the file with silence.
         1. When the file stops playing back, output silence on all channels.
 1. Replace `SineGenerator` with `FilePlayer` in `MusicPlayer`.
-1. Test that the file is played back.
+1. Pass the path to _data/Guitar_5th.wav_ file to its constructor.
+1. Test that the file is played back when running `music_player`.
 1. Allow an arbitrary processing chain in `MusicPlayer`.
     1. Introduce an `AudioProcessor` interface with two virtual functions: `prepareToPlay(double sampleRate, int maxFramesPerBuffer, int channelCount)` and `processBlock(AudioBuffer)`. Make `SineGenerator` and `FilePlayer` implement this interface.
     1. Pass a `std::vector<std::unique_ptr<AudioProcessor>>` to `MusicPlayer` instead of hardcoding the actual class that does the processing. Store the `vector` as a member.
     1. Call `prepareToPlay()` of all processors in the constructor.
     1. Call `processBlock()` of all processors in the `audioCallback()` function.
 
-## Task 3: Flanger audio effect
-
-- research & design (in short explained)
-- difference equation
-- implementation
-- interface considerations
-- unification with sine generator
-- reuse of sine generator
+### Task 3: Flanger audio effect
 
 1. Add a `SineGenerator lfo_` member to the `Flanger` class.
 1. "Prepare" it in `Flanger::prepareToPlay()`.
@@ -49,15 +77,18 @@
 1. Emplace an `fx::Flanger` instance in the `vector` passed to `MusicPlayer`, just after the `FilePlayer` (so that flanger impacts the played back file).
 1. Run the `music_player` app; is the flanger effect applied?
 
-## Part -2: Audio plugin in JUCE C++ framework
+## Part 2: Audio plugin in JUCE C++ framework
 
-From now on, we will work exclusively in the *audio_plugin* folder (apart from the _CMakeLists.txt_ file).
+From now on, we will work exclusively in the *audio_plugin* folder (apart from the root _CMakeLists.txt_ file). Our plugin consists of two classes: `PluginProcessor` for audio processing and plugin-related duties and `PluginEditor` for displaying the UI.
 
 ### Task
 
 1. Add an `fx::Flanger flanger_` member to `PluginProcessor`.
 1. Call `flanger_.prepareToPlay()` in `PluginProcessor::prepareToPlay`.
 1. Apply the flanger effect to the audio in the `PluginProcessor::processBlock()` function. `interleave()` and `deinterleave()` functions have been provided for you, since JUCE does not use interleaved buffers.
+1. Build the AudioPlugin_VST3 project. You should see "installation" messages in the compiler output.
+1. Open the DAW of your choice (e.g., Reaper) and see if you can add the plugin on a track.
+1. Test the effect by placing _data/Guitar_5th.wav_ on a track and adding the plugin onto it.
 
 ### Task: Parameters
 
@@ -69,7 +100,7 @@ To control an audio plugin, we need plugin parameters. There are a few approache
 1. Check that you can see the parameter value changing (and being remembered) in the generic editor and the UI-less editor.
 1. Draw an automation curve for this parameter. Does it work as intended?
 
-## Part -1: Plugin GUI in JUCE C++ framework
+## Part 3: Plugin GUI in JUCE C++ framework
 
 ### Task: Create a custom editor
 
@@ -147,7 +178,7 @@ So far our labels use the stock Font that ships with JUCE. That's fine for hobby
 1. Read the font files from binary data. For, this, use the `juce::createSystemTypefaceFor()` static function with appropriate arguments. You have to do it only once per plugin instantiation and only if the user opens the GUI.
 1. Note that the `juce::Label` class has a member function named `setFont()`. Call this function on label objects with appropriate `juce::FontOptions` objects. Note that `FontOptions` allows you to configure the font size.
 
-### Homework
+## Homework
 
 Based on the Figma design file, fill the background with programmatically generated "noise." For this, look up Figma noise parameters and implement the `drawNoise()` function in PluginProcessor.cpp accordingly. Good luck!
 

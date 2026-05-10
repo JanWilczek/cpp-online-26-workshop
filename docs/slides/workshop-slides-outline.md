@@ -1,5 +1,14 @@
 - You can do sine generation, file reading and file playback in JUCE: here's how
 
+### Task: Flanger effect
+
+- research & design (in short explained)
+- difference equation
+- implementation
+- interface considerations
+- unification with sine generator
+- reuse of sine generator
+
 ### Task: Styling
 
 - show Figma file and how to use it

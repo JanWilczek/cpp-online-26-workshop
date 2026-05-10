@@ -478,7 +478,7 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # Don’t test using headphones!
 
-<audio src="../data/sine220.0Hz5.0s.wav" controls/>
+<audio src="../../data/sine220.0Hz5.0s.wav" controls/>
 
 ---
 
@@ -574,7 +574,7 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # Audio file playback
 
-<audio src="../data/Guitar_5th.wav" controls/>
+<audio src="../../data/Guitar_5th.wav" controls/>
 
 ---
 
@@ -607,7 +607,7 @@ for (const auto frame : std::views::iota(0, buffer.extent(1))) {
 
 # Example effect: flanger
 
-<audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls>
+<audio src="../../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls>
 
 <!-- We browse the literature [WORKSHOP] -->
 

@@ -5,6 +5,8 @@ theme: default
 
 # Beginner’s Guide to C++ Audio Programming with the JUCE Framework
 
+## C++ Online Conference Workshop by Jan Wilczek
+
 ---
 
 <!-- paginate: true -->
@@ -50,7 +52,7 @@ img[alt~="align-left"] {
 
 # Rules
 
-<style scoped>section{font-size:2em;}</style>
+<style scoped>section{font-size:1.5em;}</style>
 
 * Workshop repo: https://github.com/JanWilczek/cpp-online-26-workshop
 * These slides: _docs/slides/cpponline-2026-workshop-slides.md_
@@ -195,8 +197,8 @@ git checkout task/file-player
 
 Focus:
 
-* _fx/include/fx/fx.h_
-* *music_player/source/main.cpp*
+- _fx/include/fx/fx.h_
+- *music_player/source/main.cpp*
 
 We'll be using the AudioFile library by AdamStark.
 
@@ -210,8 +212,8 @@ git checkout task/flanger-effect
 
 Focus:
 
-* _fx/include/fx/fx.h_
-* *music_player/source/main.cpp*
+- _fx/include/fx/fx.h_
+- *music_player/source/main.cpp*
 
 ---
 
@@ -221,11 +223,11 @@ Focus:
 
 Input:
 
-<audio src="../data/Guitar_5th.wav" controls/>
+<audio src="../../data/Guitar_5th.wav" controls/>
 
 Output:
 
-<audio src="../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls/>
+<audio src="../../data/guitar_5th_FlangerTest_FileEnd2EndOutput.wav" controls/>
 
 ---
 
@@ -387,7 +389,7 @@ git checkout task/add-parameter
 
 # JUCE parameter classes
  
-<style scoped>section{font-size:2em;}</style>
+<style scoped>section{font-size:1.5em;}</style>
 
 * `AudioParameterBool`
   * `true`/`false`
@@ -428,7 +430,7 @@ git checkout task/add-parameter
 
 # JUCE parameter class
 
-<style scoped>section{font-size:1.5em;}</style>
+<style scoped>section{font-size:1.3em;}</style>
 
 We'll use my `wolfsound::JuceParameterHolder` utility.
 

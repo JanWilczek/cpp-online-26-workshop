@@ -15,12 +15,12 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
    4. Latest version of the C++ build system
       1. make on Linux
       2. Xcode build system on macOS (ships with Xcode)
-      3. MSBuild on Widnows (ships with Visual Studio)
+      3. MSBuild on Windows (ships with Visual Studio)
       4. Ninja
    5. IDE of your choice, e.g., CLion, Visual Studio Code, Visual Studio, Xcode.
-      1. ⚠️ On Windows and macOS, you still need to install Visual Studio and Xcode respectively, even if you decide to use a different IDE, e.g., Visual Studio Code.
+      1. ⚠️ On Windows and macOS, you still need to install Visual Studio and Xcode, respectively, even if you decide to use a different IDE, e.g., Visual Studio Code.
    6. To run the workshop plugin, you need a digital audio workstation (DAW). I recommend [Reaper](https://www.reaper.fm/).
-1. (Windows-only) If you use CMake from the command line and you get "missing C++ compiler" information or other weird errors, you need to put the compiler on your PATH. For this, you need to run a batch script. Assuming, you have Visual Studio 2022 installed, you can run the following command to initialize C++ environment in your shell.
+1. (Windows-only) If you use CMake from the command line and you get "missing C++ compiler" information or other weird errors, you need to put the compiler on your PATH. For this, you need to run a batch script. Assuming you have Visual Studio 2022 installed, you can run the following command to initialize the C++ environment in your shell.
 
     ```bash
     "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
@@ -61,7 +61,7 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
     cmake --build --preset default
     ```
 
-    If you're using an IDE, follow their instructions on working with CMake-based projects. I am using CLion from JetBrains, because it integrates great with JUCE modules, but you don't have to. Visual Studio Code, Visual Studio, or Xcode work great.
+    If you're using an IDE, follow its instructions on working with CMake-based projects. I am using CLion from JetBrains, because it integrates great with JUCE modules, but you don't have to. Visual Studio Code, Visual Studio, or Xcode work great.
 1. Run the compiled projects. The built targets are in platform- and buildsystem-specific folders. For the `default` preset and the `make` buildsystem, run
 
     ```bash
@@ -76,13 +76,13 @@ Your first task is to compile the code on the `main` branch. Do this **BEFORE** 
    3. Put _data/Guitar_5th.wav_ file on this track.
    4. Click the "FX" button on the track.
    5. Click "Add".
-   6. Find "C++ Online 2026 Workshop Flanger" plugin and add it to the track.
+   6. Find the "C++ Online 2026 Workshop Flanger" plugin and add it to the track.
    7. Start the playback, turn the rate knob, and check if the sound changes with the rate.
 1. Watch [the workshop preview on YouTube](https://youtu.be/VSr5o7kR1KM?si=L30yOa4LO5kV6HpT). It conveys basic knowledge that we'll use in the workshop. Watching it before the workshop will greatly aid you in writing code.
 
 ## Bonus tip
 
-The complete solution to all the tasks are present on the `main` branch. If at any time during the workshop you need to check the reference solution, compare the difference between your working tree and the `main` branch.
+The complete solution to all the tasks is present on the `main` branch. If at any time during the workshop you need to check the reference solution, compare the difference between your working tree and the `main` branch.
 
 ```bash
 git diff main

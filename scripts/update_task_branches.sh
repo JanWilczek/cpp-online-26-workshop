@@ -23,5 +23,7 @@ git checkout task/flanger-effect && \
   git rebase task/flanger-plugin && \
 git checkout task/file-player && \
   git rebase task/flanger-effect && \
+git checkout task/generate-sine && \
+  git rebase task/file-player && \
 git checkout main
 

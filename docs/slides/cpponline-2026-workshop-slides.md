@@ -496,6 +496,8 @@ git checkout task/create-custom-editor
 git checkout task/add-slider
 ```
 
+![w:800px](img/FlangerUI.png)
+
 ---
 
 # Task: Style components

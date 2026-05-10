@@ -1,8 +1,12 @@
-# 🐺 WolfSound's Audio Plugin Template
+# Beginner’s Guide to C++ Audio Programming with the JUCE Framework
 
-![Cmake workflow success badge](https://github.com/JanWilczek/audio-plugin-template/actions/workflows/cmake.yml/badge.svg)
+## C++ Online 2026 Workshop by Jan Wilczek
 
-[**🎓 FREE JUCE AUDIO PLUGIN DEVELOPMENT COURSE: **](https://wolfsoundacademy.com/juce?utm_source=github-audio-plugin-template&utm_medium=referral)
+This is the companion repository for the C++ Online 2026 workshop.
+
+Register here: https://cpponline.uk/workshop/jumpstart-to-cpp-in-audio/
+
+## Repository structure
 
 ## 📃 License
 

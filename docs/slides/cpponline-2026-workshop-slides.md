@@ -262,7 +262,7 @@ A DSP algorithm that can be depicted as:
 
 ## Identity
 
-TODO IMAGE
+![](img/Identity.png)
 
 $y[n] = x[n]$
 
@@ -272,7 +272,7 @@ $y[n] = x[n]$
 
 ## Multiplication
 
-TODO IMAGE
+![](img/Multiplication.png)
 
 $y[n] = ax[n]$
 
@@ -282,7 +282,7 @@ $y[n] = ax[n]$
 
 ## Addition
 
-TODO IMAGE
+![height:300](img/Sum.png)
 
 $y[n] = x_1[n] + x_2[n]$
 
@@ -292,7 +292,7 @@ $y[n] = x_1[n] + x_2[n]$
 
 ## Delay by 1 sample
 
-TODO IMAGE
+![](img/DelayBy1.png)
 
 $y[n] = x[n-1]$
 
@@ -302,9 +302,31 @@ $y[n] = x[n-1]$
 
 ## Delay by N samples
 
-TODO IMAGE
+![](img/DelayByN.png)
 
 $y[n] = x[n-N]$
+
+---
+
+# Low-frequency oscillator (LFO)
+
+<div class="inline-images">
+
+<div>
+
+## Bipolar
+
+![w:500](img/BipolarLFO.png)
+
+</div>
+
+<div>
+
+## Unipolar
+
+![w:500](img/UnipolarLFO.png)
+
+</div>
 
 ---
 

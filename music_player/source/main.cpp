@@ -139,8 +139,12 @@ int main() {
 
   MusicPlayer player{[] {
     std::vector<std::unique_ptr<fx::AudioProcessor>> processors;
-    processors.push_back(std::make_unique<fx::FilePlayer>(
-        "/Users/jawi/Music/TestSignals/Guitar_5th.wav"));
+    const auto filePath = std::filesystem::path{__FILE__}
+                              .parent_path()
+                              .parent_path()
+                              .parent_path() /
+                          "data/Guitar_5th.wav";
+    processors.push_back(std::make_unique<fx::FilePlayer>(filePath));
     auto flanger = std::make_unique<fx::Flanger>();
     flanger->setParameters({
         .lfoFrequency = wolfsound::Frequency{7.f},

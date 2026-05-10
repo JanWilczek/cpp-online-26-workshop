@@ -260,12 +260,51 @@ A DSP algorithm that can be depicted as:
 
 # How to read DSP diagrams?
 
-* TODO:
-* A few simple examples
-  * identity
-  * delay by 1
-  * delay by N
-  * nonlinearity
+## Identity
+
+TODO IMAGE
+
+$y[n] = x[n]$
+
+---
+
+# How to read DSP diagrams?
+
+## Multiplication
+
+TODO IMAGE
+
+$y[n] = ax[n]$
+
+---
+
+# How to read DSP diagrams?
+
+## Addition
+
+TODO IMAGE
+
+$y[n] = x_1[n] + x_2[n]$
+
+---
+
+# How to read DSP diagrams?
+
+## Delay by 1 sample
+
+TODO IMAGE
+
+$y[n] = x[n-1]$
+
+---
+
+# How to read DSP diagrams?
+
+## Delay by N samples
+
+TODO IMAGE
+
+$y[n] = x[n-N]$
 
 ---
 

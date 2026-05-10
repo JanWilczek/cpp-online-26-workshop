@@ -6,6 +6,10 @@ In this part of the workshop, you will learn the basics of operating on audio sa
 
 ### Task: Play back sine
 
+```bash
+git checkout task/generate-sine
+```
+
 Your first task is to play back a test tone through speakers: a 220 Hz sine. You will accomplish this using the PortAudio library, which will show you the low-level audio playback through your operating system's audio driver API. For now, just focus on the *music_player/source/main.cpp* file.
 
 1. Add `pa_ex::Initializer` and `pa_ex::Stream` members to `MusicPlayer`.
@@ -36,6 +40,10 @@ public:
 
 ### Task: Play back audio file
 
+```bash
+git checkout task/file-player
+```
+
 Now, we may turn our attention to the _fx/include/fx/fx.h_ file. Here you will implement a class that the `MusicPlayer` can use to retrieve samples from a file.
 
 1. Implement the `fx::FilePlayer` class capable of playing back audio files.
@@ -56,6 +64,10 @@ Now, we may turn our attention to the _fx/include/fx/fx.h_ file. Here you will i
     1. Call `processBlock()` of all processors in the `audioCallback()` function.
 
 ### Task: Flanger audio effect
+
+```bash
+git checkout task/flanger-effect
+```
 
 1. Add a `SineGenerator lfo_` member to the `Flanger` class.
 1. "Prepare" it in `Flanger::prepareToPlay()`.
@@ -81,7 +93,11 @@ Now, we may turn our attention to the _fx/include/fx/fx.h_ file. Here you will i
 
 From now on, we will work exclusively in the *audio_plugin* folder (apart from the root _CMakeLists.txt_ file). Our plugin consists of two classes: `PluginProcessor` for audio processing and plugin-related duties and `PluginEditor` for displaying the UI.
 
-### Task
+### Task: Flanger plugin
+
+```bash
+git checkout task/flanger-plugin
+```
 
 1. Add an `fx::Flanger flanger_` member to `PluginProcessor`.
 1. Call `flanger_.prepareToPlay()` in `PluginProcessor::prepareToPlay`.
@@ -91,6 +107,10 @@ From now on, we will work exclusively in the *audio_plugin* folder (apart from t
 1. Test the effect by placing _data/Guitar_5th.wav_ on a track and adding the plugin onto it.
 
 ### Task: Parameters
+
+```bash
+git checkout task/add-parameter
+```
 
 To control an audio plugin, we need plugin parameters. There are a few approaches to defining your plugin parameters. In the workshop, we will use a utility class from my library `wolfsound-dsp-utils`.
 
@@ -104,11 +124,19 @@ To control an audio plugin, we need plugin parameters. There are a few approache
 
 ### Task: Create a custom editor
 
+```bash
+git checkout task/create-custom-editor
+```
+
 1. Return `true` from `PluginProcessor::hasEditor()`.
 1. Return an owning `PluginEditor` instance from `PluginProcessor::createEditor()`.
 1. Set the size of the editor in its constructor according to the Figma design.
 
-### Task: Add a slider controling the modulation rate
+### Task: Add a slider controlling the modulation rate
+
+```bash
+git checkout task/add-slider
+```
 
 1. Add a `juce::Slider modRateSlider_` member to `PluginEditor`.
 1. In `PluginEditor`'s constructor,
@@ -122,6 +150,10 @@ To control an audio plugin, we need plugin parameters. There are a few approache
 1. Compile and test. Does dragging the slider change the parameter?
 
 ### Task: Style components
+
+```bash
+git checkout task/style-components
+```
 
 There are 3 ways to customize (style) JUCE components:
 
@@ -152,6 +184,10 @@ In this workshop, we will use the first two. In this task, we will add a custom 
 
 ### Task: Add labels
 
+```bash
+git checkout task/add-labels
+```
+
 As you can see, our UI design in Figma uses 3 labels: one for the "FLANGER" logo, one for the modulation rate knob, and one for the knob's value. In this task, you will add the first two.
 
 1. Add `juce::Label valueLabel_` and `juce::Label modRateLabel_` members to `PluginEditor`.
@@ -160,6 +196,10 @@ As you can see, our UI design in Figma uses 3 labels: one for the "FLANGER" logo
 1. Call `setText()`, `setJustificationType()`, and `setColour()` on the labels in `PluginEditor`'s constructor. Don't worry about font, font size, and exact placement yet.
 
 ### Task: Add value label
+
+```bash
+git checkout task/add-value-label
+```
 
 As you can see in the Figma design, we have a label indicating slider's value. The value label should update on every slider change to reflect the current value. In JUCE, the standard way to achieve this is by observing the slider value. 
 
@@ -172,6 +212,10 @@ As you can see in the Figma design, we have a label indicating slider's value. T
 
 ### Task: Fonts
 
+```bash
+git checkout task/add-custom-fonts
+```
+
 So far our labels use the stock Font that ships with JUCE. That's fine for hobby projects, but professional-grade audio plugins always use custom fonts in their GUIs. Since we don't know whether the chosen font is present on user's machine, we must bundle the fonts with the plugin binary. As you can see, we have two fonts in the Figma projects and both are preset as TTF files in the _audio_plugin/assets/_ folder. You task is to add them to the project and use them in the GUI.
 
 1. Find where we define plugin's binary data in _CMakeLists.txt_. Add both TTF files as binary data. Regenerate and recompile the project.
@@ -179,6 +223,10 @@ So far our labels use the stock Font that ships with JUCE. That's fine for hobby
 1. Note that the `juce::Label` class has a member function named `setFont()`. Call this function on label objects with appropriate `juce::FontOptions` objects. Note that `FontOptions` allows you to configure the font size.
 
 ## Homework
+
+```bash
+git checkout homework/draw-background-noise
+```
 
 Based on the Figma design file, fill the background with programmatically generated "noise." For this, look up Figma noise parameters and implement the `drawNoise()` function in PluginProcessor.cpp accordingly. Good luck!
 

@@ -1,4 +1,7 @@
 - You can do sine generation, file reading and file playback in JUCE: here's how
+- Play back JUCE course content if needed
+    - Processor/editor split
+    - Plugin lifecycle
 
 ### Task: Flanger effect
 

@@ -47,6 +47,13 @@ cpp-online-26-workshop/
 
 You can start working on each task independently by checking out the appropriate branch. See task descriptions in [_docs/tasks/tasks.md_](docs/tasks/tasks.md) for details.
 
+## 🚉 Tested platforms
+
+* AppleClang version 21.0.0 (clang-2100.0.123.102, Xcode 26.4.1) Target: arm64-apple-darwin25.3.0
+* Visual Studio 2026
+* Visual Studio 2022
+* GCC 16
+
 ## 📃 License
 
 This repo uses the [MIT License](./LICENSE.md).

@@ -476,6 +476,12 @@ PluginProcessor::PluginProcessor(
 
 ---
 
+# Editor lifecycle
+
+![height:480px](img/plugin_lifecycle.png)
+
+---
+
 # Task: Create a custom editor
 
 ```bash

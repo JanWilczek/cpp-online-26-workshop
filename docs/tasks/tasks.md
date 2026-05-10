@@ -4,9 +4,21 @@
 
 ## Task 2: Play back audio file
 
+1. Implement the `fx::FilePlayer` class capable of playing back audio files.
+    1. `#include` the _AudioFile.h_ header.
+    1. Make `AudioFile file_` a member of `FilePlayer`.
+    1. `load()` the file in the constructor.
+    1. Play back samples in the `processBlock()` member function.
+        1. Play back all channels from the file or the playback (whichever is smaller).
+        1. Fill the played back channels not present in the file with silence.
+        1. When the file stops playing back, output silence on all channels.
 1. Replace `SineGenerator` with `FilePlayer` in `MusicPlayer`.
-1. Introduce an `AudioProcessor` interface with two virtual functions: `prepareToPlay(double sampleRate, int maxFramesPerBuffer, int channelCount)` and `processBlock(AudioBuffer)`. Make `SineGenerator` and `FilePlayer` implement this interface.
-1. Pass a `std::vector<std::unique_ptr<AudioProcessor>>` to `MusicPlayer` instead of hardcoding the actual class that does the processing. Call `prepareToPlay()` of all generators in the constructor. Call them all in the `audioCallback()` function.
+1. Test that the file is played back.
+1. Allow an arbitrary processing chain in `MusicPlayer`.
+    1. Introduce an `AudioProcessor` interface with two virtual functions: `prepareToPlay(double sampleRate, int maxFramesPerBuffer, int channelCount)` and `processBlock(AudioBuffer)`. Make `SineGenerator` and `FilePlayer` implement this interface.
+    1. Pass a `std::vector<std::unique_ptr<AudioProcessor>>` to `MusicPlayer` instead of hardcoding the actual class that does the processing. Store the `vector` as a member.
+    1. Call `prepareToPlay()` of all processors in the constructor.
+    1. Call `processBlock()` of all processors in the `audioCallback()` function.
 
 ## Task 3: Flanger audio effect
 

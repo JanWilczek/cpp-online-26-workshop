@@ -1,3 +1,5 @@
+- You can do sine generation, file reading and file playback in JUCE: here's how
+
 ### Task: Styling
 
 - show Figma file and how to use it

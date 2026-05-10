@@ -42,11 +42,26 @@ img[alt~="align-left"] {
 * Online course creator
   * DSP Pro on digital audio signal processing
   * Official JUCE C++ framework audio plugin development course
-* **Workshop repo: https://github.com/JanWilczek/cpp-online-26-workshop**
-* **These slides: _docs/slides/cpponline-2026-workshop-slides.md_**
-* **Task descriptions: _docs/tasks/tasks.md_**
 
-<!-- Now it's your turn to introduce yourselves! -->
+<!-- I want to enable everyone with Internet access to learn audio programming: the science and art of processing sound using code -->
+<!-- Now it's your turn to introduce yourselves! Say a few sentences about yourself and what do you want to achieve through this workshop. -->
+
+---
+
+# Rules
+
+<style scoped>section{font-size:2em;}</style>
+
+* Workshop repo: https://github.com/JanWilczek/cpp-online-26-workshop
+* These slides: _docs/slides/cpponline-2026-workshop-slides.md_
+* Task descriptions: _docs/tasks/tasks.md_
+* Please, have your camera turned on, if possible
+  * If you need a break, or some time in quiet, just turn off your camera; we'll know you're not there
+* We won't split into break rooms, as there's only 7 of us
+* Always ask, when in doubt: feel free to interrupt me
+* It's ok not to understand the entire code
+* I am here to help you and depending on the needs, I will want to help everyone
+* I may skip some of the tasks if we're short on time
 
 ---
 
@@ -254,14 +269,35 @@ A DSP algorithm that can be depicted as:
 
 # Task: Flanger audio effect
 
-## DSP diagram
+## Flanger DSP diagram
 
+![w:800](img/WorkshopFlangerAnnotated.png)
 
-* Sound
-* block diagram
-  * sources of block diagrams
-* difference equations
-* plugins
+<style scoped>section{font-size:1.5em;}</style>
+
+Source: J. Dattoro. _Effect design, part 2: Delay-line modulation and chorus._ J. Audio Eng. Soc., 45(10): 764–788, October 1997.
+
+<!-- Let's write out the difference equations by tracing back the output to the input -->
+
+---
+
+# Task: Flanger audio effect
+
+## Flanger difference equations
+
+1. Calculate the modulated-delay value
+
+    $$m = s_\text{LFO,unipolar}[n]D.$$
+
+2. Calculate the helper signal sample
+
+    $$x_h[n] = x[n] + \text{feedback } x_h[n-D/2].$$
+
+3. Calculate the output sample
+
+    $$y[n] = \text{blend }x_h[n] + \text{feedforward } x_h[n - m].$$
+
+<!-- Now it's time to implement it -> look at the code to show the structure (esp. `ChannelProcessor`) -->
 
 ---
 
@@ -271,6 +307,68 @@ A DSP algorithm that can be depicted as:
 
 # Task: Flanger plugin
 
+```bash
+git checkout task/flanger-plugin
+```
+
+<!-- Have you worked with audio plugins and DAWs before? -->
+
+---
+
+# Digital audio workstation (DAW)
+
+![w:850](img/AbletonLive.png)
+
+---
+
+# DAW plugins
+
+![h:500](img/Many%20plugin%20hosts%20with%20many%20plugins.png)
+
+---
+
+# DAW plugins
+
+![](img/PluginAPI.png)
+
+---
+
+# Popular plugin APIs
+
+* Audio Unit v3 (AUv3) by Apple for macOS and iOS
+* **Virtual Studio Technology 3 (VST3) by Steinberg**
+* Avid Audio eXtensions (AAX) by Avid
+* LV2 for Linux
+* CLever Audio Plug-in (CLAP)
+
+---
+
+# Many plugin formats = development nightmare
+
+![w:650](img/Plugins%20in%20formats.png)
+
+---
+
+# Plugin format API abstraction → plugin frameworks
+
+![w:900](img/JUCE%20is%20the%20magical%20tool.png)
+
+---
+
+# Plugin lifecycle
+
+![w:530](img/processor_lifecycle.png)
+
+---
+
+# Task: Flanger plugin
+
+```bash
+git checkout task/flanger-plugin
+```
+
+<!-- Now it's time to code! -->
+
 ---
 
 # Task: Parameters
@@ -278,6 +376,12 @@ A DSP algorithm that can be depicted as:
 ---
 
 # Part 3: Plugin GUI in JUCE C++ framework
+
+---
+
+# Processor-editor split
+
+![](img/Processor-Editor%20split.png)
 
 ---
 
@@ -306,3 +410,17 @@ A DSP algorithm that can be depicted as:
 ---
 
 # Homework
+
+---
+
+# Thank you!
+
+## Where to go from here
+
+* Official JUCE course (free): wolfsoundacademy.com/juce
+* DSP course: wolfsoundacademy.com/dsp
+  * **40% discount code: CPPO26 (valid until May 26)**
+* WolfSound blog: thewolfsound.com
+* WolfSound YouTube channel: youtube.com/@WolfSoundAudio
+* contact@thewolfsound.com
+

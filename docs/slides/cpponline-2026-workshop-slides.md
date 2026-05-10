@@ -70,6 +70,8 @@ git checkout task/generate-sine
 
 Focus: *music_player/source/main.cpp*
 
+We'll be using the PortAudio library by Ross Bencina, Phil Burk, et al.
+
 ---
 
 # Task: Play back a sine
@@ -165,14 +167,30 @@ phase_ += 2 * std::numbers::pi_v<float> * frequency / sampleRate_;
 ```
 
 <!-- Now, all should start working on the task -->
+<!-- A word of comment: you can do sine generation and sound playback easily with JUCE -->
 
 ---
 
 # Task: Play back an audio file
 
+```bash
+git checkout task/file-player
+```
+
+Focus:
+
+* _fx/include/fx/fx.h_
+* *music_player/source/main.cpp*
+
+We'll be using the AudioFile library by AdamStark.
+
 ---
 
 # Task: Flanger audio effect
+
+```bash
+git checkout task/flanger-effect
+```
 
 ---
 
